@@ -1,23 +1,28 @@
 <script lang="ts">
-  import { StartTimer, TestMessage } from '../wailsjs/go/main/App'
+  import { StartTimer, StartTotalTime } from '../wailsjs/go/main/App'
+  import { EventsOn } from '../wailsjs/runtime/runtime'
   let addTime = 10
   let message = ""
   const startTimer = async () => {
       try {
-          await StartTimer(addTime);
+          await StartTimer(addTime, "New Message");
       } catch (error) {
           console.error("Error:", error);
           message = "Error"
       }
   };
-  const newMessage = async () => {
+  const startTotalTime = async () => {
       try {
-          message = await TestMessage(); 
+          message = await StartTotalTime(); 
       } catch (error) {
           console.error("Error:", error);
           message = "Error"
       }
   };
+  EventsOn("timerFinished", (data: string) => {
+      message = data;
+  });
+
 
 </script>
 
@@ -26,7 +31,7 @@
   <button on:click={startTimer}>
     Start Time
   </button>
-  <button on:click={newMessage}>
+  <button on:click={startTotalTime}>
     New Message
   </button>
   <p>{message}</p>

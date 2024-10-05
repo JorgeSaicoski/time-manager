@@ -88,28 +88,24 @@ func (a *App) StartTotalTime() string {
 	return "Day initialized. Have a good journey!"
 }
 
-func (a *App) StartTimer(minutes int, message string) chan string {
-	resultChan := make(chan string)
+func (a *App) StartTimer(seconds int, message string) {
 
 	a.timer = &Timer{
-		Time:    time.Duration(minutes) * time.Minute,
+		Time:    time.Duration(seconds) * time.Second,
 		Message: message,
 	}
 
 	go func() {
 		<-time.After(a.timer.Time)
 
+		runtime.EventsEmit(a.ctx, "timerFinished", fmt.Sprintf("Reminder: '%s' finished after %d minutes.", message, seconds/60))
+
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.InfoDialog,
 			Title:   "Alert!",
 			Message: a.timer.Message,
 		})
-		sendMessage := fmt.Sprintf("Reminder: '%s' finished after %d minutes.", message, minutes)
 
-		resultChan <- sendMessage
-
-		close(resultChan)
 	}()
 
-	return resultChan
 }
