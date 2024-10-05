@@ -2,10 +2,14 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"time"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type TotalTime struct {
+	ID         int64
 	StartTime  time.Time
 	FinishTime time.Time
 	WorkTimes  []*WorkTime
@@ -13,11 +17,13 @@ type TotalTime struct {
 }
 
 type Timer struct {
-	Time    time.Time
+	ID      int64
+	Time    time.Duration
 	Message string
 }
 
 type WorkTime struct {
+	ID        int64
 	StartTime time.Time
 	Duration  time.Duration
 	Projects  []Project
@@ -25,11 +31,13 @@ type WorkTime struct {
 }
 
 type BreakTime struct {
+	ID        int64
 	StartTime time.Time
 	Duration  time.Duration
 }
 
 type Project struct {
+	ID        int64
 	StartTime time.Time
 	Duration  time.Duration
 	Cost      *Cost
@@ -38,22 +46,26 @@ type Project struct {
 }
 
 type Task struct {
+	ID          int64
 	Project     Project
 	Deadline    time.Time
 	Description string
 }
 
 type Cost struct {
+	ID       int64
 	Time     time.Time
 	HourCost int
 }
 
 type Brb struct {
+	ID        int64
 	StartTime time.Time
 	Duration  time.Duration
 }
 
 type App struct {
+	ID        int64
 	ctx       context.Context
 	totalTime *TotalTime
 	timer     *Timer
@@ -74,4 +86,30 @@ func (a *App) StartTotalTime() string {
 		BreakTime: &BreakTime{},
 	}
 	return "Day initialized. Have a good journey!"
+}
+
+func (a *App) StartTimer(minutes int, message string) chan string {
+	resultChan := make(chan string)
+
+	a.timer = &Timer{
+		Time:    time.Duration(minutes) * time.Minute,
+		Message: message,
+	}
+
+	go func() {
+		<-time.After(a.timer.Time)
+
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:    runtime.InfoDialog,
+			Title:   "Alert!",
+			Message: a.timer.Message,
+		})
+		sendMessage := fmt.Sprintf("Reminder: '%s' finished after %d minutes.", message, minutes)
+
+		resultChan <- sendMessage
+
+		close(resultChan)
+	}()
+
+	return resultChan
 }
