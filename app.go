@@ -26,7 +26,7 @@ type WorkTime struct {
 	ID        int64
 	StartTime time.Time
 	Duration  time.Duration
-	Projects  []Project
+	Projects  []*Project
 	Brb       *Brb
 }
 
@@ -79,6 +79,14 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
+func findItemByID[T any](items []*T, id int64, getID func(*T) int64) *T {
+	for _, item := range items {
+		if getID(item) == id {
+			return item
+		}
+	}
+	return nil
+}
 func (a *App) StartTotalTime() string {
 	a.totalTime = &TotalTime{
 		StartTime: time.Now(),
@@ -107,5 +115,54 @@ func (a *App) StartTimer(seconds int, message string) {
 		})
 
 	}()
+
+}
+
+func (a *App) StartWorkTime() string {
+	a.totalTime.WorkTimes = append(a.totalTime.WorkTimes, &WorkTime{
+		StartTime: time.Now(),
+		Projects:  []*Project{},
+		Brb:       &Brb{},
+	})
+	return "Work Time! Good luck!"
+}
+
+func (a *App) TakeBreak(WorkTimeID int64) string {
+	workTime := findItemByID(
+		a.totalTime.WorkTimes,
+		WorkTimeID,
+		func(w *WorkTime) int64 {
+			return w.ID
+		},
+	)
+	if workTime == nil {
+
+		return "WorkTime not found!"
+	}
+
+	endTime := time.Now()
+
+	workTime.Duration = endTime.Sub(workTime.StartTime)
+
+	a.totalTime.BreakTime.StartTime = time.Now()
+
+	return "Break started!"
+
+}
+
+func (a *App) EndBreak() string {
+	endTime := time.Now()
+
+	breakDuration := endTime.Sub(a.totalTime.BreakTime.StartTime)
+
+	a.totalTime.BreakTime.Duration += breakDuration
+
+	a.totalTime.WorkTimes = append(a.totalTime.WorkTimes, &WorkTime{
+		StartTime: time.Now(),
+		Projects:  []*Project{},
+		Brb:       &Brb{},
+	})
+
+	return fmt.Sprintf("Break ended! Total break time: %v", a.totalTime.BreakTime.Duration)
 
 }
