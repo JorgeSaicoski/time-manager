@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   import { StartTimer, StartTotalTime } from '../wailsjs/go/main/App'
   import { EventsOn } from '../wailsjs/runtime/runtime'
   let addTime = 10
@@ -19,7 +19,7 @@
           message = "Error"
       }
   };
-  EventsOn("timerFinished", (data: string) => {
+  EventsOn("timerFinished", (data) => {
       message = data;
   });
 
@@ -28,14 +28,13 @@
 
 <main>
 
-  <button on:click={startTimer}>
+  <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" on:click={startTimer}>
     Start Time
   </button>
   <button on:click={startTotalTime}>
     New Message
   </button>
-  <p>{message}</p>
-  
+  <p>{message}</p>  
 </main>
 
 <style>
