@@ -6,6 +6,10 @@ export function EndBreak() {
   return window['go']['main']['App']['EndBreak']();
 }
 
+export function FindByID(arg1, arg2) {
+  return window['go']['main']['App']['FindByID'](arg1, arg2);
+}
+
 export function StartTimer(arg1, arg2) {
   return window['go']['main']['App']['StartTimer'](arg1, arg2);
 }

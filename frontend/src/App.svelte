@@ -1,14 +1,63 @@
 <script>
-  import { StartTimer, StartTotalTime, StartWorkTime, TakeBreak, EndBreak } from '../wailsjs/go/main/App'
-  import { EventsOn } from '../wailsjs/runtime/runtime'
-  
+  import { StartTimer, StartTotalTime, StartWorkTime, TakeBreak, EndBreak } from '../wailsjs/go/main/App';
+  import { EventsOn } from '../wailsjs/runtime/runtime';
+
   let addTime = 10;
   let message = "";
-  let currentWorkTime = {
-    projects: [],
-    brb: {}
-  }
-  
+  let currentWorkTime = null;
+  let activeWorkTime = false;
+
+  // Start Total Time (Start Workday)
+  const startTotalTime = async () => {
+    try {
+      message = await StartTotalTime();
+      activeWorkTime = false;
+    } catch (error) {
+      console.error("Error:", error);
+      message = "Error starting the workday.";
+    }
+  };
+
+  // Start Work Time
+  const startWork = async () => {
+    try {
+      const response = await StartWorkTime();
+      message = response[0];
+      currentWorkTime = response[1];
+      activeWorkTime = true;
+    } catch (error) {
+      console.error("Error:", error);
+      message = "Error starting work time.";
+    }
+  };
+
+  // Take a Break
+  const takeBreak = async () => {
+    try {
+      if (currentWorkTime) {
+        message = await TakeBreak(currentWorkTime.ID);
+        activeWorkTime = false;
+      } else {
+        message = "Please start a work session first.";
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      message = "Error taking a break.";
+    }
+  };
+
+  // End a Break
+  const endBreak = async () => {
+    try {
+      message = await EndBreak();
+      activeWorkTime = true;
+    } catch (error) {
+      console.error("Error:", error);
+      message = "Error ending the break.";
+    }
+  };
+
+  // Start Timer
   const startTimer = async () => {
     try {
       await StartTimer(addTime, "Focus time!");
@@ -18,42 +67,7 @@
     }
   };
 
-  const startTotalTime = async () => {
-    try {
-      message = await StartTotalTime();
-    } catch (error) {
-      console.error("Error:", error);
-      message = "Error starting the workday.";
-    }
-  };
-
-  const startWork = async () => {
-    try {
-      message = await StartWorkTime();
-    } catch (error) {
-      console.error("Error:", error);
-      message = "Error starting work time.";
-    }
-  };
-
-  const takeBreak = async () => {
-    try {
-      message = await TakeBreak(1); 
-    } catch (error) {
-      console.error("Error:", error);
-      message = "Error taking a break.";
-    }
-  };
-
-  const endBreak = async () => {
-    try {
-      message = await EndBreak();
-    } catch (error) {
-      console.error("Error:", error);
-      message = "Error ending the break.";
-    }
-  };
-
+  // Listen to Timer Events
   EventsOn("timerFinished", (data) => {
     message = data;
   });
@@ -72,30 +86,42 @@
     <p class="mt-2">{message}</p>
   </div>
 
-  <!-- Start Work Time -->
-  <div class="mb-6">
-    <button
-      on:click={startWork}
-      class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-      Start Work Session
-    </button>
-    <p class="mt-2">{message}</p>
-  </div>
+  <!-- Conditional UI based on activeWorkTime -->
+  {#if !activeWorkTime}
+    <!-- Show Start Work Session button if no work time is active -->
+    <div class="mb-6">
+      <button
+        on:click={startWork}
+        class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+        Start Work Session
+      </button>
+      <p class="mt-2">{message}</p>
+    </div>
+  {:else}
+    <!-- Show Break Controls if work time is active -->
+    <div class="mb-6">
+      <button
+        on:click={takeBreak}
+        class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+        Start Break
+      </button>
+      <button
+        on:click={endBreak}
+        class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-2">
+        End Break
+      </button>
+      <p class="mt-2">{message}</p>
+    </div>
 
-  <!-- Break Controls -->
-  <div class="mb-6">
-    <button
-      on:click={takeBreak}
-      class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
-      Start Break
-    </button>
-    <button
-      on:click={endBreak}
-      class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-2">
-      End Break
-    </button>
-    <p class="mt-2">{message}</p>
-  </div>
+    <!-- Add Project button (to be implemented with backend) -->
+    <div class="mb-6">
+      <button
+        class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
+        Work on a Project
+      </button>
+      <p class="mt-2">{message}</p>
+    </div>
+  {/if}
 
   <!-- Set a Timer -->
   <div class="mb-6">
