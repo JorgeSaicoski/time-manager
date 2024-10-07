@@ -4,6 +4,10 @@
   
   let addTime = 10;
   let message = "";
+  let currentWorkTime = {
+    projects: [],
+    brb: {}
+  }
   
   const startTimer = async () => {
     try {

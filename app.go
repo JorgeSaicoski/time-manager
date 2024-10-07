@@ -87,6 +87,47 @@ func findItemByID[T any](items []*T, id int64, getID func(*T) int64) *T {
 	}
 	return nil
 }
+
+func (a *App) FindByID(id int64, model string) (interface{}, string) {
+	switch model {
+	case "WorkTime":
+		workTime := findItemByID(
+			a.totalTime.WorkTimes,
+			id,
+			func(w *WorkTime) int64 {
+				return w.ID
+			},
+		)
+		if workTime != nil {
+			return workTime, "Work Time Found"
+		}
+		return nil, "Work Time Found"
+	case "Project":
+		var projects []*Project
+
+		for _, wt := range a.totalTime.WorkTimes {
+			projects = append(projects, wt.Projects...)
+		}
+
+		projectItem := findItemByID(
+			projects,
+			id,
+			func(p *Project) int64 {
+				return p.ID
+			},
+		)
+
+		if projectItem != nil {
+			return projectItem, "Project Found"
+		}
+
+		return nil, "Project not found"
+
+	default:
+		return nil, "no model found"
+	}
+}
+
 func (a *App) StartTotalTime() string {
 	a.totalTime = &TotalTime{
 		StartTime: time.Now(),
@@ -118,13 +159,15 @@ func (a *App) StartTimer(seconds int, message string) {
 
 }
 
-func (a *App) StartWorkTime() string {
-	a.totalTime.WorkTimes = append(a.totalTime.WorkTimes, &WorkTime{
+func (a *App) StartWorkTime() (string, *WorkTime) {
+	newWorkTime := &WorkTime{
+		ID:        time.Now().UnixNano(), // Generate a unique ID using current time
 		StartTime: time.Now(),
 		Projects:  []*Project{},
 		Brb:       &Brb{},
-	})
-	return "Work Time! Good luck!"
+	}
+	a.totalTime.WorkTimes = append(a.totalTime.WorkTimes, newWorkTime)
+	return "Work Time! Good luck!", newWorkTime
 }
 
 func (a *App) TakeBreak(WorkTimeID int64) string {
