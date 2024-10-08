@@ -161,7 +161,7 @@ func (a *App) StartTimer(seconds int, message string) {
 
 func (a *App) StartWorkTime() (string, *WorkTime) {
 	newWorkTime := &WorkTime{
-		ID:        time.Now().UnixNano(), // Generate a unique ID using current time
+		ID:        time.Now().UnixNano(),
 		StartTime: time.Now(),
 		Projects:  []*Project{},
 		Brb:       &Brb{},
@@ -171,6 +171,11 @@ func (a *App) StartWorkTime() (string, *WorkTime) {
 }
 
 func (a *App) TakeBreak(WorkTimeID int64) string {
+	strID := fmt.Sprintf("%d", WorkTimeID)
+	fmt.Println("WorkTimeID Send")
+	fmt.Println(strID)
+	fmt.Println("WorkTimeID in DB")
+	fmt.Println(a.totalTime.WorkTimes[0].ID)
 	workTime := findItemByID(
 		a.totalTime.WorkTimes,
 		WorkTimeID,
