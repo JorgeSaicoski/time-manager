@@ -7,17 +7,6 @@
   let currentWorkTime = null;
   let activeWorkTime = false;
 
-  // Start Total Time (Start Workday)
-  const startTotalTime = async () => {
-    try {
-      message = await StartTotalTime();
-      activeWorkTime = false;
-    } catch (error) {
-      console.error("Error:", error);
-      message = "Error starting the workday.";
-    }
-  };
-
   // Start Work Time
   const startWork = async () => {
     try {
@@ -76,14 +65,6 @@
 <div class="flex flex-col items-center p-4">
   <h1 class="text-2xl font-bold mb-4">Workday Manager</h1>
 
-  <!-- Start Workday -->
-  <div class="mb-6">
-    <button
-      on:click={startTotalTime}
-      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-      Start Workday
-    </button>
-  </div>
 
   <!-- Conditional UI based on activeWorkTime -->
   {#if !activeWorkTime}

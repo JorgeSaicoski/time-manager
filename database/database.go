@@ -81,7 +81,6 @@ func CreateTask(projectID int64, description string, deadline time.Time) (*Task,
 	return task, err
 }
 
-// GetTask retrieves a Task entry by ID
 func GetTask(id int64) (*Task, error) {
 	var task Task
 	err := DB.First(&task, id).Error
@@ -89,13 +88,4 @@ func GetTask(id int64) (*Task, error) {
 		return nil, errors.New("Task not found")
 	}
 	return &task, err
-}
-
-func GetAllProjects() ([]*Project, error) {
-	var projects []*Project
-	err := DB.Preload("Tasks").Preload("Cost").Find(&projects).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, errors.New("No projects found")
-	}
-	return projects, err
 }

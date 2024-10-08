@@ -11,8 +11,8 @@ type TotalTime struct {
 	ID         int64 `gorm:"primaryKey"`
 	StartTime  time.Time
 	FinishTime time.Time
-	WorkTimes  []*WorkTime
-	BreakTime  *BreakTime
+	WorkTimes  []WorkTime `gorm:"foreignKey:TotalTimeID"`
+	BreakTime  *BreakTime `gorm:"foreignKey:TotalTimeID;constraint:OnDelete:CASCADE"`
 }
 
 type WorkTime struct {
@@ -21,15 +21,7 @@ type WorkTime struct {
 	TotalTimeID int64
 	StartTime   time.Time
 	Duration    time.Duration
-	Projects    []*Project
-	Brb         *Brb
-}
-
-type BreakTime struct {
-	gorm.Model
-	ID        int64 `gorm:"primaryKey"`
-	StartTime time.Time
-	Duration  time.Duration
+	Projects    []Project `gorm:"many2many:work_time_projects;"`
 }
 
 type Project struct {
@@ -37,9 +29,16 @@ type Project struct {
 	ID        int64 `gorm:"primaryKey"`
 	StartTime time.Time
 	Duration  time.Duration
-	Cost      *Cost
-	WorkTimes []WorkTime `gorm:"foreignKey:ProjectID"`
-	Tasks     []Task     `gorm:"foreignKey:ProjectID"`
+	Cost      *Cost      `gorm:"foreignKey:ProjectID"`
+	WorkTimes []WorkTime `gorm:"many2many:work_time_projects;"`
+}
+
+type BreakTime struct {
+	gorm.Model
+	ID          int64 `gorm:"primaryKey"`
+	TotalTimeID int64
+	StartTime   time.Time
+	Duration    time.Duration
 }
 
 type Task struct {
@@ -52,9 +51,10 @@ type Task struct {
 
 type Cost struct {
 	gorm.Model
-	ID       int64 `gorm:"primaryKey"`
-	Time     time.Time
-	HourCost int
+	ID        int64 `gorm:"primaryKey"`
+	ProjectID int64 `gorm:"uniqueIndex"`
+	Time      time.Time
+	HourCost  int
 }
 
 type Brb struct {

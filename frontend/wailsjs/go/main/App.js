@@ -14,10 +14,6 @@ export function StartTimer(arg1, arg2) {
   return window['go']['main']['App']['StartTimer'](arg1, arg2);
 }
 
-export function StartTotalTime() {
-  return window['go']['main']['App']['StartTotalTime']();
-}
-
 export function StartWorkTime() {
   return window['go']['main']['App']['StartWorkTime']();
 }
