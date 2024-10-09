@@ -54,7 +54,7 @@ func (a *App) FindByID(id int64, model string) (interface{}, string) {
 	}
 }
 
-func (a *App) StartTimer(seconds int, message string) {
+func (a *App) StartTimer(seconds int, message string) string {
 
 	newTimer := time.Duration(seconds) * time.Second
 
@@ -70,6 +70,8 @@ func (a *App) StartTimer(seconds int, message string) {
 		})
 
 	}()
+
+	return "Timer Started"
 
 }
 
