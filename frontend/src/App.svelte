@@ -1,5 +1,5 @@
 <script>
-  import { StartTimer, StartTotalTime, StartWorkTime, TakeBreak, EndBreak } from '../wailsjs/go/main/App';
+  import { StartTimer, StartWorkTime, TakeBreak, EndBreak } from '../wailsjs/go/main/App';
   import { EventsOn } from '../wailsjs/runtime/runtime';
 
   let addTime = 10;
