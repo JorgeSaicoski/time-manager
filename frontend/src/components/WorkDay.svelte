@@ -1,11 +1,10 @@
 <script>
-    import {StartDay} from "../../wailsjs/go/main/App"
+    import {StartDay, TakeBreak} from "../../wailsjs/go/main/App"
 
     let workDayStarted = false;
-    let newProjectName = '';
+    let breakTime = false;
     let selectedProject = '';
     let projects = [];
-    let tasks = [];
     let currentProject = null;
     let message = ''
     import { onDestroy } from 'svelte';
@@ -30,19 +29,20 @@
 
     function updateElapsedTime() {
         if (workDayStart) {
-        const now = new Date();
-        const diff = now - workDayStart; // Difference in milliseconds
+            const now = new Date();
+            const diff = now - workDayStart;
 
-        const hours = String(Math.floor(diff / 3600000)).padStart(2, "0");
-        const minutes = String(Math.floor((diff % 3600000) / 60000)).padStart(2, "0");
-        const seconds = String(Math.floor((diff % 60000) / 1000)).padStart(2, "0");
+            const hours = String(Math.floor(diff / 3600000)).padStart(2, "0");
+            const minutes = String(Math.floor((diff % 3600000) / 60000)).padStart(2, "0");
+            const seconds = String(Math.floor((diff % 60000) / 1000)).padStart(2, "0");
 
         elapsedTime = `${hours}:${minutes}:${seconds}`;
         }
     }
  
-    function takeBreak() {
-
+    const takeBreak = async () => {
+        message = await TakeBreak()
+        breakTime = true
     }
     function brb() {
 
@@ -78,26 +78,26 @@
     {#if workDayStarted}
         <div class="flex flex-col md:flex-row gap-4">
             <div class="text-lg font-bold">
-            Time Elapsed: {elapsedTime}
+                Time Elapsed: {elapsedTime}
             </div>
             <div>{message}</div>
         </div>
         <div class="flex flex-col md:flex-row gap-4">
-        <button 
-            on:click={takeBreak} 
-            class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-            Take Break
-        </button>
-        <button 
-            on:click={brb} 
-            class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-            BRB (Not Working in Paid Hour)
-        </button>
-        <button 
-            on:click={createProject} 
-            class="flex-1 py-3 px-6 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-            Create Project
-        </button>
+            <button 
+                on:click={takeBreak} 
+                class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
+                Take Break
+            </button>
+            <button 
+                on:click={brb} 
+                class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
+                BRB (Not Working in Paid Hour)
+            </button>
+            <button 
+                on:click={createProject} 
+                class="flex-1 py-3 px-6 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
+                Create Project
+            </button>
         </div>
 
         <div class="mt-6">
