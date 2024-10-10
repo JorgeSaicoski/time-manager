@@ -7,10 +7,47 @@
     let projects = [];
     let tasks = [];
     let currentProject = null;
+    let message = ''
+    import { onDestroy } from 'svelte';
 
-    function startWorkDay() {
+    let workDayStart = null;
+    let elapsedTime = "00:00:00";
+    let interval;
+
+    const startWorkDay = async ()=>  {
+        try {
+            message = await StartDay()
+            workDayStart = new Date();
+            updateElapsedTime();
+            interval = setInterval(updateElapsedTime, 1000);
+
+        } catch(err){
+            message = err.message
+
+        }
         workDayStarted = true;
     }
+
+    function updateElapsedTime() {
+        if (workDayStart) {
+        const now = new Date();
+        const diff = now - workDayStart; // Difference in milliseconds
+
+        const hours = String(Math.floor(diff / 3600000)).padStart(2, "0");
+        const minutes = String(Math.floor((diff % 3600000) / 60000)).padStart(2, "0");
+        const seconds = String(Math.floor((diff % 60000) / 1000)).padStart(2, "0");
+
+        elapsedTime = `${hours}:${minutes}:${seconds}`;
+        }
+    }
+ 
+    function takeBreak() {
+
+    }
+    function brb() {
+
+    }
+
 
     function createProject() {
 
@@ -22,6 +59,10 @@
 
     function createTask(taskName) {
     }
+
+    onDestroy(() => {
+        clearInterval(interval);
+    });  
 </script>
 
 <div class="w-full max-w-2xl p-4 space-y-4 bg-gray-800 rounded-lg shadow-lg text-white">
@@ -31,9 +72,16 @@
         class="w-full py-3 px-6 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
         Start Workday
         </button>
+        <p>{message}</p>
     {/if}
 
     {#if workDayStarted}
+        <div class="flex flex-col md:flex-row gap-4">
+            <div class="text-lg font-bold">
+            Time Elapsed: {elapsedTime}
+            </div>
+            <div>{message}</div>
+        </div>
         <div class="flex flex-col md:flex-row gap-4">
         <button 
             on:click={takeBreak} 

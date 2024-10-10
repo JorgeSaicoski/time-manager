@@ -29,6 +29,7 @@ type Project struct {
 	ID        int64 `gorm:"primaryKey"`
 	StartTime time.Time
 	Duration  time.Duration
+	Closed    bool
 	Cost      *Cost      `gorm:"foreignKey:ProjectID"`
 	WorkTimes []WorkTime `gorm:"many2many:work_time_projects;"`
 }
@@ -47,6 +48,7 @@ type Task struct {
 	ProjectID   int64
 	Deadline    time.Time
 	Description string
+	Closed      bool
 }
 
 type Cost struct {

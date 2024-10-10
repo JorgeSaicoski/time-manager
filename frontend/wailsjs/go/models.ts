@@ -110,6 +110,7 @@ export namespace database {
 	    // Go type: time
 	    StartTime: any;
 	    Duration: number;
+	    Closed: boolean;
 	    Cost?: Cost;
 	    WorkTimes: WorkTime[];
 	
@@ -126,6 +127,7 @@ export namespace database {
 	        this.ID = source["ID"];
 	        this.StartTime = this.convertValues(source["StartTime"], null);
 	        this.Duration = source["Duration"];
+	        this.Closed = source["Closed"];
 	        this.Cost = this.convertValues(source["Cost"], Cost);
 	        this.WorkTimes = this.convertValues(source["WorkTimes"], WorkTime);
 	    }
