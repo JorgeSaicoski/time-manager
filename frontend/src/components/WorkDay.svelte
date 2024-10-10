@@ -34,6 +34,7 @@
     const finishWorkDay = async ()=>  {
         try {
             const response  = await FinishDay();
+            workDayStarted = false
             message = response
             totalTime = null
             workTime = null
@@ -135,33 +136,28 @@
                     Take Break
                 </button>
                 <button 
-                    on:click={finishWorkDay} 
-                    class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-                    Finish Day
-                </button>
-                <button 
                     on:click={createProject} 
                     class="flex-1 py-3 px-6 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
                     Create Project
                 </button>
                 
-                <div class="mt-6">
-                <h2 class="text-lg font-bold mb-2">Associate Existing Project</h2>
-                <div class="flex gap-4">
-                    <select 
-                    bind:value={selectedProject} 
-                    class="flex-1 p-3 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="" disabled selected>Select a project</option>
-                    {#each projects as project}
-                        <option value={project.name}>{project.name}</option>
-                    {/each}
-                    </select>
-                    <button 
-                    on:click={associateProject} 
-                    class="py-3 px-6 bg-teal-500 hover:bg-teal-600 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-                    Associate
-                    </button>
-                </div>
+                <div class="w-full">
+                    <h2 class="text-lg font-bold mb-2">Associate Existing Project</h2>
+                    <div class="flex gap-4">
+                        <select 
+                        bind:value={selectedProject} 
+                        class="flex-1 p-3 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="" disabled selected>Select a project</option>
+                        {#each projects as project}
+                            <option value={project.name}>{project.name}</option>
+                        {/each}
+                        </select>
+                        <button 
+                        on:click={associateProject} 
+                        class="py-3 px-6 bg-teal-500 hover:bg-teal-600 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
+                        Associate
+                        </button>
+                    </div>
                 </div>
             {/if}
             {#if !workTime}
@@ -171,6 +167,11 @@
                 Start or return to working
             </button>
             {/if}
+            <button 
+                on:click={finishWorkDay} 
+                class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
+                Finish Day
+            </button>
         </div>
 
         {#if currentProject}

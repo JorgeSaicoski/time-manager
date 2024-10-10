@@ -152,12 +152,19 @@ func (a *App) TakeBreak(WorkTimeID int64) string {
 		return "Work Time Not Found"
 	}
 
+	log.Printf("Work Time get")
+
 	endTime := time.Now()
 	workTime.Duration = endTime.Sub(workTime.StartTime)
 
 	if err := database.DB.Save(workTime).Error; err != nil {
 		log.Printf("Error saving updated WorkTime: %v", err)
 		return "Failed to update Work Time"
+	}
+
+	if a.TotalTime.BreakTime == nil {
+		log.Printf("a.TotalTime.BreakTime is nil, initializing new BreakTime")
+		a.TotalTime.BreakTime = &database.BreakTime{}
 	}
 
 	a.TotalTime.BreakTime.StartTime = time.Now()

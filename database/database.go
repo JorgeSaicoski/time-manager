@@ -111,6 +111,7 @@ func CreateWorkTime(totalTimeID int64) (*WorkTime, error) {
 
 func GetWorkTime(id int64) (*WorkTime, error) {
 	var workTime WorkTime
+	log.Printf("get work time")
 	err := DB.Preload("Projects").First(&workTime, id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errors.New("WorkTime not found")
