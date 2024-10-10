@@ -50,10 +50,22 @@ func (a *App) FindByID(id int64, model string) (interface{}, string) {
 }
 
 func (a *App) StartDay() string {
+	unfinishedTotalTime, err := database.GetUnfinishedTotalTime()
+	if err != nil {
+		log.Printf("Error checking unfinished TotalTime: %v", err)
+		return "Error starting the day"
+	}
+
+	if unfinishedTotalTime != nil {
+		return fmt.Sprintf("Unfinished day found with ID: %d", unfinishedTotalTime.ID)
+	}
+
 	totalTime, err := database.CreateTotalTime()
 	if err != nil {
 		log.Printf("Error creating TotalTime: %v", err)
+		return "Error starting the day"
 	}
+
 	a.TotalTime = totalTime
 	return "Day started"
 }
