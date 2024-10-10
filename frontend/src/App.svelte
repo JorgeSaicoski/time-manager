@@ -1,5 +1,6 @@
 <script>
   import Timer from "./components/Timer.svelte"
+  import Sarkis from "./assets/images/sarkis-dev.png"
 
   let currentTab = 'Work';
 
@@ -12,7 +13,7 @@
   }
 </script>
 
-<div class="h-full flex w-full flex-col justify-between items-center dark:bg-gray-800 p-2">
+<div class="h-full flex w-full flex-col justify-between items-center dark:bg-gray-800 p-2 font-body">
   <!-- Dropdown for smaller screens -->
   <div class="sm:hidden">
     <label for="Tab" class="sr-only">Tab</label>
@@ -63,5 +64,16 @@
   {#if currentTab === 'Projects'}
     Projects
   {/if}
-
+  <footer class="w-full bg-black shadow-sm focus:border-sky-500 focus:ring-sky-500 text-teal-800 font-nerd">
+    <div class="mx-auto flex flex-col items-center space-y-4">
+      <p>
+        Developed by: 
+      </p>
+      <img src={Sarkis} alt="Sarkis DEV logo" class="w-32 h-auto" />
+      <p >
+        Contact: <a href="mailto:jorge@sarkis.dev" >jorge@sarkis.dev</a>
+      </p>
+    </div>
+  </footer>
 </div>
+

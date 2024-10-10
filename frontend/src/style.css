@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 html {
     background-color: rgba(27, 38, 54, 1);
     text-align: center;
@@ -23,6 +24,13 @@ body {
     src: local(""),
     url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
 }
+
+@font-face {
+    font-family: 'Martian';
+    src: url("assets/fonts/MartianMonoNerdFont-Bold.ttf") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
 
 #app {
     height: 100vh;

@@ -25,11 +25,6 @@ func (a *App) startup(ctx context.Context) {
 	database.Connect()
 	database.MigrateDB()
 	log.Println("Database connected and migrated successfully.")
-	totalTime, err := database.CreateTotalTime()
-	if err != nil {
-		log.Printf("Error creating TotalTime: %v", err)
-	}
-	a.TotalTime = totalTime
 }
 
 func (a *App) FindByID(id int64, model string) (interface{}, string) {
@@ -52,6 +47,15 @@ func (a *App) FindByID(id int64, model string) (interface{}, string) {
 	default:
 		return nil, "no model found"
 	}
+}
+
+func (a *App) StartDay() string {
+	totalTime, err := database.CreateTotalTime()
+	if err != nil {
+		log.Printf("Error creating TotalTime: %v", err)
+	}
+	a.TotalTime = totalTime
+	return "Day started"
 }
 
 func (a *App) StartTimer(seconds int, message string) string {

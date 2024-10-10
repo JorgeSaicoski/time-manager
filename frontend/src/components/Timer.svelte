@@ -33,10 +33,10 @@
   
   <div class="flex flex-col gap-4 max-w-md mx-auto p-6">
     <div>
-      <label for="hours" class="block text-sm font-medium text-gray-700">Hours</label>
+      <label for="hours" class="block text-sm font-medium text-gray-200">Hours</label>
       <select
         id="hours"
-        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-slate-800"
         bind:value={hours}
       >
         {#each hourOptions as hour}
@@ -46,10 +46,10 @@
     </div>
   
     <div>
-      <label for="minutes" class="block text-sm font-medium text-gray-700">Minutes</label>
+      <label for="minutes" class="block text-sm font-medium text-gray-200">Minutes</label>
       <select
         id="minutes"
-        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-slate-800"
         bind:value={minutes}
       >
         {#each minuteOptions as minute}
@@ -59,11 +59,11 @@
     </div>
   
     <div>
-      <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+      <label for="message" class="block text-sm font-medium text-gray-200">Message</label>
       <textarea
         id="message"
         rows="4"
-        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-slate-800"
         placeholder="Enter your message here..."
         bind:value={message}
       ></textarea>

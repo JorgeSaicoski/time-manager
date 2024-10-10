@@ -4,7 +4,12 @@ export default {
     './src/**/*.{html,js,svelte}', 
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        nerd: ['Martian', 'sans-serif'],
+        body: ['Nunito', 'sans-serif'],
+      },
+    },
   },
   plugins: [
   ],
