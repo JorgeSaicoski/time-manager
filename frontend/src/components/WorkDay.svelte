@@ -1,5 +1,5 @@
 <script>
-    import {StartDay, TakeBreak, StartWorkTime} from "../../wailsjs/go/main/App"
+    import {StartDay, TakeBreak, StartWorkTime, FinishDay} from "../../wailsjs/go/main/App"
 
     let workDayStarted = false;
     let breakTime = false;
@@ -21,9 +21,25 @@
             message = response.message
             totalTime = response.totalTime
             timerStart = new Date(totalTime.StartTime);
-            console.log(totalTime)
             updateElapsedTime();
             interval = setInterval(updateElapsedTime, 1000);
+
+        } catch(err){
+            message = err.message
+
+        }
+        workDayStarted = true;
+    }
+
+    const finishWorkDay = async ()=>  {
+        try {
+            const response  = await FinishDay();
+            message = response
+            totalTime = null
+            workTime = null
+            timerStart = null;
+            elapsedTime = "00:00:00";
+            interval = null;
 
         } catch(err){
             message = err.message
@@ -64,6 +80,8 @@
         }
 
     }
+
+    
 
 
     function brb() {
@@ -110,6 +128,16 @@
                     on:click={brb} 
                     class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
                     BRB (Not Working in Paid Hour)
+                </button>
+                <button 
+                    on:click={takeBreak} 
+                    class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
+                    Take Break
+                </button>
+                <button 
+                    on:click={finishWorkDay} 
+                    class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
+                    Finish Day
                 </button>
                 <button 
                     on:click={createProject} 
