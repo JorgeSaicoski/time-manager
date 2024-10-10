@@ -7,6 +7,8 @@ export function EndBreak():Promise<string|database.WorkTime>;
 
 export function FindByID(arg1:number,arg2:string):Promise<any|string>;
 
+export function FinishDay():Promise<string>;
+
 export function StartDay():Promise<main.StartDayResponse>;
 
 export function StartTimer(arg1:number,arg2:string):Promise<string>;

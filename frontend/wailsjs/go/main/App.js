@@ -10,6 +10,10 @@ export function FindByID(arg1, arg2) {
   return window['go']['main']['App']['FindByID'](arg1, arg2);
 }
 
+export function FinishDay() {
+  return window['go']['main']['App']['FinishDay']();
+}
+
 export function StartDay() {
   return window['go']['main']['App']['StartDay']();
 }

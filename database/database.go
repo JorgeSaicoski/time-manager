@@ -63,6 +63,19 @@ func FinishTotalTime(id int64) (*TotalTime, error) {
 
 	totalTime.FinishTime = time.Now()
 
+	var unfinishedWorkTime WorkTime
+	err = DB.Where("total_time_id = ? AND duration = 0", id).First(&unfinishedWorkTime).Error
+	if err == nil {
+		unfinishedWorkTime.Duration = totalTime.FinishTime.Sub(unfinishedWorkTime.StartTime)
+
+		if err := DB.Save(&unfinishedWorkTime).Error; err != nil {
+			return nil, fmt.Errorf("failed to finish WorkTime: %w", err)
+		}
+		log.Printf("Finished WorkTime with ID %d before finishing TotalTime %d", unfinishedWorkTime.ID, totalTime.ID)
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, fmt.Errorf("error checking unfinished WorkTime: %w", err)
+	}
+
 	if err := DB.Save(&totalTime).Error; err != nil {
 		return nil, fmt.Errorf("failed to finish TotalTime: %w", err)
 	}
