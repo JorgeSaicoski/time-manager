@@ -2,6 +2,7 @@ package database
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -41,10 +42,12 @@ func GetUnfinishedTotalTime() (*TotalTime, error) {
 	result := DB.Where("finish_time < start_time").First(&totalTime)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			log.Println("No unfinished TotalTime found.")
 			return nil, nil
 		}
 		return nil, result.Error
 	}
+
 	return &totalTime, nil
 }
 
@@ -53,8 +56,25 @@ func CreateWorkTime(totalTimeID int64) (*WorkTime, error) {
 		StartTime:   time.Now(),
 		TotalTimeID: totalTimeID,
 	}
+
 	err := DB.Create(workTime).Error
-	return workTime, err
+	if err != nil {
+		return nil, err
+	}
+
+	var totalTime TotalTime
+	if err := DB.Preload("WorkTimes").First(&totalTime, totalTimeID).Error; err != nil {
+		return nil, fmt.Errorf("failed to retrieve TotalTime after creating WorkTime: %w", err)
+	}
+
+	totalTime.WorkTimes = append(totalTime.WorkTimes, *workTime)
+
+	err = DB.Save(&totalTime).Error
+	if err != nil {
+		return nil, fmt.Errorf("failed to update TotalTime with new WorkTime: %w", err)
+	}
+
+	return workTime, nil
 }
 
 func GetWorkTime(id int64) (*WorkTime, error) {

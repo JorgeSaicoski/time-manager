@@ -16,6 +16,16 @@ type App struct {
 	TotalTime *database.TotalTime
 }
 
+type StartDayResponse struct {
+	Message   string              `json:"message"`
+	TotalTime *database.TotalTime `json:"totalTime,omitempty"`
+}
+
+type StartWorkTimeResponse struct {
+	Message  string             `json:"message"`
+	WorkTime *database.WorkTime `json:"workTime,omitempty"`
+}
+
 func NewApp() *App {
 	return &App{}
 }
@@ -49,25 +59,36 @@ func (a *App) FindByID(id int64, model string) (interface{}, string) {
 	}
 }
 
-func (a *App) StartDay() string {
+func (a *App) StartDay() StartDayResponse {
 	unfinishedTotalTime, err := database.GetUnfinishedTotalTime()
 	if err != nil {
 		log.Printf("Error checking unfinished TotalTime: %v", err)
-		return "Error starting the day"
+		return StartDayResponse{
+			Message: "Error checking for unfinished days",
+		}
 	}
 
 	if unfinishedTotalTime != nil {
-		return fmt.Sprintf("Unfinished day found with ID: %d", unfinishedTotalTime.ID)
+		a.TotalTime = unfinishedTotalTime
+		return StartDayResponse{
+			Message:   "Unfinished day found",
+			TotalTime: unfinishedTotalTime,
+		}
 	}
 
 	totalTime, err := database.CreateTotalTime()
 	if err != nil {
 		log.Printf("Error creating TotalTime: %v", err)
-		return "Error starting the day"
+		return StartDayResponse{
+			Message: "Error starting the day",
+		}
 	}
 
 	a.TotalTime = totalTime
-	return "Day started"
+	return StartDayResponse{
+		Message:   "Day started",
+		TotalTime: totalTime,
+	}
 }
 
 func (a *App) StartTimer(seconds int, message string) string {
@@ -91,13 +112,18 @@ func (a *App) StartTimer(seconds int, message string) string {
 
 }
 
-func (a *App) StartWorkTime() (string, *database.WorkTime) {
+func (a *App) StartWorkTime() StartWorkTimeResponse {
 	newWorkTime, err := database.CreateWorkTime(a.TotalTime.ID)
 	if err != nil {
 		log.Printf("Error creating WorkTime: %v", err)
-		return "Work Time not created", nil
+		return StartWorkTimeResponse{
+			Message: "Error creating work time",
+		}
 	}
-	return "Work Time! Good luck!", newWorkTime
+	return StartWorkTimeResponse{
+		Message:  "Work Time!",
+		WorkTime: newWorkTime,
+	}
 }
 
 func (a *App) TakeBreak(WorkTimeID int64) string {

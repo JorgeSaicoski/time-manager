@@ -1,22 +1,27 @@
 <script>
-    import {StartDay, TakeBreak} from "../../wailsjs/go/main/App"
+    import {StartDay, TakeBreak, StartWorkTime} from "../../wailsjs/go/main/App"
 
     let workDayStarted = false;
     let breakTime = false;
+    let workTime = null;
     let selectedProject = '';
     let projects = [];
     let currentProject = null;
     let message = ''
+    let totalTime = null
     import { onDestroy } from 'svelte';
 
-    let workDayStart = null;
+    let timerStart = null;
     let elapsedTime = "00:00:00";
     let interval;
 
     const startWorkDay = async ()=>  {
         try {
-            message = await StartDay()
-            workDayStart = new Date();
+            const response  = await StartDay();
+            message = response.message
+            totalTime = response.totalTime
+            timerStart = new Date(totalTime.StartTime);
+            console.log(totalTime)
             updateElapsedTime();
             interval = setInterval(updateElapsedTime, 1000);
 
@@ -28,9 +33,9 @@
     }
 
     function updateElapsedTime() {
-        if (workDayStart) {
+        if (timerStart) {
             const now = new Date();
-            const diff = now - workDayStart;
+            const diff = now - timerStart;
 
             const hours = String(Math.floor(diff / 3600000)).padStart(2, "0");
             const minutes = String(Math.floor((diff % 3600000) / 60000)).padStart(2, "0");
@@ -41,9 +46,26 @@
     }
  
     const takeBreak = async () => {
-        message = await TakeBreak()
+        message = await TakeBreak(workTime.ID)
         breakTime = true
+        timerStart = new Date(workTime.BreakTime.StartTime);
     }
+
+    const startWorkTime = async () => {
+        console.log("Starting work time")
+        try{
+            const response = await StartWorkTime()
+            console.log(response.workTime)
+            workTime = response.workTime
+            message = response.message
+            timerStart = new Date(workTime.StartTime);
+        } catch(err){
+            message = err.message
+        }
+
+    }
+
+
     function brb() {
 
     }
@@ -83,40 +105,44 @@
             <div>{message}</div>
         </div>
         <div class="flex flex-col md:flex-row gap-4">
+            {#if workTime}
+                <button 
+                    on:click={brb} 
+                    class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
+                    BRB (Not Working in Paid Hour)
+                </button>
+                <button 
+                    on:click={createProject} 
+                    class="flex-1 py-3 px-6 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
+                    Create Project
+                </button>
+                
+                <div class="mt-6">
+                <h2 class="text-lg font-bold mb-2">Associate Existing Project</h2>
+                <div class="flex gap-4">
+                    <select 
+                    bind:value={selectedProject} 
+                    class="flex-1 p-3 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="" disabled selected>Select a project</option>
+                    {#each projects as project}
+                        <option value={project.name}>{project.name}</option>
+                    {/each}
+                    </select>
+                    <button 
+                    on:click={associateProject} 
+                    class="py-3 px-6 bg-teal-500 hover:bg-teal-600 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
+                    Associate
+                    </button>
+                </div>
+                </div>
+            {/if}
+            {#if !workTime}
             <button 
-                on:click={takeBreak} 
+                on:click={startWorkTime} 
                 class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-                Take Break
+                Start or return to working
             </button>
-            <button 
-                on:click={brb} 
-                class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-                BRB (Not Working in Paid Hour)
-            </button>
-            <button 
-                on:click={createProject} 
-                class="flex-1 py-3 px-6 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-                Create Project
-            </button>
-        </div>
-
-        <div class="mt-6">
-        <h2 class="text-lg font-bold mb-2">Associate Existing Project</h2>
-        <div class="flex gap-4">
-            <select 
-            bind:value={selectedProject} 
-            class="flex-1 p-3 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="" disabled selected>Select a project</option>
-            {#each projects as project}
-                <option value={project.name}>{project.name}</option>
-            {/each}
-            </select>
-            <button 
-            on:click={associateProject} 
-            class="py-3 px-6 bg-teal-500 hover:bg-teal-600 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-            Associate
-            </button>
-        </div>
+            {/if}
         </div>
 
         {#if currentProject}
