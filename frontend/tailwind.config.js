@@ -7,7 +7,7 @@ export default {
     extend: {
       fontFamily: {
         nerd: ['Martian', 'sans-serif'],
-        body: ['Nunito', 'sans-serif'],
+        body: ['Roboto', 'sans-serif'],
       },
     },
   },

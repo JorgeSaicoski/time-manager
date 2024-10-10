@@ -1,5 +1,6 @@
 <script>
   import Timer from "./components/Timer.svelte"
+  import WorkDay from "./components/WorkDay.svelte";
   import Sarkis from "./assets/images/sarkis-dev.png"
 
   let currentTab = 'Work';
@@ -56,7 +57,7 @@
     </nav>
   </div>
   {#if currentTab === 'Work'}
-    Work
+    <WorkDay></WorkDay>
   {/if}
   {#if currentTab === 'Timer'}
     <Timer></Timer>    

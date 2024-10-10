@@ -30,7 +30,15 @@ body {
     src: url("assets/fonts/MartianMonoNerdFont-Bold.ttf") format('truetype');
     font-weight: normal;
     font-style: normal;
-  }
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url("assets/fonts/RobotoMonoNerdFont-Bold.ttf") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 
 #app {
     height: 100vh;
