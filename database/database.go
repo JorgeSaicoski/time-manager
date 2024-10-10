@@ -38,14 +38,14 @@ func GetTotalTime(id int64) (*TotalTime, error) {
 
 func GetUnfinishedTotalTime() (*TotalTime, error) {
 	var totalTime TotalTime
-	result := DB.Where("finish_time IS NULL").First(&totalTime)
+	result := DB.Where("finish_time < start_time").First(&totalTime)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return nil, nil // No unfinished TotalTime found
+			return nil, nil
 		}
-		return nil, result.Error // Return any other error encountered
+		return nil, result.Error
 	}
-	return &totalTime, nil // Return the unfinished TotalTime
+	return &totalTime, nil
 }
 
 func CreateWorkTime(totalTimeID int64) (*WorkTime, error) {
