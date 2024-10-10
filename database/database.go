@@ -51,6 +51,25 @@ func GetUnfinishedTotalTime() (*TotalTime, error) {
 	return &totalTime, nil
 }
 
+func FinishTotalTime(id int64) (*TotalTime, error) {
+	var totalTime TotalTime
+
+	err := DB.First(&totalTime, id).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errors.New("TotalTime not found")
+	} else if err != nil {
+		return nil, fmt.Errorf("error retrieving TotalTime: %w", err)
+	}
+
+	totalTime.FinishTime = time.Now()
+
+	if err := DB.Save(&totalTime).Error; err != nil {
+		return nil, fmt.Errorf("failed to finish TotalTime: %w", err)
+	}
+
+	return &totalTime, nil
+}
+
 func CreateWorkTime(totalTimeID int64) (*WorkTime, error) {
 	workTime := &WorkTime{
 		StartTime:   time.Now(),

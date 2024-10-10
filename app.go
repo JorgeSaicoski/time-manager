@@ -91,6 +91,25 @@ func (a *App) StartDay() StartDayResponse {
 	}
 }
 
+func (a *App) FinishDay() string {
+	unfinishedTotalTime, err := database.GetUnfinishedTotalTime()
+	if err != nil {
+		log.Printf("Error checking unfinished TotalTime: %v", err)
+		return "Error checking for unfinished days"
+	}
+	if unfinishedTotalTime == nil {
+		log.Printf("None unfinished time found to close")
+		return "None unfinished time found to close"
+	}
+
+	if _, err := database.FinishTotalTime(unfinishedTotalTime.ID); err != nil {
+		log.Printf("Error finishing TotalTime: %v", err)
+		return "error finishing Total Time"
+	}
+
+	return "Total Time finished"
+}
+
 func (a *App) StartTimer(seconds int, message string) string {
 
 	newTimer := time.Duration(seconds) * time.Second
