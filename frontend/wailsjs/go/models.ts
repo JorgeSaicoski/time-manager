@@ -157,6 +157,7 @@ export namespace database {
 	    // Go type: gorm
 	    DeletedAt: any;
 	    ID: number;
+	    Name: string;
 	    // Go type: time
 	    StartTime: any;
 	    Duration: number;
@@ -175,6 +176,7 @@ export namespace database {
 	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], null);
 	        this.DeletedAt = this.convertValues(source["DeletedAt"], null);
 	        this.ID = source["ID"];
+	        this.Name = source["Name"];
 	        this.StartTime = this.convertValues(source["StartTime"], null);
 	        this.Duration = source["Duration"];
 	        this.Closed = source["Closed"];

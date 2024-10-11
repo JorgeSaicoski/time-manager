@@ -9,7 +9,7 @@
     let currentProject = null;
     let message = ''
     let totalTime = null
-    import { onDestroy } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
 
     let timerStart = null;
     let elapsedTime = "00:00:00";
@@ -23,7 +23,7 @@
             totalTime = response.totalTime
             timerStart = new Date(totalTime.StartTime);
             updateElapsedTime();
-            interval = setInterval(updateElapsedTime, 1000);
+            interval = setInterval(updateElapsedTime, 300);
             intervalName = "Day time"
 
         } catch(err){
@@ -48,7 +48,6 @@
             message = err.message
 
         }
-        workDayStarted = true;
     }
 
     function updateElapsedTime() {
@@ -119,16 +118,20 @@
     onDestroy(() => {
         clearInterval(interval);
     });  
+    onMount(()=>{
+        startWorkDay()
+    })
 </script>
 
+
 <div class="w-full max-w-2xl p-4 space-y-4 bg-gray-800 rounded-lg shadow-lg text-white">
+    <div class="w-full max-w-2xl p-4 space-y-0 bg-teal-400 rounded shadow-lg text-black">{message}</div>
     {#if !workDayStarted}
         <button 
         on:click={startWorkDay} 
         class="w-full py-3 px-6 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
         Start Workday
         </button>
-        <p>{message}</p>
     {/if}
 
     {#if workDayStarted}
@@ -136,7 +139,7 @@
             <div class="text-lg font-bold">
                 {intervalName}: {elapsedTime}
             </div>
-            <div>{message}</div>
+
         </div>
         <div class="flex flex-col md:flex-row gap-4">
             {#if workTime}
@@ -164,26 +167,7 @@
                     on:click={createProject} 
                     class="flex-1 py-3 px-6 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
                     Create Project
-                </button>
-                
-                <div class="w-full">
-                    <h2 class="text-lg font-bold mb-2">Associate Existing Project</h2>
-                    <div class="flex gap-4">
-                        <select 
-                        bind:value={selectedProject} 
-                        class="flex-1 p-3 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="" disabled selected>Select a project</option>
-                        {#each projects as project}
-                            <option value={project.name}>{project.name}</option>
-                        {/each}
-                        </select>
-                        <button 
-                        on:click={associateProject} 
-                        class="py-3 px-6 bg-teal-500 hover:bg-teal-600 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-                        Associate
-                        </button>
-                    </div>
-                </div>
+                </button>            
             {/if}
             {#if !workTime}
             <button 
@@ -198,6 +182,26 @@
                 Finish Day
             </button>
         </div>
+        {#if workTime}
+            <div class="w-full">
+                <h2 class="text-lg font-bold mb-2">Associate Existing Project</h2>
+                <div class="flex gap-4">
+                    <select 
+                    bind:value={selectedProject} 
+                    class="flex-1 p-3 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="" disabled selected>Select a project</option>
+                    {#each projects as project}
+                        <option value={project.name}>{project.name}</option>
+                    {/each}
+                    </select>
+                    <button 
+                    on:click={associateProject} 
+                    class="py-3 px-6 bg-teal-500 hover:bg-teal-600 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
+                    Associate
+                    </button>
+                </div>
+            </div>
+        {/if}
 
         {#if currentProject}
         <div class="mt-6">

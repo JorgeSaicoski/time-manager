@@ -28,11 +28,23 @@ type WorkTime struct {
 type Project struct {
 	gorm.Model
 	ID        int64 `gorm:"primaryKey"`
+	Name      string
 	StartTime time.Time
 	Duration  time.Duration
 	Closed    bool
 	Cost      *Cost      `gorm:"foreignKey:ProjectID"`
 	WorkTimes []WorkTime `gorm:"many2many:work_time_projects;"`
+}
+
+type WorkTimeProject struct {
+	ID         int64 `gorm:"primaryKey"`
+	WorkTimeID int64 `gorm:"primaryKey"`
+	ProjectID  int64 `gorm:"primaryKey"`
+	StartTime  time.Time
+	Duration   time.Duration
+	Closed     bool
+	WorkTime   WorkTime `gorm:"foreignKey:WorkTimeID"`
+	Project    Project  `gorm:"foreignKey:ProjectID"`
 }
 
 type BreakTime struct {
