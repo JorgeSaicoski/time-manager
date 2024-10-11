@@ -21,14 +21,14 @@ type StartDayResponse struct {
 	TotalTime *database.TotalTime `json:"totalTime,omitempty"`
 }
 
-type StartWorkTimeResponse struct {
+type MessageWorkTimeResponse struct {
 	Message  string             `json:"message"`
 	WorkTime *database.WorkTime `json:"workTime,omitempty"`
 }
 
-type EndBreakResponse struct {
-	Message  string             `json:"message"`
-	WorkTime *database.WorkTime `json:"workTime,omitempty"`
+type MessageProjectResponse struct {
+	Message string            `json:"message"`
+	Project *database.Project `json:"project,omitempty"`
 }
 
 func NewApp() *App {
@@ -115,15 +115,15 @@ func (a *App) StartTimer(seconds int, message string) string {
 
 }
 
-func (a *App) StartWorkTime() StartWorkTimeResponse {
+func (a *App) StartWorkTime() MessageWorkTimeResponse {
 	newWorkTime, err := database.CreateWorkTime(a.TotalTime.ID)
 	if err != nil {
 		log.Printf("Error creating WorkTime: %v", err)
-		return StartWorkTimeResponse{
+		return MessageWorkTimeResponse{
 			Message: "Error creating work time",
 		}
 	}
-	return StartWorkTimeResponse{
+	return MessageWorkTimeResponse{
 		Message:  "Work Time!",
 		WorkTime: newWorkTime,
 	}
@@ -154,7 +154,7 @@ func (a *App) TakeBreak() string {
 
 }
 
-func (a *App) EndBreak() EndBreakResponse {
+func (a *App) EndBreak() MessageWorkTimeResponse {
 	endTime := time.Now()
 
 	breakDuration := endTime.Sub(a.TotalTime.BreakTime.StartTime)
@@ -164,16 +164,44 @@ func (a *App) EndBreak() EndBreakResponse {
 	newWorkTime, err := database.CreateWorkTime(a.TotalTime.ID)
 	if err != nil {
 		log.Printf("Error creating WorkTime: %v", err)
-		return EndBreakResponse{
+		return MessageWorkTimeResponse{
 			Message: "Work time not created. Error",
 		}
 	}
 
 	message := fmt.Sprintf("Break ended! Total break time: %v", a.TotalTime.BreakTime.Duration)
 
-	return EndBreakResponse{
+	return MessageWorkTimeResponse{
 		Message:  message,
 		WorkTime: newWorkTime,
 	}
 
+}
+
+func (a *App) CreateProject(name string) MessageProjectResponse {
+	newProject, err := database.CreateProject(name)
+	if err != nil {
+		log.Printf("Error creating WorkTime: %v", err)
+		return MessageProjectResponse{
+			Message: "Project not created. Error",
+		}
+	}
+
+	message := fmt.Sprintf("Project Created: %s", newProject.Name)
+	return MessageProjectResponse{
+		Message: message,
+		Project: newProject,
+	}
+
+}
+
+func (a *App) AssociateProjectToWorkTime(projectId int64) string {
+	workTimeProject, err := database.AssociateProjectToWorkTime(projectId)
+	if err != nil {
+		log.Printf("Error while associating Project to Work Time: %v", err)
+		return "Error while associating Project to Work Time"
+	}
+
+	message := fmt.Sprintf("Project %s associated to Work Time", workTimeProject.Project.Name)
+	return message
 }
