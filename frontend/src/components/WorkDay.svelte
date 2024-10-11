@@ -14,6 +14,7 @@
     let timerStart = null;
     let elapsedTime = "00:00:00";
     let interval;
+    let intervalName= "Day work"
 
     const startWorkDay = async ()=>  {
         try {
@@ -23,6 +24,7 @@
             timerStart = new Date(totalTime.StartTime);
             updateElapsedTime();
             interval = setInterval(updateElapsedTime, 1000);
+            intervalName = "Day time"
 
         } catch(err){
             message = err.message
@@ -65,7 +67,8 @@
     const takeBreak = async () => {
         message = await TakeBreak(workTime.ID)
         breakTime = true
-        timerStart = new Date(workTime.BreakTime.StartTime);
+        timerStart = new Date();
+        intervalName = "Break time"
     }
     const endBreak = async () => {
         try {
@@ -75,6 +78,7 @@
             workTime = response.workTime
             message = response.message
             timerStart = new Date(workTime.StartTime);
+            intervalName = "Work time"
         } catch (error) {
             message = err.message
         }
@@ -87,6 +91,7 @@
             workTime = response.workTime
             message = response.message
             timerStart = new Date(workTime.StartTime);
+            intervalName = "Work time"
         } catch(err){
             message = err.message
         }
@@ -129,7 +134,7 @@
     {#if workDayStarted}
         <div class="flex flex-col md:flex-row gap-4">
             <div class="text-lg font-bold">
-                Time Elapsed: {elapsedTime}
+                {intervalName}: {elapsedTime}
             </div>
             <div>{message}</div>
         </div>
