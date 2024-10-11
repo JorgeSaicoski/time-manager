@@ -143,6 +143,8 @@ func (a *App) TakeBreak() string {
 
 	a.TotalTime.BreakTime.StartTime = time.Now()
 
+	a.TotalTime.BreakTime.TotalTimeID = a.TotalTime.ID
+
 	if err := database.DB.Save(a.TotalTime.BreakTime).Error; err != nil {
 		log.Printf("Error saving updated BreakTime: %v", err)
 		return "Failed to start Break"
