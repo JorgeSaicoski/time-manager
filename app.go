@@ -42,28 +42,6 @@ func (a *App) startup(ctx context.Context) {
 	log.Println("Database connected and migrated successfully.")
 }
 
-func (a *App) FindByID(id int64, model string) (interface{}, string) {
-	switch model {
-	case "WorkTime":
-		workTime, err := database.GetWorkTime(id)
-		if err != nil {
-			log.Printf("Error creating WorkTime: %v", err)
-			return nil, "Work Time Not Found"
-		}
-		return workTime, "Work Time Found"
-	case "Project":
-		project, err := database.GetProject(id)
-		if err != nil {
-			log.Printf("Error creating project: %v", err)
-			return nil, "Project Not Found"
-		}
-		return project, "Project Time Found"
-
-	default:
-		return nil, "no model found"
-	}
-}
-
 func (a *App) StartDay() StartDayResponse {
 	unfinishedTotalTime, err := database.GetUnfinishedTotalTime()
 	if err != nil {
@@ -98,6 +76,7 @@ func (a *App) StartDay() StartDayResponse {
 
 func (a *App) FinishDay() string {
 	unfinishedTotalTime, err := database.GetUnfinishedTotalTime()
+	database.FinishWorkTime()
 	if err != nil {
 		log.Printf("Error checking unfinished TotalTime: %v", err)
 		return "Error checking for unfinished days"
@@ -150,21 +129,11 @@ func (a *App) StartWorkTime() StartWorkTimeResponse {
 	}
 }
 
-func (a *App) TakeBreak(WorkTimeID int64) string {
-	workTime, err := database.GetWorkTime(WorkTimeID)
+func (a *App) TakeBreak() string {
+	_, err := database.FinishWorkTime()
 	if err != nil {
 		log.Printf("Error retrieving WorkTime: %v", err)
 		return "Work Time Not Found"
-	}
-
-	log.Printf("Work Time get")
-
-	endTime := time.Now()
-	workTime.Duration = endTime.Sub(workTime.StartTime)
-
-	if err := database.DB.Save(workTime).Error; err != nil {
-		log.Printf("Error saving updated WorkTime: %v", err)
-		return "Failed to update Work Time"
 	}
 
 	if a.TotalTime.BreakTime == nil {

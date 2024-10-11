@@ -4,8 +4,6 @@ import {main} from '../models';
 
 export function EndBreak():Promise<main.EndBreakResponse>;
 
-export function FindByID(arg1:number,arg2:string):Promise<any|string>;
-
 export function FinishDay():Promise<string>;
 
 export function StartDay():Promise<main.StartDayResponse>;
@@ -14,4 +12,4 @@ export function StartTimer(arg1:number,arg2:string):Promise<string>;
 
 export function StartWorkTime():Promise<main.StartWorkTimeResponse>;
 
-export function TakeBreak(arg1:number):Promise<string>;
+export function TakeBreak():Promise<string>;

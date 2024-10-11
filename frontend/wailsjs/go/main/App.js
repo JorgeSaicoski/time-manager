@@ -6,10 +6,6 @@ export function EndBreak() {
   return window['go']['main']['App']['EndBreak']();
 }
 
-export function FindByID(arg1, arg2) {
-  return window['go']['main']['App']['FindByID'](arg1, arg2);
-}
-
 export function FinishDay() {
   return window['go']['main']['App']['FinishDay']();
 }
@@ -26,6 +22,6 @@ export function StartWorkTime() {
   return window['go']['main']['App']['StartWorkTime']();
 }
 
-export function TakeBreak(arg1) {
-  return window['go']['main']['App']['TakeBreak'](arg1);
+export function TakeBreak() {
+  return window['go']['main']['App']['TakeBreak']();
 }

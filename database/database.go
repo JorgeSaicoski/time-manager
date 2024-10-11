@@ -84,12 +84,21 @@ func FinishTotalTime(id int64) (*TotalTime, error) {
 }
 
 func CreateWorkTime(totalTimeID int64) (*WorkTime, error) {
-	workTime := &WorkTime{
+	workTime, err := getUnfishedWorkTime()
+	if err != nil {
+		return nil, fmt.Errorf("failed to retrieve unfinished WorkTime: %w", err)
+	}
+
+	if workTime != nil {
+		return workTime, nil
+	}
+
+	workTime = &WorkTime{
 		StartTime:   time.Now(),
 		TotalTimeID: totalTimeID,
 	}
 
-	err := DB.Create(workTime).Error
+	err = DB.Create(workTime).Error
 	if err != nil {
 		return nil, err
 	}
@@ -111,12 +120,43 @@ func CreateWorkTime(totalTimeID int64) (*WorkTime, error) {
 
 func GetWorkTime(id int64) (*WorkTime, error) {
 	var workTime WorkTime
-	log.Printf("get work time")
 	err := DB.Preload("Projects").First(&workTime, id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errors.New("WorkTime not found")
 	}
 	return &workTime, err
+}
+
+func FinishWorkTime() (*WorkTime, error) {
+	workTime, err := getUnfishedWorkTime()
+	if err != nil {
+		return nil, fmt.Errorf("failed to retrieve unfinished WorkTime: %w", err)
+	}
+
+	if workTime == nil {
+		return nil, fmt.Errorf("no unfinished WorkTime found")
+	}
+	workTime.Closed = true
+	endTime := time.Now()
+	workTime.Duration = endTime.Sub(workTime.StartTime)
+	if err := DB.Save(&workTime).Error; err != nil {
+		return nil, fmt.Errorf("failed to finish TotalWork: %w", err)
+	}
+
+	return workTime, nil
+}
+
+func getUnfishedWorkTime() (*WorkTime, error) {
+	var workTime WorkTime
+	result := DB.Where("closed = ?", false).First(&workTime)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			log.Println("No unfinished WorkTime found.")
+			return nil, nil
+		}
+		return nil, result.Error
+	}
+	return &workTime, nil
 }
 
 func CreateProject(workTimeID int64) (*Project, error) {

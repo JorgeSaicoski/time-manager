@@ -110,6 +110,7 @@ export namespace database {
 	    StartTime: any;
 	    Duration: number;
 	    Projects: Project[];
+	    Closed: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new WorkTime(source);
@@ -126,6 +127,7 @@ export namespace database {
 	        this.StartTime = this.convertValues(source["StartTime"], null);
 	        this.Duration = source["Duration"];
 	        this.Projects = this.convertValues(source["Projects"], Project);
+	        this.Closed = source["Closed"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
