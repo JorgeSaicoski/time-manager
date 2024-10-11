@@ -194,6 +194,38 @@ func CreateProject(name string) (*Project, error) {
 	return project, nil
 }
 
+func AssociateProjectToWorkTime(projectID int64) (*WorkTimeProject, error) {
+	// Retrieve the current unfinished work time
+	workTime, err := getUnfinishedWorkTime()
+	if err != nil {
+		return nil, fmt.Errorf("failed to retrieve unfinished WorkTime: %w", err)
+	}
+
+	if workTime == nil {
+		return nil, fmt.Errorf("no active WorkTime found to associate with the project")
+	}
+
+	// Finish any previous unfinished WorkTimeProject
+	_, err = getUnfinishedWorkTimeProjectAndFinish()
+	if err != nil {
+		return nil, fmt.Errorf("failed to finish previous WorkTimeProject: %w", err)
+	}
+
+	// Create a new association between the project and the current work time
+	workTimeProject := &WorkTimeProject{
+		WorkTimeID: workTime.ID,
+		ProjectID:  projectID,
+		StartTime:  time.Now(),
+		Closed:     false,
+	}
+
+	if err := DB.Create(workTimeProject).Error; err != nil {
+		return nil, fmt.Errorf("failed to create association between Project and WorkTime: %w", err)
+	}
+
+	return workTimeProject, nil
+}
+
 func GetProject(id int64) (*Project, error) {
 	var project Project
 	err := DB.Preload("Tasks").Preload("Cost").First(&project, id).Error
