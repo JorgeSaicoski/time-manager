@@ -26,6 +26,11 @@ type StartWorkTimeResponse struct {
 	WorkTime *database.WorkTime `json:"workTime,omitempty"`
 }
 
+type EndBreakResponse struct {
+	Message  string             `json:"message"`
+	WorkTime *database.WorkTime `json:"workTime,omitempty"`
+}
+
 func NewApp() *App {
 	return &App{}
 }
@@ -178,7 +183,7 @@ func (a *App) TakeBreak(WorkTimeID int64) string {
 
 }
 
-func (a *App) EndBreak() (string, *database.WorkTime) {
+func (a *App) EndBreak() EndBreakResponse {
 	endTime := time.Now()
 
 	breakDuration := endTime.Sub(a.TotalTime.BreakTime.StartTime)
@@ -188,11 +193,16 @@ func (a *App) EndBreak() (string, *database.WorkTime) {
 	newWorkTime, err := database.CreateWorkTime(a.TotalTime.ID)
 	if err != nil {
 		log.Printf("Error creating WorkTime: %v", err)
-		return "Work Time not created", nil
+		return EndBreakResponse{
+			Message: "Work time not created. Error",
+		}
 	}
 
 	message := fmt.Sprintf("Break ended! Total break time: %v", a.TotalTime.BreakTime.Duration)
 
-	return message, newWorkTime
+	return EndBreakResponse{
+		Message:  message,
+		WorkTime: newWorkTime,
+	}
 
 }

@@ -1,5 +1,5 @@
 <script>
-    import {StartDay, TakeBreak, StartWorkTime, FinishDay} from "../../wailsjs/go/main/App"
+    import {StartDay, TakeBreak, StartWorkTime, FinishDay, EndBreak} from "../../wailsjs/go/main/App"
 
     let workDayStarted = false;
     let breakTime = false;
@@ -67,9 +67,20 @@
         breakTime = true
         timerStart = new Date(workTime.BreakTime.StartTime);
     }
+    const endBreak = async () => {
+        try {
+            const response = await EndBreak()
+            console.log(response.workTime)
+            breakTime = false
+            workTime = response.workTime
+            message = response.message
+            timerStart = new Date(workTime.StartTime);
+        } catch (error) {
+            message = err.message
+        }
+    }
 
     const startWorkTime = async () => {
-        console.log("Starting work time")
         try{
             const response = await StartWorkTime()
             console.log(response.workTime)
@@ -79,7 +90,6 @@
         } catch(err){
             message = err.message
         }
-
     }
 
     
@@ -125,16 +135,26 @@
         </div>
         <div class="flex flex-col md:flex-row gap-4">
             {#if workTime}
-                <button 
-                    on:click={brb} 
-                    class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-                    BRB (Not Working in Paid Hour)
-                </button>
-                <button 
-                    on:click={takeBreak} 
-                    class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-                    Take Break
-                </button>
+                {#if breakTime}
+                    <button 
+                        on:click={endBreak} 
+                        class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
+                        Back to work
+                    </button>
+                {/if}
+                {#if !breakTime}
+                    <button 
+                        on:click={brb} 
+                        class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
+                        BRB (Not Working in Paid Hour)
+                    </button>
+                    <button 
+                        on:click={takeBreak} 
+                        class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
+                        Take Break
+                    </button>
+                {/if}
+                
                 <button 
                     on:click={createProject} 
                     class="flex-1 py-3 px-6 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
