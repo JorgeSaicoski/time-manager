@@ -2,6 +2,7 @@
   import Timer from "./components/Timer.svelte"
   import WorkDay from "./components/WorkDay.svelte";
   import Sarkis from "./assets/images/sarkis-dev.png"
+  import CreateProject from "./components/projects/CreateProject.svelte";
 
   let currentTab = 'Work';
 
@@ -70,7 +71,7 @@
     Projects
   {/if}
   {#if currentTab === 'createProject'}
-    createProject
+    <CreateProject on:tabEvent={handleTabEvent}></CreateProject>
   {/if}
   <footer class="w-full bg-black shadow-sm focus:border-sky-500 focus:ring-sky-500 text-teal-800 font-nerd">
     <div class="mx-auto flex flex-col items-center space-y-4">

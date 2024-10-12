@@ -17,12 +17,18 @@
 
     const dispatch = createEventDispatcher()
 
-    const startWorkDay = async ()=>  {
+    const startWorkDay = async (startWork)=>  {
+        console.log("Start Work Day")
         try {
             const response  = await StartDay();
-            message = response.message
             totalTime = response.totalTime
-            timerStart = new Date(totalTime.StartTime);
+
+            if (startWork){
+                await startWorkTime()
+            }else{
+                message = response.message
+                timerStart = new Date(totalTime.StartTime)
+            }
             updateElapsedTime();
             interval = setInterval(updateElapsedTime, 300);
             intervalName = "Day time"
@@ -44,6 +50,7 @@
             timerStart = null;
             elapsedTime = "00:00:00";
             interval = null;
+            console.log(response)
 
         } catch(err){
             message = err.message
@@ -84,18 +91,32 @@
         }
     }
 
-    const startWorkTime = async () => {
-        try{
-            const response = await StartWorkTime()
-            console.log(response.workTime)
-            workTime = response.workTime
-            message = response.message
-            timerStart = new Date(workTime.StartTime);
-            intervalName = "Work time"
-        } catch(err){
-            message = err.message
+    function doesWorkTimeExist(workTime){
+        console.log(workTime.StartTime)
+        if (workTime.StartTime){
+            const startTime = new Date(workTime.StartTime);
+            const currentTime = new Date();
+            const durationInSeconds = (currentTime - startTime) / 1000;
+            return durationInSeconds > 30
         }
+        return false
     }
+
+    const startWorkTime = async () => {
+        try {
+            const response = await StartWorkTime();
+            workTime = response.workTime;
+            
+            message = doesWorkTimeExist(workTime) 
+                ? "Welcome back! You're continuing your previous work session."
+                : response.message;
+            
+            timerStart = new Date(workTime.StartTime);
+            intervalName = "Work Session";
+        } catch (err) {
+            message = `Error: ${err.message}`;
+        }
+    };
 
     
 
@@ -120,7 +141,8 @@
         clearInterval(interval);
     });  
     onMount(()=>{
-        startWorkDay()
+        console.log("mount")
+        startWorkDay(true)
     })
 </script>
 
@@ -129,7 +151,7 @@
     <div class="w-full max-w-2xl p-4 space-y-0 bg-teal-400 rounded shadow-lg text-black">{message}</div>
     {#if !workDayStarted}
         <button 
-        on:click={startWorkDay} 
+        on:click={() => startWorkDay(false)}
         class="w-full py-3 px-6 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
         Start Workday
         </button>
