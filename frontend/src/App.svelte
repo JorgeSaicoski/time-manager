@@ -9,6 +9,10 @@
     currentTab = event.target.value;
   }
 
+  function handleTabEvent(event){
+    currentTab = event.detail.tab
+  }
+
   function setTab(tab) {
     currentTab = tab;
   }
@@ -57,13 +61,16 @@
     </nav>
   </div>
   {#if currentTab === 'Work'}
-    <WorkDay></WorkDay>
+    <WorkDay on:tabEvent={handleTabEvent}></WorkDay>
   {/if}
   {#if currentTab === 'Timer'}
     <Timer></Timer>    
   {/if}
   {#if currentTab === 'Projects'}
     Projects
+  {/if}
+  {#if currentTab === 'createProject'}
+    createProject
   {/if}
   <footer class="w-full bg-black shadow-sm focus:border-sky-500 focus:ring-sky-500 text-teal-800 font-nerd">
     <div class="mx-auto flex flex-col items-center space-y-4">

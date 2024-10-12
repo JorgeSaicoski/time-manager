@@ -1,5 +1,6 @@
 <script>
-    import {StartDay, TakeBreak, StartWorkTime, FinishDay, EndBreak} from "../../wailsjs/go/main/App"
+    import {StartDay, TakeBreak, StartWorkTime, FinishDay, EndBreak, CreateProject} from "../../wailsjs/go/main/App"
+    import { onDestroy, onMount, createEventDispatcher } from 'svelte';
 
     let workDayStarted = false;
     let breakTime = false;
@@ -9,12 +10,12 @@
     let currentProject = null;
     let message = ''
     let totalTime = null
-    import { onDestroy, onMount } from 'svelte';
-
     let timerStart = null;
     let elapsedTime = "00:00:00";
     let interval;
     let intervalName= "Day work"
+
+    const dispatch = createEventDispatcher()
 
     const startWorkDay = async ()=>  {
         try {
@@ -105,7 +106,7 @@
 
 
     function createProject() {
-
+        dispatch('tabEvent', { tab: "createProject" });
     }
 
     function associateProject() {
