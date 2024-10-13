@@ -3,6 +3,7 @@
   import WorkDay from "./components/WorkDay.svelte";
   import Sarkis from "./assets/images/sarkis-dev.png"
   import CreateProject from "./components/projects/CreateProject.svelte";
+  import Projects from "./components/projects/Projects.svelte";
 
   let currentTab = 'Work';
 
@@ -68,7 +69,7 @@
     <Timer></Timer>    
   {/if}
   {#if currentTab === 'Projects'}
-    Projects
+    <Projects></Projects>
   {/if}
   {#if currentTab === 'createProject'}
     <CreateProject on:tabEvent={handleTabEvent}></CreateProject>

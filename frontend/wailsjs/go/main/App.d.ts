@@ -10,6 +10,8 @@ export function EndBreak():Promise<main.MessageWorkTimeResponse>;
 
 export function FinishDay():Promise<string>;
 
+export function GetAllProjects(arg1:number,arg2:number):Promise<main.ProjectsResponse>;
+
 export function StartDay():Promise<main.StartDayResponse>;
 
 export function StartTimer(arg1:number,arg2:string):Promise<string>;

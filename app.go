@@ -31,6 +31,13 @@ type MessageProjectResponse struct {
 	Project *database.Project `json:"project,omitempty"`
 }
 
+type ProjectsResponse struct {
+	Projects     []database.Project `json:"projects"`
+	Total        int64              `json:"total"`
+	CurrentPage  int                `json:"currentPage"`
+	ItemsPerPage int                `json:"itemsPerPage"`
+}
+
 func NewApp() *App {
 	return &App{}
 }
@@ -204,4 +211,24 @@ func (a *App) AssociateProjectToWorkTime(projectId int64) string {
 
 	message := fmt.Sprintf("Project %s associated to Work Time", workTimeProject.Project.Name)
 	return message
+}
+
+func (a *App) GetAllProjects(page int, pageSize int) ProjectsResponse {
+	projects, total, err := database.GetAllProjects(page, pageSize)
+	if err != nil {
+		log.Printf("Error retrieving projects: %v", err)
+		return ProjectsResponse{
+			Projects:     nil,
+			Total:        0,
+			CurrentPage:  page,
+			ItemsPerPage: pageSize,
+		}
+	}
+
+	return ProjectsResponse{
+		Projects:     projects,
+		Total:        total,
+		CurrentPage:  page,
+		ItemsPerPage: pageSize,
+	}
 }

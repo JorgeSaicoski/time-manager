@@ -12,8 +12,7 @@
             const response = await CreateProject(projectName)
             message = response.message
             project = response.project
-            console.log(project)
-            console.log(response)
+            projectName = ""
             
         } catch (error) {
             message = error.message

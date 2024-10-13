@@ -18,6 +18,10 @@ export function FinishDay() {
   return window['go']['main']['App']['FinishDay']();
 }
 
+export function GetAllProjects(arg1, arg2) {
+  return window['go']['main']['App']['GetAllProjects'](arg1, arg2);
+}
+
 export function StartDay() {
   return window['go']['main']['App']['StartDay']();
 }
