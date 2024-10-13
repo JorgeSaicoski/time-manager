@@ -1,16 +1,18 @@
 <script>
-    import { onMount } from "svelte";
+    import { onMount } from 'svelte';
+    import { GetAllProjects } from '../../../wailsjs/go/main/App';
+  
     let projects = [];
     let currentPage = 1;
     let pageSize = 5;
     let totalPages = 0;
   
     const fetchProjects = async (page) => {
-      const response = await fetch(`http://localhost:8080/projects?page=${page}&pageSize=${pageSize}`);
-      const data = await response.json();
-      projects = data.projects;
-      currentPage = data.currentPage;
-      totalPages = Math.ceil(data.total / data.itemsPerPage);
+        const response = await GetAllProjects(currentPage,pageSize)
+        console.log(response)
+        projects = response.projects;
+        currentPage = response.currentPage;
+        totalPages = Math.ceil(response.total / response.itemsPerPage);
     };
   
     const nextPage = () => {
@@ -27,6 +29,7 @@
       }
     };
   
+    // Initial load
     onMount(() => {
       fetchProjects(currentPage);
     });
@@ -35,7 +38,7 @@
   <div class="container mx-auto">
     <h1 class="text-2xl font-bold mb-4">Projects</h1>
   
-    <table class="min-w-full bg-white border">
+    <table class="min-w-full bg-teal-600 border">
       <thead>
         <tr>
           <th class="px-4 py-2 border">ID</th>
