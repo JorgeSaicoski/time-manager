@@ -1,6 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import { GetAllProjects } from '../../../wailsjs/go/main/App';
+  import App from '../../App.svelte';
   
     let projects = [];
     let currentPage = 1;
@@ -8,9 +9,8 @@
     let totalPages = 0;
   
     const fetchProjects = async (page) => {
-        const response = await GetAllProjects(currentPage,pageSize)
-        console.log(response)
-        projects = response.projects;
+        const response = await GetAllProjects(page,pageSize)
+        projects = response.projects      
         currentPage = response.currentPage;
         totalPages = Math.ceil(response.total / response.itemsPerPage);
     };
@@ -50,10 +50,10 @@
       <tbody>
         {#each projects as project}
           <tr>
-            <td class="px-4 py-2 border">{project.id}</td>
-            <td class="px-4 py-2 border">{project.name}</td>
-            <td class="px-4 py-2 border">{new Date(project.startTime).toLocaleDateString()}</td>
-            <td class="px-4 py-2 border">{project.closed ? "Yes" : "No"}</td>
+            <td class="px-4 py-2 border">{project.ID}</td>
+            <td class="px-4 py-2 border">{project.Name}</td>
+            <td class="px-4 py-2 border">{new Date(project.StartTime).toLocaleDateString()}</td>
+            <td class="px-4 py-2 border">{project.Closed ? "Yes" : "No"}</td>
           </tr>
         {/each}
       </tbody>
