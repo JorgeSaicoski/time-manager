@@ -34,6 +34,7 @@ type Project struct {
 	Closed    bool
 	Cost      *Cost      `gorm:"foreignKey:ProjectID"`
 	WorkTimes []WorkTime `gorm:"many2many:work_time_projects;"`
+	Tasks     []Task     `gorm:"foreignKey:ProjectID"`
 }
 
 type WorkTimeProject struct {
