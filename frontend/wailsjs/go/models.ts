@@ -96,6 +96,56 @@ export namespace database {
 		    return a;
 		}
 	}
+	export class Task {
+	    ID: number;
+	    // Go type: time
+	    CreatedAt: any;
+	    // Go type: time
+	    UpdatedAt: any;
+	    // Go type: gorm
+	    DeletedAt: any;
+	    ID: number;
+	    ProjectID: number;
+	    // Go type: time
+	    Deadline: any;
+	    Description: string;
+	    Closed: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new Task(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.ID = source["ID"];
+	        this.CreatedAt = this.convertValues(source["CreatedAt"], null);
+	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], null);
+	        this.DeletedAt = this.convertValues(source["DeletedAt"], null);
+	        this.ID = source["ID"];
+	        this.ProjectID = source["ProjectID"];
+	        this.Deadline = this.convertValues(source["Deadline"], null);
+	        this.Description = source["Description"];
+	        this.Closed = source["Closed"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class WorkTime {
 	    ID: number;
 	    // Go type: time
@@ -164,6 +214,7 @@ export namespace database {
 	    Closed: boolean;
 	    Cost?: Cost;
 	    WorkTimes: WorkTime[];
+	    Tasks: Task[];
 	
 	    static createFrom(source: any = {}) {
 	        return new Project(source);
@@ -182,6 +233,7 @@ export namespace database {
 	        this.Closed = source["Closed"];
 	        this.Cost = this.convertValues(source["Cost"], Cost);
 	        this.WorkTimes = this.convertValues(source["WorkTimes"], WorkTime);
+	        this.Tasks = this.convertValues(source["Tasks"], Task);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -202,6 +254,7 @@ export namespace database {
 		    return a;
 		}
 	}
+	
 	export class TotalTime {
 	    ID: number;
 	    // Go type: time
