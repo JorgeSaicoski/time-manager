@@ -174,7 +174,7 @@
         <div class="flex flex-col md:flex-row gap-4">
             {#if workTime}
                 {#if breakTime}
-                    <Button label="Take Break" type="normal" onClick={() => endBreak()} ></Button>
+                    <Button label="Finish Break" type="normal" onClick={() => endBreak()} ></Button>
                 {/if}
                 {#if !breakTime}
                     <Button label="BRB" type="normal" onClick={() => brb()} ></Button>
