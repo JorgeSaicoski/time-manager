@@ -40,10 +40,10 @@
 
         }
     }    
-    onMount(()=>{
-        console.log(projectID)
-        findProject()
-    })
+    onMount(async () => {
+        await findProject();
+        hourCost = project?.Cost?.HourCost ? project.Cost.HourCost : 10;
+    });
 </script>
 
 <div class="container mx-auto bg-gray-900 text-white p-6 rounded-lg shadow-lg font-nerd">
@@ -111,18 +111,25 @@
         </ul>
     
         <!-- Add Task -->
-        <div>
-            <input
+        <div class="bg-secondary rounded-2xl">
+            <label for="description" class="text-white">Task Description:</label>
+            <textarea
+            id="description"
+            placeholder="Description"
+            rows="5"
             type="text"
             bind:value={newTaskDescription}
-            placeholder="New task description"
-            class="w-full p-2 rounded-lg bg-gray-800 text-white"
+            class="w-full p-2 bg-primary text-white m-0"
             />
-            <input
-            type="datetime-local"
-            bind:value={newTaskDeadline}
-            class="w-full p-2 mt-2 rounded-lg bg-gray-800 text-white"
-            />
+            <div class="w-full bg-primary">
+                <label for="date">Deadline:</label>
+                <input
+                id="date"
+                type="date"
+                bind:value={newTaskDeadline}
+                class="p-2 m-0 bg-gray-800 text-white h-full"
+                />
+            </div>
             <button
             on:click={addTask}
             class="mt-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg"
@@ -134,13 +141,15 @@
     
         <!-- Add Cost Section -->
         <div>
-        <h2 class="text-xl font-bold text-teal-300 mb-2">Set Project Cost</h2>
-        <input
-            type="number"
-            bind:value={hourCost}
-            placeholder="Enter hourly cost"
-            class="w-full p-2 rounded-lg bg-gray-800 text-white"
-        />
+        <h2 class="text-xl font-bold text-teal-300 mb-2">Set Project Cost Per Hour</h2>
+        <div class="w-full rounded-lg p-0 bg-gray-800 text-white flex justify-center">
+            <span>$</span>
+            <input
+                class="bg-secondary h-full text-white m-0"
+                bind:value={hourCost}
+            />
+            <span>per hour</span>
+        </div>
         <button
             on:click={changeCost}
             class="mt-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg"
