@@ -21,7 +21,6 @@
     const dispatch = createEventDispatcher()
 
     const startWorkDay = async (startWork)=>  {
-        console.log("Start Work Day")
         try {
             const response  = await StartDay();
             totalTime = response.totalTime
@@ -31,10 +30,10 @@
             }else{
                 message = response.message
                 timerStart = new Date(totalTime.StartTime)
+                intervalName = "Day time"
             }
             updateElapsedTime();
             interval = setInterval(updateElapsedTime, 200);
-            intervalName = "Day time"
 
         } catch(err){
             message = err.message
@@ -148,7 +147,6 @@
         clearInterval(interval);
     });  
     onMount(()=>{
-        console.log("mount")
         startWorkDay(true)
     })
 </script>
