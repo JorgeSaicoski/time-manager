@@ -60,7 +60,7 @@
     <Table data={projects} on:projectEvent={goToProject}/>
   
     <div class="flex justify-between mt-6">
-      <Button label="Previous" onClick={prevPage} disable={currentPage === 1} />
-      <Button label="Next" onClick={nextPage} disable={currentPage === totalPages} />
+      <Button label="Previous" onClick={prevPage} disabled={currentPage === 1} />
+      <Button label="Next" onClick={nextPage} disabled={currentPage === totalPages} />
     </div>
   </div>
