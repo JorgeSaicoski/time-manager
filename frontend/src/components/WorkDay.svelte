@@ -180,7 +180,7 @@
                     <Button label="BRB" type="normal" onClick={() => brb()} ></Button>
                     <Button label="Take Break" type="normal" onClick={() => takeBreak()} ></Button>
                 {/if}
-                    <Button label="Take Break" type="create" onClick={() => createProject()} ></Button>
+                    <Button label="Create Project" type="create" onClick={() => createProject()} ></Button>
                        
             {/if}
             {#if !workTime}
