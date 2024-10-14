@@ -41,6 +41,7 @@
         }
     }    
     onMount(()=>{
+        console.log(projectID)
         findProject()
     })
 </script>
