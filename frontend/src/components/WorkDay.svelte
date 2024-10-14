@@ -1,6 +1,7 @@
 <script>
     import {StartDay, TakeBreak, StartWorkTime, FinishDay, EndBreak} from "../../wailsjs/go/main/App"
     import { onDestroy, onMount, createEventDispatcher } from 'svelte';
+  import Button from "./base/Button.svelte";
 
     let workDayStarted = false;
     let breakTime = false;
@@ -179,8 +180,9 @@
                         class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
                         BRB (Not Working in Paid Hour)
                     </button>
+                    <Button label="Take Break" type="normal" onClick={() => takeBreak()} ></Button>
                     <button 
-                        on:click={takeBreak} 
+                        
                         class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
                         Take Break
                     </button>
@@ -240,11 +242,7 @@
                 placeholder="New task name" 
                 class="w-full p-3 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <button 
-                on:click={() => createTask(2)} 
-                class="mt-3 w-full py-3 px-6 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-                Add Task
-            </button>
+            <Button message="Add Task" type="normal"></Button>
             </div>
         </div>
         {/if}

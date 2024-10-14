@@ -1,6 +1,6 @@
 <script>
     export let message = "";
-    export let type = "info"; // info, error
+    export let type = "info"; 
   
     let messageClass = "";
     $: {
