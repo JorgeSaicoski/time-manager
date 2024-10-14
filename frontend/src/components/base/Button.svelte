@@ -4,14 +4,14 @@
   export let onClick;
   export let disable = false
 
-  let messageClass = "";
+  let buttonClass = "";
     $: {
       if (type === "normal") {
-        messageClass = "secondary";
+        buttonClass = "bg-blue-600 hover:bg-blue-700 text-white";
       } else if (type === "error") {
-        messageClass = "error";
+        buttonClass = "bg-red-600 hover:bg-red-700 text-white";
       } else{
-        messageClass = "accent";
+        buttonClass = "bg-purple-600 hover:bg-purple-700 text-white";
       }
     }
 </script>
@@ -19,6 +19,6 @@
 <button
   on:click={onClick}
   disabled={disable}
-  class={`flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors ease-in-out shadow-md`}>
+  class={`flex-1 py-3 px-6 ${buttonClass} rounded-md shadow-md`}>
   {label}
 </button>
