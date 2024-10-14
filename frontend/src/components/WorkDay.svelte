@@ -2,6 +2,7 @@
     import {StartDay, TakeBreak, StartWorkTime, FinishDay, EndBreak} from "../../wailsjs/go/main/App"
     import { onDestroy, onMount, createEventDispatcher } from 'svelte';
   import Button from "./base/Button.svelte";
+  import Message from "./base/Message.svelte";
 
     let workDayStarted = false;
     let breakTime = false;
@@ -10,6 +11,7 @@
     let projects = [];
     let currentProject = null;
     let message = ''
+    let error = false
     let totalTime = null
     let timerStart = null;
     let elapsedTime = "00:00:00";
@@ -31,7 +33,7 @@
                 timerStart = new Date(totalTime.StartTime)
             }
             updateElapsedTime();
-            interval = setInterval(updateElapsedTime, 300);
+            interval = setInterval(updateElapsedTime, 200);
             intervalName = "Day time"
 
         } catch(err){
@@ -46,6 +48,7 @@
             const response  = await FinishDay();
             workDayStarted = false
             message = response
+            error = false
             totalTime = null
             workTime = null
             timerStart = null;
@@ -55,6 +58,7 @@
 
         } catch(err){
             message = err.message
+            error = true
 
         }
     }
@@ -84,16 +88,17 @@
             console.log(response.workTime)
             breakTime = false
             workTime = response.workTime
+            error = false
             message = response.message
             timerStart = new Date(workTime.StartTime);
             intervalName = "Work time"
         } catch (error) {
             message = err.message
+            error = true
         }
     }
 
     function doesWorkTimeExist(workTime){
-        console.log(workTime.StartTime)
         if (workTime.StartTime){
             const startTime = new Date(workTime.StartTime);
             const currentTime = new Date();
@@ -107,7 +112,7 @@
         try {
             const response = await StartWorkTime();
             workTime = response.workTime;
-            
+            error = false
             message = doesWorkTimeExist(workTime) 
                 ? "Welcome back! You're continuing your previous work session."
                 : response.message;
@@ -115,6 +120,7 @@
             timerStart = new Date(workTime.StartTime);
             intervalName = "Work Session";
         } catch (err) {
+            error = true
             message = `Error: ${err.message}`;
         }
     };
@@ -149,7 +155,7 @@
 
 
 <div class="w-full max-w-2xl p-4 space-y-4 bg-gray-800 rounded-lg shadow-lg text-white">
-    <div class="w-full max-w-2xl p-4 space-y-0 bg-teal-400 rounded shadow-lg text-black">{message}</div>
+    <Message message={message} type={error?"error":"info"}></Message>
     {#if !workDayStarted}
         <button 
         on:click={() => startWorkDay(false)}
@@ -168,44 +174,19 @@
         <div class="flex flex-col md:flex-row gap-4">
             {#if workTime}
                 {#if breakTime}
-                    <button 
-                        on:click={endBreak} 
-                        class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-                        Back to work
-                    </button>
+                    <Button label="Take Break" type="normal" onClick={() => endBreak()} ></Button>
                 {/if}
                 {#if !breakTime}
-                    <button 
-                        on:click={brb} 
-                        class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-                        BRB (Not Working in Paid Hour)
-                    </button>
+                    <Button label="BRB" type="normal" onClick={() => brb()} ></Button>
                     <Button label="Take Break" type="normal" onClick={() => takeBreak()} ></Button>
-                    <button 
-                        
-                        class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-                        Take Break
-                    </button>
                 {/if}
-                
-                <button 
-                    on:click={createProject} 
-                    class="flex-1 py-3 px-6 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-                    Create Project
-                </button>            
+                    <Button label="Take Break" type="create" onClick={() => createProject()} ></Button>
+                       
             {/if}
             {#if !workTime}
-            <button 
-                on:click={startWorkTime} 
-                class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-                Start or return to working
-            </button>
+                <Button label="Start or return to working" type="normal" onClick={() => startWorkTime()} ></Button>
             {/if}
-            <button 
-                on:click={finishWorkDay} 
-                class="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-                Finish Day
-            </button>
+            <Button label="Finish Day" type="normal" onClick={() => finishWorkDay()} ></Button>
         </div>
         {#if workTime}
             <div class="w-full">

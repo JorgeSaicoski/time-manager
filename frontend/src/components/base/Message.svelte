@@ -5,7 +5,7 @@
     let messageClass = "";
     $: {
       if (type === "info") {
-        messageClass = "bg-accent text-primary";
+        messageClass = "bg-primary text-accent";
       } else if (type === "error") {
         messageClass = "bg-error text-white";
       }
