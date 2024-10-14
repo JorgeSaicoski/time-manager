@@ -1,5 +1,5 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onMount, createEventDispatcher } from 'svelte';
     import { GetAllProjects } from '../../../wailsjs/go/main/App';
     import Table from '../base/Table.svelte';
     import Button from '../base/Button.svelte';
@@ -10,6 +10,16 @@
     let pageSize = 5;
     let totalPages = 0;
     let message = null;
+    let projectID = 0
+
+    const dispatch = createEventDispatcher()
+
+    function goToProject(event) {
+      projectID = event.detail.projectID
+      dispatch('tabEvent', { tab: "Project", project:{projectID} });
+    }
+
+
   
     const fetchProjects = async (page) => {
       try {
@@ -35,7 +45,6 @@
       }
     };
   
-    // Initial load
     onMount(() => {
       fetchProjects(currentPage);
     });
@@ -48,10 +57,10 @@
       <Message message={message} type="error" />
     {/if}
   
-    <Table data={projects} />
+    <Table data={projects} on:projectEvent={goToProject}/>
   
     <div class="flex justify-between mt-6">
-      <Button label="Previous" onClick={prevPage} disabled={currentPage === 1} />
-      <Button label="Next" onClick={nextPage} disabled={currentPage === totalPages} />
+      <Button label="Previous" onClick={prevPage} disable={currentPage === 1} />
+      <Button label="Next" onClick={nextPage} disable={currentPage === totalPages} />
     </div>
   </div>

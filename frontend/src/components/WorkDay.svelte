@@ -1,8 +1,8 @@
 <script>
     import {StartDay, TakeBreak, StartWorkTime, FinishDay, EndBreak} from "../../wailsjs/go/main/App"
     import { onDestroy, onMount, createEventDispatcher } from 'svelte';
-  import Button from "./base/Button.svelte";
-  import Message from "./base/Message.svelte";
+    import Button from "./base/Button.svelte";
+    import Message from "./base/Message.svelte";
 
     let workDayStarted = false;
     let breakTime = false;

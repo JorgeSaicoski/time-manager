@@ -202,6 +202,22 @@ func (a *App) CreateProject(name string) MessageProjectResponse {
 
 }
 
+func (a *App) GetProjectByID(projectID int64) MessageProjectResponse {
+	project, err := database.GetProject(projectID)
+	if err != nil {
+		log.Printf("Error while geting project: %v", err)
+		return MessageProjectResponse{
+			Message: "Project not found. Error",
+		}
+	}
+	message := fmt.Sprintf("Project: %s", project.Name)
+	return MessageProjectResponse{
+		Message: message,
+		Project: project,
+	}
+
+}
+
 func (a *App) AssociateProjectToWorkTime(projectId int64) string {
 	workTimeProject, err := database.AssociateProjectToWorkTime(projectId)
 	if err != nil {

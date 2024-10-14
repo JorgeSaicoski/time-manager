@@ -4,14 +4,18 @@
   import Sarkis from "./assets/images/sarkis-dev.png"
   import CreateProject from "./components/projects/CreateProject.svelte";
   import Projects from "./components/projects/Projects.svelte";
+  import Project from "./components/projects/Project.svelte";
 
   let currentTab = 'Work';
+
+  let projectID = 0
 
   function updateTab(event) {
     currentTab = event.target.value;
   }
 
   function handleTabEvent(event){
+    projectID = event.detail.project
     currentTab = event.detail.tab
   }
 
@@ -69,10 +73,13 @@
     <Timer></Timer>    
   {/if}
   {#if currentTab === 'Projects'}
-    <Projects></Projects>
+    <Projects on:tabEvent={handleTabEvent}></Projects>
   {/if}
   {#if currentTab === 'createProject'}
     <CreateProject on:tabEvent={handleTabEvent}></CreateProject>
+  {/if}
+  {#if currentTab === 'Project'}
+    <Project projectID={projectID}></Project>
   {/if}
   <footer class="w-full bg-black shadow-sm focus:border-sky-500 focus:ring-sky-500 text-teal-800 font-nerd">
     <div class="mx-auto flex flex-col items-center space-y-4">
