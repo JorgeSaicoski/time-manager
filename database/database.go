@@ -262,7 +262,7 @@ func GetAllProjects(page int, pageSize int) ([]Project, int64, error) {
 	}
 
 	offset := (page - 1) * pageSize
-	err = DB.Offset(offset).Limit(pageSize).Find(&projects).Error
+	err = DB.Order("updated_at DESC").Offset(offset).Limit(pageSize).Find(&projects).Error
 	if err != nil {
 		return nil, 0, err
 	}

@@ -14,6 +14,10 @@ export function GetAllProjects(arg1:number,arg2:number):Promise<main.ProjectsRes
 
 export function GetProjectByID(arg1:number):Promise<main.MessageProjectResponse>;
 
+export function GetStartTimes():Promise<Array<main.Timer>>;
+
+export function RemoveTimer(arg1:string):Promise<void>;
+
 export function StartDay():Promise<main.StartDayResponse>;
 
 export function StartTimer(arg1:number,arg2:string):Promise<string>;

@@ -1,31 +1,69 @@
 <script>
-    import {StartTimer} from "../../wailsjs/go/main/App"
-    
-    let timeToTimer = 0
-    let message = ""
-    let hours = 1;
-    let minutes = 30;
-    let alertMessage = ""
+  import { StartTimer, GetStartTimes } from "../../wailsjs/go/main/App";
+  import { onMount } from "svelte";
+  import Message from "./base/Message.svelte";
 
-    const hourOptions = Array.from({ length: 24 }, (_, i) => i);
-    const minuteOptions = Array.from({ length: 60 }, (_, i) => i);
+  let timeToTimer = 0;
+  let message = "";
+  let hours = 1;
+  let minutes = 30;
+  let alertMessage = "";
+  let activeTimers = []; 
 
-    const startTimer = async () => {
-        timeToTimer = (minutes*60) + (hours*60*60)
+  const hourOptions = Array.from({ length: 24 }, (_, i) => i);
+  const minuteOptions = Array.from({ length: 60 }, (_, i) => i);
+
+  const fetchActiveTimers = async () => {
         try {
-             const receivedMessage = await StartTimer(timeToTimer, message);
-             alertMessage = `
-                ${receivedMessage}
-                Timer set for ${hours} hour(s) and ${minutes} minute(s). Message: "${message}"
-             `
+            const timers = await GetStartTimes();
+            if (timers) {
+                activeTimers = timers.map(timer => {
+                    return {
+                        ...timer,
+                        remainingTime: formatTime(timer.Duration)
+                    };
+                });
+            } else {
+                activeTimers = [];
+            }
         } catch (error) {
-            console.error("Error:", error);
-            message = "Error starting the timer.";
+            console.error("Error fetching active timers:", error);
+            activeTimers = [];
         }
     };
 
+  const startTimer = async () => {
+      timeToTimer = minutes * 60 + hours * 60 * 60;
+      if (activeTimers.length >= 3) {
+          alertMessage = "You cannot set more than 3 timers at the same time.";
+          return;
+      }
+
+      try {
+          const receivedMessage = await StartTimer(timeToTimer, message);
+          alertMessage = `
+              ${receivedMessage}
+              Timer set for ${hours} hour(s) and ${minutes} minute(s). Message: "${message}"
+          `;
+          await fetchActiveTimers();
+      } catch (error) {
+          console.error("Error:", error);
+          alertMessage = "Error starting the timer.";
+      }
+  };
+
+  const formatTime = (nanoseconds) => {
+        let totalSeconds = nanoseconds / 1e9; 
+        let hours = Math.floor(totalSeconds / 3600);
+        let minutes = Math.floor((totalSeconds % 3600) / 60);
+        return `${hours}h ${minutes}m`;
+  };
+
+  onMount(() => {
+      fetchActiveTimers();
+  });
 </script>
-  
+
 <div class="flex flex-col gap-4 max-w-md mx-auto p-6">
   <div>
     <label for="hours" class="block text-sm font-medium text-gray-200">Hours</label>
@@ -67,13 +105,26 @@
   <div class="flex justify-center">
     <button
       class="px-4 py-2 bg-sky-600 text-white rounded-md hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
-      on:click={() => startTimer()}
+      on:click={startTimer}
     >
       Set Timer
     </button>
   </div>
+
+  <Message message={alertMessage} type="info"></Message>
+
   <div>
-      {alertMessage}
+    <h3 class="text-xl font-bold text-gray-200">Active Timers:</h3>
+    {#if activeTimers.length === 0}
+      <p class="text-gray-400">No active timers.</p>
+    {:else}
+      <ul class="list-disc list-inside text-gray-200">
+        {#each activeTimers as timer}
+          <li>
+            Timer for "{timer.Message}" - {timer.remainingTime} remaining.
+          </li>
+        {/each}
+      </ul>
+    {/if}
   </div>
 </div>
-  

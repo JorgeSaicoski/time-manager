@@ -26,6 +26,14 @@ export function GetProjectByID(arg1) {
   return window['go']['main']['App']['GetProjectByID'](arg1);
 }
 
+export function GetStartTimes() {
+  return window['go']['main']['App']['GetStartTimes']();
+}
+
+export function RemoveTimer(arg1) {
+  return window['go']['main']['App']['RemoveTimer'](arg1);
+}
+
 export function StartDay() {
   return window['go']['main']['App']['StartDay']();
 }

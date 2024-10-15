@@ -14,6 +14,12 @@ type App struct {
 	ID        int64
 	ctx       context.Context
 	TotalTime *database.TotalTime
+	Timers    []Timer
+}
+
+type Timer struct {
+	Duration time.Duration
+	Message  string
 }
 
 type StartDayResponse struct {
@@ -47,6 +53,49 @@ func (a *App) startup(ctx context.Context) {
 	database.Connect()
 	database.MigrateDB()
 	log.Println("Database connected and migrated successfully.")
+}
+
+func (a *App) StartTimer(seconds int, message string) string {
+	if len(a.Timers) >= 3 {
+		return "Cannot start more than 3 timers at the same time."
+	}
+
+	newTimer := time.Duration(seconds) * time.Second
+	a.Timers = append(a.Timers, Timer{
+		Duration: newTimer,
+		Message:  message,
+	})
+
+	go func() {
+		<-time.After(newTimer)
+
+		// Emit the event when the timer finishes
+		runtime.EventsEmit(a.ctx, "timerFinished", fmt.Sprintf("Reminder: '%s' finished after %d minutes.", message, seconds/60))
+
+		// Show a dialog when the timer finishes
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:    runtime.InfoDialog,
+			Title:   "Alert!",
+			Message: message,
+		})
+
+		a.RemoveTimer(message)
+	}()
+
+	return "Timer started"
+}
+
+func (a *App) RemoveTimer(message string) {
+	for i, t := range a.Timers {
+		if t.Message == message {
+			a.Timers = append(a.Timers[:i], a.Timers[i+1:]...)
+			break
+		}
+	}
+}
+
+func (a *App) GetStartTimes() []Timer {
+	return a.Timers
 }
 
 func (a *App) StartDay() StartDayResponse {
@@ -99,27 +148,6 @@ func (a *App) FinishDay() string {
 	}
 
 	return "Total Time finished"
-}
-
-func (a *App) StartTimer(seconds int, message string) string {
-
-	newTimer := time.Duration(seconds) * time.Second
-
-	go func() {
-		<-time.After(newTimer)
-
-		runtime.EventsEmit(a.ctx, "timerFinished", fmt.Sprintf("Reminder: '%s' finished after %d minutes.", message, seconds/60))
-
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.InfoDialog,
-			Title:   "Alert!",
-			Message: message,
-		})
-
-	}()
-
-	return "Timer Started"
-
 }
 
 func (a *App) StartWorkTime() MessageWorkTimeResponse {
