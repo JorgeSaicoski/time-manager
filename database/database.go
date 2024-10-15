@@ -256,13 +256,11 @@ func GetAllProjects(page int, pageSize int) ([]Project, int64, error) {
 	var projects []Project
 	var totalProjects int64
 
-	// Count total projects
 	err := DB.Model(&Project{}).Count(&totalProjects).Error
 	if err != nil {
 		return nil, 0, err
 	}
 
-	// Apply pagination
 	offset := (page - 1) * pageSize
 	err = DB.Offset(offset).Limit(pageSize).Find(&projects).Error
 	if err != nil {

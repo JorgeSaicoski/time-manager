@@ -11,6 +11,7 @@ func MigrateDB() {
 		&Task{},
 		&Cost{},
 		&Brb{},
+		&WorkTimeProject{},
 	)
 	if err != nil {
 		log.Fatalf("Error migrating database: %v", err)
