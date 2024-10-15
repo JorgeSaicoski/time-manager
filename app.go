@@ -227,12 +227,19 @@ func (a *App) AssociateProjectToWorkTime(projectID int64) MessageProjectResponse
 			Project: nil,
 		}
 	}
-	project := workTimeProject.Project
+	project, err := database.GetProject(workTimeProject.ProjectID)
+	if err != nil {
+		log.Printf("Error while geting Project: %v", err)
+		return MessageProjectResponse{
+			Message: "Error while geting Project",
+			Project: nil,
+		}
+	}
 
 	message := fmt.Sprintf("Project %s associated to Work Time", project.Name)
 	return MessageProjectResponse{
 		Message: message,
-		Project: &project,
+		Project: project,
 	}
 }
 

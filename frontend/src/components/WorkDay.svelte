@@ -148,12 +148,12 @@
     }
 
     const associateProject = async (projectID) => {
-        console.log(projectID)
         try{
             const response = await AssociateProjectToWorkTime(projectID)
-            console.log(response)
+            console.log(response.project)
             currentProject = response.project
             message = response.message
+            console.log(currentProject)
         }catch(error){
             message = `Error: ${err.message}`;
         }
@@ -225,11 +225,14 @@
 
         {#if currentProject}
         <div class="mt-6">
-            <h2 class="text-lg font-bold">Current Project: {currentProject.name}</h2>
+            <h2 class="text-lg font-bold">Current Project: {currentProject.Name}</h2>
             <ul class="list-disc pl-5 space-y-1 text-gray-300">
-            {#each currentProject.tasks as task, index}
-                <li>{task.name}</li>
-            {/each}
+                <!--
+                            {#each currentProject.tasks as task, index}
+                                <li>{task.name}</li>
+                            {/each}
+                -->
+
             </ul>
             <div class="mt-4">
             <input 
