@@ -15,8 +15,7 @@
   }
 
   function handleTabEvent(event){
-    projectID = event.detail.project.projectID
-    console.log(projectID)
+    projectID = event.detail.project?.projectID
     currentTab = event.detail.tab
   }
 
