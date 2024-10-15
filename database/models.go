@@ -38,10 +38,10 @@ type Project struct {
 }
 
 type WorkTimeProject struct {
-	ID         int64 `gorm:"primaryKey"`
-	WorkTimeID int64 `gorm:"primaryKey"`
-	ProjectID  int64 `gorm:"primaryKey"`
-	StartTime  time.Time
+	ID         int64     `gorm:"primaryKey"`
+	WorkTimeID int64     `gorm:"primaryKey"`
+	ProjectID  int64     `gorm:"primaryKey"`
+	StartTime  time.Time `gorm:"not null"`
 	Duration   time.Duration
 	Closed     bool
 	WorkTime   WorkTime `gorm:"foreignKey:WorkTimeID"`

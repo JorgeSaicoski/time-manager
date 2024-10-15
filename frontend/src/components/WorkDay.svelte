@@ -1,5 +1,5 @@
 <script>
-    import {StartDay, TakeBreak, StartWorkTime, FinishDay, EndBreak} from "../../wailsjs/go/main/App"
+    import {StartDay, TakeBreak, StartWorkTime, FinishDay, EndBreak, AssociateProjectToWorkTime, GetAllProjects} from "../../wailsjs/go/main/App"
     import { onDestroy, onMount, createEventDispatcher } from 'svelte';
     import Button from "./base/Button.svelte";
     import Message from "./base/Message.svelte";
@@ -7,10 +7,10 @@
     let workDayStarted = false;
     let breakTime = false;
     let workTime = null;
-    let selectedProject = '';
+    let selectedProject = null;
     let projects = [];
     let currentProject = null;
-    let message = ''
+    let message = null
     let error = false
     let totalTime = null
     let timerStart = null;
@@ -124,6 +124,17 @@
         }
     };
 
+    const fetchProjects = async () => {
+        try {
+            const response = await GetAllProjects(1, 10);
+            projects = response.projects;
+            console.log(projects[0])
+        } catch (error) {
+            message = "Error loading projects";
+            console.log(error)
+        }
+    };
+
     
 
 
@@ -136,8 +147,16 @@
         dispatch('tabEvent', { tab: "createProject" });
     }
 
-    function associateProject() {
-        
+    const associateProject = async (projectID) => {
+        console.log(projectID)
+        try{
+            const response = await AssociateProjectToWorkTime(projectID)
+            console.log(response)
+            currentProject = response.project
+            message = response.message
+        }catch(error){
+            message = `Error: ${err.message}`;
+        }
     }
 
     function createTask(taskName) {
@@ -148,6 +167,7 @@
     });  
     onMount(()=>{
         startWorkDay(true)
+        fetchProjects()
     })
 </script>
 
@@ -195,14 +215,10 @@
                     class="flex-1 p-3 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="" disabled selected>Select a project</option>
                     {#each projects as project}
-                        <option value={project.name}>{project.name}</option>
+                        <option value={project.ID}>{project.Name}</option>
                     {/each}
                     </select>
-                    <button 
-                    on:click={associateProject} 
-                    class="py-3 px-6 bg-teal-500 hover:bg-teal-600 text-white rounded-md transition-colors duration-200 ease-in-out shadow-md">
-                    Associate
-                    </button>
+                    <Button label="Associate" type="normal" onClick={() => associateProject(selectedProject)} disabled={selectedProject?false:true}></Button>
                 </div>
             </div>
         {/if}

@@ -218,15 +218,22 @@ func (a *App) GetProjectByID(projectID int64) MessageProjectResponse {
 
 }
 
-func (a *App) AssociateProjectToWorkTime(projectId int64) string {
-	workTimeProject, err := database.AssociateProjectToWorkTime(projectId)
+func (a *App) AssociateProjectToWorkTime(projectID int64) MessageProjectResponse {
+	workTimeProject, err := database.AssociateProjectToWorkTime(projectID)
 	if err != nil {
 		log.Printf("Error while associating Project to Work Time: %v", err)
-		return "Error while associating Project to Work Time"
+		return MessageProjectResponse{
+			Message: "Error while associating Project to Work Time",
+			Project: nil,
+		}
 	}
+	project := workTimeProject.Project
 
-	message := fmt.Sprintf("Project %s associated to Work Time", workTimeProject.Project.Name)
-	return message
+	message := fmt.Sprintf("Project %s associated to Work Time", project.Name)
+	return MessageProjectResponse{
+		Message: message,
+		Project: &project,
+	}
 }
 
 func (a *App) GetAllProjects(page int, pageSize int) ProjectsResponse {

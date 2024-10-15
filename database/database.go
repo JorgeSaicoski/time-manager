@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"gorm.io/driver/sqlite"
@@ -37,11 +38,10 @@ func getUnfinishedWorkTimeProjectAndFinish() (*WorkTimeProject, error) {
 	var workTimeProject WorkTimeProject
 	result := DB.Where("closed = ?", false).First(&workTimeProject)
 	if result.Error != nil {
-		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			log.Println("No unfinished WorkTimeProject found.")
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) || strings.Contains(result.Error.Error(), "no such column: closed") {
+			log.Println("No unfinished WorkTimeProject found or column 'closed' missing.")
 			return nil, nil
 		}
-		return nil, result.Error
 	}
 	workTimeProject.Closed = true
 	endTime := time.Now()
@@ -206,6 +206,7 @@ func AssociateProjectToWorkTime(projectID int64) (*WorkTimeProject, error) {
 
 	_, err = getUnfinishedWorkTimeProjectAndFinish()
 	if err != nil {
+		fmt.Printf("%v", err)
 		return nil, fmt.Errorf("failed to finish previous WorkTimeProject: %w", err)
 	}
 
