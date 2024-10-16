@@ -56,6 +56,47 @@ This **Time Manager** application is designed to help employees and freelancers 
    wails build
    ```
 
+
+### Build and Run Locally
+
+To build the project for local use on your computer, follow these steps. This will work on **Linux**, **macOS**, and **Windows**.
+
+1. **Build the frontend**:
+
+   ```bash
+   cd frontend
+   npm run build
+   ```
+
+   This will generate the necessary frontend assets in the `frontend/dist` directory.
+
+2. **Build the Wails project**:
+
+   Navigate back to the root directory of your project and run:
+
+   ```bash
+   wails build
+   ```
+
+   This command will compile the Go backend and bundle the Svelte frontend into a platform-specific executable.
+
+3. **Run the application**:
+
+   After building the project, you can run the generated executable as follows:
+
+   - **Linux/macOS**: 
+     Run the executable from the terminal:
+     ```bash
+     ./build/bin/time-manager
+     ```
+
+   - **Windows**:
+     Run the `.exe` file using **PowerShell**, **Command Prompt**, or **Git Bash**:
+     ```bash
+     .\build\bin\time-manager.exe
+     ```
+
+
 ## Usage
 
 ### Start a Day
