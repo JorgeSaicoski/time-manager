@@ -297,3 +297,16 @@ func GetAllProjects(page int, pageSize int) ([]Project, int64, error) {
 
 	return projects, totalProjects, nil
 }
+
+func GetUnfinishedWorkTimeProject() (*WorkTimeProject, error) {
+	var workTimeProject WorkTimeProject
+	result := DB.Where("closed = ?", false).First(&workTimeProject)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			log.Println("No unfinished WorkTimeProject found.")
+			return nil, nil
+		}
+		return nil, result.Error
+	}
+	return &workTimeProject, nil
+}

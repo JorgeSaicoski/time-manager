@@ -1,5 +1,5 @@
 <script>
-    import {StartDay, TakeBreak, StartWorkTime, FinishDay, EndBreak, AssociateProjectToWorkTime, GetAllProjects} from "../../wailsjs/go/main/App"
+    import {StartDay, TakeBreak, StartWorkTime, FinishDay, EndBreak, AssociateProjectToWorkTime, GetAllProjects, GetUnfinishedWorkTimeProjectWithoutSendingError} from "../../wailsjs/go/main/App"
     import { onDestroy, onMount, createEventDispatcher } from 'svelte';
     import Button from "./base/Button.svelte";
     import Message from "./base/Message.svelte";
@@ -17,8 +17,23 @@
     let elapsedTime = "00:00:00";
     let interval;
     let intervalName= "Day work"
+    let tasks = []
 
     const dispatch = createEventDispatcher()
+
+    const checkUnfinishedWorkTimeProject = async () => {
+        try {
+            const response = await GetUnfinishedWorkTimeProjectWithoutSendingError(); 
+            if (response) {
+                selectedProject = response.ProjectID;
+                currentProject = projects.find(p => p.ID === selectedProject);
+                tasks = currentProject.Tasks ? currentProject.Tasks : [];
+            }
+        } catch (error) {
+            message =+ " No unfinished work time project found";
+            console.log(error);
+        }
+    };
 
     const startWorkDay = async (startWork)=>  {
         try {
@@ -129,6 +144,7 @@
             const response = await GetAllProjects(1, 10);
             projects = response.projects;
             console.log(projects[0])
+            checkUnfinishedWorkTimeProject()
         } catch (error) {
             message = "Error loading projects";
             console.log(error)
@@ -150,10 +166,9 @@
     const associateProject = async (projectID) => {
         try{
             const response = await AssociateProjectToWorkTime(projectID)
-            console.log(response.project)
             currentProject = response.project
             message = response.message
-            console.log(currentProject)
+            tasks = currentProject.Tasks? currentProject.Tasks : []
         }catch(error){
             message = `Error: ${err.message}`;
         }
@@ -227,11 +242,9 @@
         <div class="mt-6">
             <h2 class="text-lg font-bold">Current Project: {currentProject.Name}</h2>
             <ul class="list-disc pl-5 space-y-1 text-gray-300">
-                <!--
-                            {#each currentProject.tasks as task, index}
-                                <li>{task.name}</li>
-                            {/each}
-                -->
+                {#each tasks as task, index}
+                    <li>{task.Description}</li>
+                {/each}
 
             </ul>
             <div class="mt-4">

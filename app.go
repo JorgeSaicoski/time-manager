@@ -320,3 +320,12 @@ func (a *App) CreateTask(projectID int64, description string, deadline string) T
 		Task:    task,
 	}
 }
+
+func (a *App) GetUnfinishedWorkTimeProjectWithoutSendingError() *database.WorkTimeProject {
+	workTimeProject, err := database.GetUnfinishedWorkTimeProject()
+	if err != nil {
+		log.Printf("Error retrieving workTimeProject: %v", err)
+		return nil
+	}
+	return workTimeProject
+}

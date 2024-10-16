@@ -34,6 +34,10 @@ export function GetStartTimes() {
   return window['go']['main']['App']['GetStartTimes']();
 }
 
+export function GetUnfinishedWorkTimeProjectWithoutSendingError() {
+  return window['go']['main']['App']['GetUnfinishedWorkTimeProjectWithoutSendingError']();
+}
+
 export function RemoveTimer(arg1) {
   return window['go']['main']['App']['RemoveTimer'](arg1);
 }
