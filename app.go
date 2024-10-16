@@ -32,6 +32,12 @@ type MessageWorkTimeResponse struct {
 	WorkTime *database.WorkTime `json:"workTime,omitempty"`
 }
 
+type MessageWorkTimeProjectResponse struct {
+	Message         string                    `json:"message"`
+	Project         *database.Project         `json:"project,omitempty"`
+	WorkTimeProject *database.WorkTimeProject `json:"workTimeProject,omitempty"`
+}
+
 type MessageProjectResponse struct {
 	Message string            `json:"message"`
 	Project *database.Project `json:"project,omitempty"`
@@ -251,28 +257,31 @@ func (a *App) GetProjectByID(projectID int64) MessageProjectResponse {
 
 }
 
-func (a *App) AssociateProjectToWorkTime(projectID int64) MessageProjectResponse {
+func (a *App) AssociateProjectToWorkTime(projectID int64) MessageWorkTimeProjectResponse {
 	workTimeProject, err := database.AssociateProjectToWorkTime(projectID)
 	if err != nil {
 		log.Printf("Error while associating Project to Work Time: %v", err)
-		return MessageProjectResponse{
-			Message: "Error while associating Project to Work Time",
-			Project: nil,
+		return MessageWorkTimeProjectResponse{
+			Message:         "Error while associating Project to Work Time",
+			Project:         nil,
+			WorkTimeProject: nil,
 		}
 	}
 	project, err := database.GetProject(workTimeProject.ProjectID)
 	if err != nil {
 		log.Printf("Error while geting Project: %v", err)
-		return MessageProjectResponse{
-			Message: "Error while geting Project",
-			Project: nil,
+		return MessageWorkTimeProjectResponse{
+			Message:         "Error while geting Project",
+			Project:         nil,
+			WorkTimeProject: nil,
 		}
 	}
 
 	message := fmt.Sprintf("Project %s associated to Work Time", project.Name)
-	return MessageProjectResponse{
-		Message: message,
-		Project: project,
+	return MessageWorkTimeProjectResponse{
+		Message:         message,
+		Project:         project,
+		WorkTimeProject: workTimeProject,
 	}
 }
 

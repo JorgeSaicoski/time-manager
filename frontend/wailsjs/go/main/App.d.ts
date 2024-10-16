@@ -3,7 +3,7 @@
 import {main} from '../models';
 import {database} from '../models';
 
-export function AssociateProjectToWorkTime(arg1:number):Promise<main.MessageProjectResponse>;
+export function AssociateProjectToWorkTime(arg1:number):Promise<main.MessageWorkTimeProjectResponse>;
 
 export function CreateProject(arg1:string):Promise<main.MessageProjectResponse>;
 

@@ -26,8 +26,7 @@
             const response = await GetUnfinishedWorkTimeProjectWithoutSendingError(); 
             if (response) {
                 selectedProject = response.ProjectID;
-                currentProject = projects.find(p => p.ID === selectedProject);
-                tasks = currentProject.Tasks ? currentProject.Tasks : [];
+                currentProject = associateProject(selectedProject)
             }
         } catch (error) {
             message =+ " No unfinished work time project found";
@@ -169,6 +168,11 @@
             currentProject = response.project
             message = response.message
             tasks = currentProject.Tasks? currentProject.Tasks : []
+            if (response.workTimeProject){
+                timerStart = new Date(response.workTimeProject.StartTime);
+                intervalName = `Working on ${currentProject.Name} since`
+            }
+
         }catch(error){
             message = `Error: ${err.message}`;
         }

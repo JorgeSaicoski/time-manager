@@ -195,6 +195,16 @@ func CreateProject(name string) (*Project, error) {
 }
 
 func AssociateProjectToWorkTime(projectID int64) (*WorkTimeProject, error) {
+	unfinishedWorkTimeProject, err := GetUnfinishedWorkTimeProject()
+	if err != nil {
+		return nil, fmt.Errorf("failed to retrieve unfinished WorkTimeProject: %w", err)
+	}
+
+	if unfinishedWorkTimeProject != nil && unfinishedWorkTimeProject.ProjectID == projectID {
+		log.Printf("WorkTimeProject already associated with project ID %d, returning existing project", projectID)
+		return unfinishedWorkTimeProject, nil
+	}
+
 	workTime, err := getUnfinishedWorkTime()
 	if err != nil {
 		return nil, fmt.Errorf("failed to retrieve unfinished WorkTime: %w", err)
@@ -204,10 +214,11 @@ func AssociateProjectToWorkTime(projectID int64) (*WorkTimeProject, error) {
 		return nil, fmt.Errorf("no active WorkTime found to associate with the project")
 	}
 
-	_, err = getUnfinishedWorkTimeProjectAndFinish()
-	if err != nil {
-		fmt.Printf("%v", err)
-		return nil, fmt.Errorf("failed to finish previous WorkTimeProject: %w", err)
+	if unfinishedWorkTimeProject != nil {
+		_, err = getUnfinishedWorkTimeProjectAndFinish()
+		if err != nil {
+			return nil, fmt.Errorf("failed to finish previous WorkTimeProject: %w", err)
+		}
 	}
 
 	workTimeProject := &WorkTimeProject{
