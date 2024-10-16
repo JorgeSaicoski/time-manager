@@ -75,7 +75,7 @@
                 <ul>
                 <li class="mb-2">ID: {project.ID}</li>
                 <li class="mb-2">Start Time: {new Date(project.StartTime).toLocaleString()}</li>
-                <li class="mb-2">Duration: {project.Duration}</li>
+                <li class="mb-2">Duration: {(project.Duration / 3600000000000).toFixed(2)} hours</li>
                 <li class="mb-2">Closed: {project.Closed ? "Yes" : "No"}</li>
                 <li class="mb-2">Cost: {project.Cost ? project.Cost.HourCost : "Not Set"}</li>
                 </ul>

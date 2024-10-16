@@ -226,11 +226,31 @@ func AssociateProjectToWorkTime(projectID int64) (*WorkTimeProject, error) {
 
 func GetProject(id int64) (*Project, error) {
 	var project Project
+
 	err := DB.Preload("Tasks").Preload("Cost").First(&project, id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, errors.New("Project not found")
+		return nil, errors.New("project not found")
 	}
-	return &project, err
+
+	var totalDuration *time.Duration
+	result := DB.Model(&WorkTimeProject{}).
+		Where("project_id = ?", id).
+		Select("SUM(duration)").
+		Scan(&totalDuration)
+
+	if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		// Normalize the error message to lowercase if it's capitalized
+		return nil, errors.New(strings.ToLower(result.Error.Error()))
+	}
+
+	if totalDuration == nil {
+		totalDurationValue := time.Duration(0)
+		totalDuration = &totalDurationValue
+	}
+
+	project.Duration = *totalDuration
+
+	return &project, nil
 }
 
 func CreateTask(projectID int64, description string, deadline time.Time) (*Task, error) {
