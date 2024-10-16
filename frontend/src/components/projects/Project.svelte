@@ -12,6 +12,10 @@
     let newTaskDescription = ""
     let newTaskDeadline = null
     let hourCost = 0
+    let durationInNanoseconds = 0;
+    let totalMinutes = 0; 
+    let hours = 0;
+    let minutes = 0; 
 
     const changeCost = async()=>{
 
@@ -47,6 +51,12 @@
             message = response.message
             messageType="info"
             project = response.project
+            durationInNanoseconds = project.Duration
+            if (project.Duration) {
+                totalMinutes = project.Duration / 60000000000; 
+                hours = Math.floor(totalMinutes / 60); 
+                minutes = Math.floor(totalMinutes % 60);
+            }
 
         } catch(err){
             message = err.message
@@ -75,7 +85,17 @@
                 <ul>
                 <li class="mb-2">ID: {project.ID}</li>
                 <li class="mb-2">Start Time: {new Date(project.StartTime).toLocaleString()}</li>
-                <li class="mb-2">Duration: {(project.Duration / 3600000000000).toFixed(2)} hours</li>
+                <li class="mb-2">Duration: 
+                    {#if hours > 0}
+                        {hours} {hours === 1 ? 'hour' : 'hours'} 
+                    {/if}
+                    {#if minutes > 0}
+                        {minutes} {minutes === 1 ? 'minute' : 'minutes'}
+                    {/if}
+                    {#if hours === 0 && minutes === 0}
+                        Less than a minute
+                    {/if}
+                </li>
                 <li class="mb-2">Closed: {project.Closed ? "Yes" : "No"}</li>
                 <li class="mb-2">Cost: {project.Cost ? project.Cost.HourCost : "Not Set"}</li>
                 </ul>
