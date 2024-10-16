@@ -37,6 +37,11 @@ type MessageProjectResponse struct {
 	Project *database.Project `json:"project,omitempty"`
 }
 
+type TaskResponse struct {
+	Message string         `json:"message"`
+	Task    *database.Task `json:"task,omitempty"`
+}
+
 type ProjectsResponse struct {
 	Projects     []database.Project `json:"projects"`
 	Total        int64              `json:"total"`
@@ -288,5 +293,21 @@ func (a *App) GetAllProjects(page int, pageSize int) ProjectsResponse {
 		Total:        total,
 		CurrentPage:  page,
 		ItemsPerPage: pageSize,
+	}
+}
+
+func (a *App) CreateTask(projectID int64, description string, deadline time.Time) TaskResponse {
+	task, err := database.CreateTask(projectID, description, deadline)
+	if err != nil {
+		log.Printf("Error retrieving projects: %v", err)
+		return TaskResponse{
+			Message: "Error Creating Task",
+			Task:    nil,
+		}
+	}
+
+	return TaskResponse{
+		Message: "Task created and associated with the project",
+		Task:    task,
 	}
 }

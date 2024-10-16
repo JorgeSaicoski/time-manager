@@ -240,6 +240,14 @@ func CreateTask(projectID int64, description string, deadline time.Time) (*Task,
 		Deadline:    deadline,
 	}
 	err := DB.Create(task).Error
+
+	var project Project
+	if err := DB.Preload("Tasks").First(&project, projectID).Error; err != nil {
+		return nil, fmt.Errorf("failed to retrieve TotalTime after creating WorkTime: %w", err)
+	}
+
+	project.Tasks = append(project.Tasks, *task)
+
 	return task, err
 }
 
