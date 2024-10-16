@@ -46,6 +46,10 @@
               Timer set for ${hours} hour(s) and ${minutes} minute(s). Message: "${message}"
           `;
           await fetchActiveTimers();
+          timeToTimer = 0;
+          message = "";
+          hours = 0;
+          minutes = 0;
       } catch (error) {
           console.error("Error:", error);
           alertMessage = "Error starting the timer.";
