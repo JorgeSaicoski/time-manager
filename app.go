@@ -296,8 +296,17 @@ func (a *App) GetAllProjects(page int, pageSize int) ProjectsResponse {
 	}
 }
 
-func (a *App) CreateTask(projectID int64, description string, deadline time.Time) TaskResponse {
-	task, err := database.CreateTask(projectID, description, deadline)
+func (a *App) CreateTask(projectID int64, description string, deadline string) TaskResponse {
+	parsedDeadline, err := time.Parse("2006-01-02", deadline)
+	if err != nil {
+		log.Printf("Error parsing deadline: %v", err)
+		return TaskResponse{
+			Message: "Invalid deadline format. Please use YYYY-MM-DD",
+			Task:    nil,
+		}
+	}
+
+	task, err := database.CreateTask(projectID, description, parsedDeadline)
 	if err != nil {
 		log.Printf("Error retrieving projects: %v", err)
 		return TaskResponse{

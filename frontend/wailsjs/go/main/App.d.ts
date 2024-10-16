@@ -6,6 +6,8 @@ export function AssociateProjectToWorkTime(arg1:number):Promise<main.MessageProj
 
 export function CreateProject(arg1:string):Promise<main.MessageProjectResponse>;
 
+export function CreateTask(arg1:number,arg2:string,arg3:string):Promise<main.TaskResponse>;
+
 export function EndBreak():Promise<main.MessageWorkTimeResponse>;
 
 export function FinishDay():Promise<string>;

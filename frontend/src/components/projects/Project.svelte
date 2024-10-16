@@ -1,8 +1,8 @@
 <script>
     import {  onMount } from 'svelte';
-    import { GetProjectByID } from '../../../wailsjs/go/main/App';
+    import { GetProjectByID, CreateTask } from '../../../wailsjs/go/main/App';
     import Message from '../base/Message.svelte';
-  import Button from '../base/Button.svelte';
+    import Button from '../base/Button.svelte';
 
     export let projectID = null
 
@@ -10,7 +10,7 @@
     let messageType = "info"
     let project = null
     let newTaskDescription = ""
-    let newTaskDeadline = ""
+    let newTaskDeadline = null
     let hourCost = 0
 
     const changeCost = async()=>{
@@ -25,6 +25,19 @@
 
     }
     const addTask = async()=>{
+        console.log(project.ID, newTaskDescription, newTaskDeadline)
+        try {
+            const response = await CreateTask(project.ID, newTaskDescription, newTaskDeadline)
+            project.Tasks = [...project.Tasks, response.task]
+            message = response.message
+            newTaskDeadline = null
+            newTaskDescription = ""
+            
+        } catch (error) {
+            message = error.message
+            messageType="error"
+        }
+
         
     }
 
@@ -44,6 +57,7 @@
     onMount(async () => {
         await findProject();
         hourCost = project?.Cost?.HourCost ? project.Cost.HourCost : 10;
+        project.Tasks = project.Tasks? project.Tasks : []
     });
 </script>
 
