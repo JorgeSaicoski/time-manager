@@ -297,6 +297,14 @@ func (a *App) GetAllProjects(page int, pageSize int) ProjectsResponse {
 }
 
 func (a *App) CreateTask(projectID int64, description string, deadline string) TaskResponse {
+	if deadline == "" {
+		log.Println("No deadline provided, skipping task creation")
+		return TaskResponse{
+			Message: "Please provide a valid deadline.",
+			Task:    nil,
+		}
+	}
+
 	parsedDeadline, err := time.Parse("2006-01-02", deadline)
 	if err != nil {
 		log.Printf("Error parsing deadline: %v", err)

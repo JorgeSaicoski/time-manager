@@ -29,7 +29,11 @@
 
     }
     const addTask = async()=>{
-        console.log(project.ID, newTaskDescription, newTaskDeadline)
+        if (!newTaskDeadline) {
+            message = "Please provide a valid deadline.";
+            messageType = "error";
+            return;
+        }
         try {
             const response = await CreateTask(project.ID, newTaskDescription, newTaskDeadline)
             project.Tasks = [...project.Tasks, response.task]
