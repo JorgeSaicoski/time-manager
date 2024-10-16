@@ -113,8 +113,6 @@ func FinishTotalTime(id int64) (*TotalTime, error) {
 		return nil, fmt.Errorf("failed to finish TotalTime: %w", err)
 	}
 
-	getUnfinishedWorkTimeProjectAndFinish()
-
 	return &totalTime, nil
 }
 
