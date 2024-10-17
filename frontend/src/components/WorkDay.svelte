@@ -1,5 +1,15 @@
 <script>
-    import {StartDay, TakeBreak, StartWorkTime, FinishDay, EndBreak, AssociateProjectToWorkTime, GetAllProjects, GetUnfinishedWorkTimeProjectWithoutSendingError} from "../../wailsjs/go/main/App"
+    import {
+        StartDay, 
+        TakeBreak, 
+        StartWorkTime, 
+        FinishDay, 
+        EndBreak, 
+        AssociateProjectToWorkTime, 
+        GetAllProjects, 
+        GetUnfinishedWorkTimeProjectWithoutSendingError, 
+        CreateTask
+    } from "../../wailsjs/go/main/App"
     import { onDestroy, onMount, createEventDispatcher } from 'svelte';
     import Button from "./base/Button.svelte";
     import Message from "./base/Message.svelte";
@@ -18,8 +28,11 @@
     let interval;
     let intervalName= "Day work"
     let tasks = []
+    let newTaskDescription = ""
+    let newTaskDeadline = null
 
     const dispatch = createEventDispatcher()
+    
 
     const checkUnfinishedWorkTimeProject = async () => {
         try {
@@ -178,8 +191,27 @@
         }
     }
 
-    function createTask(taskName) {
+    const createTask = async()=>{
+        if (!newTaskDeadline) {
+            message = "Please provide a valid deadline.";
+            messageType = "error";
+            return;
+        }
+        try {
+            const response = await CreateTask(currentProject.ID, newTaskDescription, newTaskDeadline)
+            tasks = [...tasks, response.task]
+            message = response.message
+            newTaskDeadline = null
+            newTaskDescription = ""
+            
+        } catch (error) {
+            message = error.message
+            messageType="error"
+        }
+
+        
     }
+
 
     onDestroy(() => {
         clearInterval(interval);
@@ -252,12 +284,25 @@
 
             </ul>
             <div class="mt-4">
-            <input 
-                type="text" 
-                placeholder="New task name" 
-                class="w-full p-3 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <Button label="Add Task" type="normal"></Button>
+            <label for="description" class="text-white">Task Description:</label>
+                <textarea
+                id="description"
+                placeholder="Description"
+                rows="1"
+                type="text"
+                bind:value={newTaskDescription}
+                class="w-full p-2 bg-primary text-white m-0"
+                />
+                <div class="w-full bg-primary">
+                    <label for="date">Deadline:</label>
+                    <input
+                    id="date"
+                    type="date"
+                    bind:value={newTaskDeadline}
+                    class="p-2 m-0 bg-gray-800 text-white h-full"
+                    />
+                </div>
+            <Button label="Add Task" onClick={()=>{createTask()}} type="normal"></Button>
             </div>
         </div>
         {/if}
