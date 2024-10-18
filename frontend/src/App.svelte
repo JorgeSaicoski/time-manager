@@ -24,7 +24,7 @@
   }
 </script>
 
-<div class="h-full flex w-full flex-col justify-between items-center bg-primary p-0 font-body">
+<div class="min-h-screen h-auto flex w-full flex-col justify-between items-center bg-primary p-0 font-body">
   <!-- Dropdown for smaller screens -->
   <div class="sm:hidden">
     <label for="Tab" class="sr-only">Tab</label>
@@ -66,21 +66,24 @@
       </button>
     </nav>
   </div>
-  {#if currentTab === 'Work'}
-    <WorkDay on:tabEvent={handleTabEvent}></WorkDay>
-  {/if}
-  {#if currentTab === 'Timer'}
-    <Timer></Timer>    
-  {/if}
-  {#if currentTab === 'Projects'}
-    <Projects on:tabEvent={handleTabEvent}></Projects>
-  {/if}
-  {#if currentTab === 'createProject'}
-    <CreateProject on:tabEvent={handleTabEvent}></CreateProject>
-  {/if}
-  {#if currentTab === 'Project'}
-    <Project projectID={projectID}></Project>
-  {/if}
+  <section class="my-2">
+    {#if currentTab === 'Work'}
+      <WorkDay on:tabEvent={handleTabEvent}></WorkDay>
+    {/if}
+    {#if currentTab === 'Timer'}
+      <Timer></Timer>    
+    {/if}
+    {#if currentTab === 'Projects'}
+      <Projects on:tabEvent={handleTabEvent}></Projects>
+    {/if}
+    {#if currentTab === 'createProject'}
+      <CreateProject on:tabEvent={handleTabEvent}></CreateProject>
+    {/if}
+    {#if currentTab === 'Project'}
+      <Project projectID={projectID}></Project>
+    {/if}
+  </section>
+  
   <footer class="w-full bg-secondary text-textPrimary shadow-sm focus:border-sky-500 focus:ring-sky-500 font-nerd">
     <div class="mx-auto flex flex-col items-center space-y-4">
       <p>

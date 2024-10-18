@@ -75,17 +75,17 @@
     });
 </script>
 
-<div class="container mx-auto bg-gray-900 text-white p-6 rounded-lg shadow-lg font-nerd">
+<div class="container mx-auto bg-secondary text-textPrimary p-6 rounded-lg shadow-lg font-nerd">
     {#if message}
         <Message message={message} type={messageType}></Message>
     {/if}
     {#if project}
         <!-- Project Details -->
-        <h1 class="text-3xl font-extrabold mb-6 text-center text-teal-300">{project.Name}</h1>
+        <h1 class="text-3xl font-extrabold mb-6 text-center text-textSecondary">{project.Name}</h1>
     
         <div class="grid grid-cols-2 gap-6 mb-6">
             <div>
-                <h2 class="text-xl font-bold text-teal-300 mb-2">Project Details</h2>
+                <h2 class="text-xl font-bold text-textSecondary mb-2">Project Details</h2>
                 <ul>
                 <li class="mb-2">ID: {project.ID}</li>
                 <li class="mb-2">Start Time: {new Date(project.StartTime).toLocaleString()}</li>
@@ -107,12 +107,12 @@
     
         <!-- Edit Project Name -->
             <div>
-                <h2 class="text-xl font-bold text-teal-300 mb-2">Edit Project Name</h2>
+                <h2 class="text-xl font-bold text-textSecondary mb-2">Edit Project Name</h2>
                 <input
                 type="text"
                 bind:value={project.Name}
                 placeholder="Enter new name"
-                class="w-full p-2 rounded-lg bg-gray-800 text-white"
+                class="w-full p-2 rounded-lg bg-textPrimary text-textDark"
                 />
                 <Button label="Save Name" type="normal" onClick={() => updateProjectName()}></Button>
             </div>
@@ -120,12 +120,12 @@
     
         <!-- Tasks Section -->
         <div class="mb-6">
-            <h2 class="text-xl font-bold text-teal-300 mb-4">Tasks</h2>
+            <h2 class="text-xl font-bold text-textSecondary mb-4">Tasks</h2>
     
         <!-- Task List -->
             <ul class="mb-4">
                 {#each project.Tasks as task}
-                <li class="bg-gray-800 p-4 rounded-lg mb-2">
+                <li class="bg-secondaryAccent p-4 rounded-lg mb-2">
                     <div class="flex justify-between items-center">
                     <div>
                         <p>Task ID: {task.ID}</p>
@@ -135,7 +135,7 @@
                     </div>
                     <button
                         on:click={() => removeTask(task.ID)}
-                        class="ml-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg"
+                        class="ml-4 px-4 py-2 bg-buttonErrorBg hover:bg-buttonHoverBg text-buttonErrorText rounded-lg"
                     >
                         Remove Task
                     </button>
@@ -145,23 +145,23 @@
             </ul>
     
         <!-- Add Task -->
-            <div class="bg-secondary rounded-2xl">
-                <label for="description" class="text-white">Task Description:</label>
+            <div class="bg-secondaryAccent rounded-2xl text-textDark">
+                <label for="description text-primary">Task Description:</label>
                 <textarea
                 id="description"
                 placeholder="Description"
                 rows="5"
                 type="text"
                 bind:value={newTaskDescription}
-                class="w-full p-2 bg-primary text-white m-0"
+                class="w-full p-2 bg-textPrimary  m-0"
                 />
-                <div class="w-full bg-primary">
+                <div class="w-full bg-textPrimary">
                     <label for="date">Deadline:</label>
                     <input
                     id="date"
                     type="date"
                     bind:value={newTaskDeadline}
-                    class="p-2 m-0 bg-gray-800 text-white h-full"
+                    class="p-2 m-0  h-full"
                     />
                 </div>
                 <Button label="Add Task" type="normal" onClick={() => addTask()}></Button>
@@ -170,21 +170,16 @@
     
         <!-- Add Cost Section -->
         <div>
-            <h2 class="text-xl font-bold text-teal-300 mb-2">Set Project Cost Per Hour</h2>
-            <div class="w-full rounded-lg p-0 bg-gray-800 text-white flex justify-center">
+            <h2 class="text-xl font-bold text-textSecondary mb-2">Set Project Cost Per Hour</h2>
+            <div class="w-full rounded-lg p-0 bg-secondary text-textPrimary flex justify-center">
                 <span>$</span>
                 <input
-                    class="bg-secondary h-full text-white m-0"
+                    class="bg-secondary h-full text-textPrimary m-0"
                     bind:value={hourCost}
                 />
                 <span>per hour</span>
             </div>
-            <button
-                on:click={changeCost}
-                class="mt-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg"
-            >
-                Save Cost
-            </button>
+            <Button label="Save Cost" onClick={()=>{changeCost()}}></Button>
         </div>
     {/if}
   </div>

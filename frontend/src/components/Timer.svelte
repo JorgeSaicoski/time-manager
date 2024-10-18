@@ -2,6 +2,7 @@
   import { StartTimer, GetStartTimes } from "../../wailsjs/go/main/App";
   import { onMount } from "svelte";
   import Message from "./base/Message.svelte";
+  import Button from "./base/Button.svelte";
 
   let timeToTimer = 0;
   let message = "";
@@ -68,12 +69,12 @@
   });
 </script>
 
-<div class="flex flex-col gap-4 max-w-md mx-auto p-6">
+<div class="flex flex-col gap-4 max-w-md mx-auto p-6 bg-secondary text-textPrimary rounded-lg">
   <div>
-    <label for="hours" class="block text-sm font-medium text-gray-200">Hours</label>
+    <label for="hours" class="block text-sm font-medium">Hours</label>
     <select
       id="hours"
-      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-slate-800"
+      class="mt-1 block w-full rounded-md border-textSecondary shadow-sm focus:border-sky-500 focus:ring-textAccent text-textDark"
       bind:value={hours}
     >
       {#each hourOptions as hour}
@@ -83,10 +84,10 @@
   </div>
 
   <div>
-    <label for="minutes" class="block text-sm font-medium text-gray-200">Minutes</label>
+    <label for="minutes" class="block text-sm font-medium">Minutes</label>
     <select
       id="minutes"
-      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-slate-800"
+      class="mt-1 block w-full rounded-md border-textSecondary shadow-sm focus:border-sky-500 focus:ring-textAccent text-textDark"
       bind:value={minutes}
     >
       {#each minuteOptions as minute}
@@ -96,23 +97,18 @@
   </div>
 
   <div>
-    <label for="message" class="block text-sm font-medium text-gray-200">Message</label>
+    <label for="message" class="block text-sm font-medium text-textPrimary">Message</label>
     <textarea
       id="message"
       rows="4"
-      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-slate-800"
+      class="mt-1 block w-full rounded-md border-textSecondary shadow-sm focus:border-sky-500 focus:ring-textAccent text-textDark"
       placeholder="Enter your message here..."
       bind:value={message}
     ></textarea>
   </div>
 
   <div class="flex justify-center">
-    <button
-      class="px-4 py-2 bg-sky-600 text-white rounded-md hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
-      on:click={startTimer}
-    >
-      Set Timer
-    </button>
+    <Button label="Set Timer" onClick={()=>{startTimer()}}></Button>
   </div>
 
   <Message message={alertMessage} type="info"></Message>

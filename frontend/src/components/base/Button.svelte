@@ -19,6 +19,6 @@
 <button
   on:click={onClick}
   disabled={disabled}
-  class={`flex-1 py-3 px-6 m-2 ${buttonClass} rounded-md shadow-md disabled:bg-slate-500 disabled:text-slate-50 disabled:border-slate-200 disabled:shadow-none`}>
+  class={`flex-1 py-3 px-6 m-2 ${buttonClass} rounded-md shadow-md disabled:bg-textSecondary disabled:text-textDark disabled:border-secondaryAccent disabled:shadow-none`}>
   {label}
 </button>

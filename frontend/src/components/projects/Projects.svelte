@@ -50,8 +50,8 @@
     });
   </script>
   
-  <div class="container mx-auto bg-gray-900 text-white p-6 rounded-lg shadow-lg font-nerd">
-    <h1 class="text-3xl font-extrabold mb-6 text-center text-teal-300">Projects</h1>
+  <div class="container mx-auto bg-secondary text-textPrimary p-6 rounded-lg shadow-lg font-nerd">
+    <h1 class="text-3xl font-extrabold mb-6 text-center text-textSecondary">Projects</h1>
   
     {#if message}
       <Message message={message} type="error" />
