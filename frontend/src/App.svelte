@@ -24,11 +24,11 @@
   }
 </script>
 
-<div class="h-full flex w-full flex-col justify-between items-center dark:bg-gray-800 p-2 font-body">
+<div class="h-full flex w-full flex-col justify-between items-center bg-primary p-0 font-body">
   <!-- Dropdown for smaller screens -->
   <div class="sm:hidden">
     <label for="Tab" class="sr-only">Tab</label>
-    <select id="Tab" class="w-full rounded-md border-gray-200" bind:value={currentTab} on:change={updateTab}>
+    <select id="Tab" class="w-full rounded-md border-secondary bg-accent" bind:value={currentTab} on:change={updateTab}>
       <option>Work</option>
       <option>Timer</option>
       <option>Projects</option>
@@ -36,31 +36,31 @@
   </div>
 
   <!-- Navigation for larger screens -->
-  <div class="hidden sm:block">
-    <nav class="flex gap-6" aria-label="Tabs">
+  <div class="hidden sm:block bg-secondary w-full p-2">
+    <nav class="flex w-full justify-center gap-6 m-auto" aria-label="Tabs">
       <button
-        class="shrink-0 rounded-lg p-2 text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+        class="shrink-0 rounded-lg p-2 text-sm font-medium text-textSecondary hover:bg-buttonAccentBg hover:text-buttonAccentText"
         on:click={() => setTab('Work')}
-        class:text-sky-600={currentTab === 'Work'}
-        class:bg-sky-100={currentTab === 'Work'}
+        class:bg-buttonPrimaryBg={currentTab === 'Work'}
+        class:hover:bg-buttonHoverBg={currentTab === 'Work'}
       >
         Work Day
       </button>
 
       <button
-        class="shrink-0 rounded-lg p-2 text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+        class="shrink-0 rounded-lg p-2 text-sm font-medium text-textSecondary hover:bg-buttonAccentBg hover:text-buttonAccentText"
         on:click={() => setTab('Timer')}
-        class:text-sky-600={currentTab === 'Timer'}
-        class:bg-sky-100={currentTab === 'Timer'}
+        class:bg-buttonPrimaryBg={currentTab === 'Timer'}
+        class:hover:bg-buttonHoverBg={currentTab === 'Timer'}
       >
         Timer
       </button>
 
       <button
-        class="shrink-0 rounded-lg p-2 text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+        class="shrink-0 rounded-lg p-2 text-sm font-medium text-textSecondary hover:bg-buttonAccentBg hover:text-buttonAccentText"
         on:click={() => setTab('Projects')}
-        class:text-sky-600={currentTab === 'Projects'}
-        class:bg-sky-100={currentTab === 'Projects'}
+        class:bg-buttonPrimaryBg={currentTab === 'Projects'}
+        class:hover:bg-buttonHoverBg={currentTab === 'Projects'}
       >
         Projects
       </button>
