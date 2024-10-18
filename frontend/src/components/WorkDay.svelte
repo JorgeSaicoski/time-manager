@@ -122,7 +122,7 @@
             const response = await EndBreak()
             breakTime = false
             workTime = response.workTime
-            messageType = false
+            messageType = "info"
             message = response.message
             timerStart = new Date(workTime.StartTime);
             intervalName = "Work time"
@@ -231,7 +231,7 @@
 </script>
 
 
-<div class="w-full max-w-2xl p-4 space-y-4 bg-gray-800 rounded-lg shadow-lg text-white">
+<div class="w-full max-w-2xl p-4 space-y-4 bg-secondary rounded-lg shadow-lg text-white">
     <Message message={message} type={messageType}></Message>
     {#if !workDayStarted}
         <button 
@@ -263,7 +263,7 @@
             {#if !workTime}
                 <Button label="Start or return to working" type="normal" onClick={() => startWorkTime()} ></Button>
             {/if}
-            <Button label="Finish Day" type="normal" onClick={() => finishWorkDay()} ></Button>
+            <Button label="Finish Day" type="error" onClick={() => finishWorkDay()} ></Button>
         </div>
         {#if workTime}
             <div class="w-full">

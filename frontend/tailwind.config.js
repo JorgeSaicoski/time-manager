@@ -11,7 +11,8 @@ export default {
       },
       colors: {
         primary: '#008B8B',     
-        secondary: '#1F2E40',  
+        secondary: '#1F2E40',
+        secondaryAccent: '#354F6F',
         accent: '#FFC107',     
         hover: '#00CED1',  
         error: '#C0392B',   
@@ -20,6 +21,7 @@ export default {
         textSecondary: '#B0BEC5', 
         textAccent: '#FFC107', 
         textError: '#E74C3C', 
+        textDark: '#000000',
 
         buttonPrimaryBg: '#008B8B', 
         buttonPrimaryText: '#FFFFFF', 
