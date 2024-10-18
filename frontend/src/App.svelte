@@ -81,7 +81,7 @@
   {#if currentTab === 'Project'}
     <Project projectID={projectID}></Project>
   {/if}
-  <footer class="w-full bg-black shadow-sm focus:border-sky-500 focus:ring-sky-500 text-teal-800 font-nerd">
+  <footer class="w-full bg-secondary text-textPrimary shadow-sm focus:border-sky-500 focus:ring-sky-500 font-nerd">
     <div class="mx-auto flex flex-col items-center space-y-4">
       <p>
         Developed by: 
