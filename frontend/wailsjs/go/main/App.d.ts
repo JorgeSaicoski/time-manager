@@ -21,7 +21,7 @@ export function GetStartTimes():Promise<Array<main.Timer>>;
 
 export function GetUnfinishedWorkTimeProjectWithoutSendingError():Promise<database.WorkTimeProject>;
 
-export function RemoveTimer(arg1:string):Promise<void>;
+export function RemoveTimer(arg1:string):Promise<string>;
 
 export function StartDay():Promise<main.StartDayResponse>;
 

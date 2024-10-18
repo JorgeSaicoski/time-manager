@@ -34,9 +34,9 @@
       }
   };
 
-  const removeTimer = async(message) => {
+  const removeTimer = async(timer) => {
     try {
-      await RemoveTimer(message);
+      alertMessage = await RemoveTimer(timer);
       messageStyle = "info";
       await fetchActiveTimers();
     } catch (error) {
@@ -138,7 +138,7 @@
             class="bg-accent rounded-md text-textDark mx-2"
             on:click={()=>{removeTimer(timer.Message)}}
              >Remove</button>
-            Timer for "{timer.Message}" - will trigger at {timer.formattedFinishTime}
+            Timer for "{timer.Message}" - will trigger at: <p class="text-textAccent px-1"> {timer.formattedFinishTime}</p>
           </li>
         {/each}
       </ul>

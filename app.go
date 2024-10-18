@@ -105,13 +105,15 @@ func (a *App) StartTimer(seconds int, message string) string {
 	return fmt.Sprintf("Timer started and will finish at %s", finishTime.Format("15:04:05"))
 }
 
-func (a *App) RemoveTimer(message string) {
+func (a *App) RemoveTimer(message string) string {
 	for i, t := range a.Timers {
 		if t.Message == message {
 			a.Timers = append(a.Timers[:i], a.Timers[i+1:]...)
 			break
 		}
 	}
+
+	return "Timer removed"
 }
 
 func (a *App) GetStartTimes() []Timer {
