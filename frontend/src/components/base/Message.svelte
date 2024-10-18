@@ -8,6 +8,8 @@
         messageClass = "bg-primary text-accent";
       } else if (type === "error") {
         messageClass = "bg-error text-white";
+      } else{
+        messageClass = "bg-accent text-primary"
       }
     }
   </script>

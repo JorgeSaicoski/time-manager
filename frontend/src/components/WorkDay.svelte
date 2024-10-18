@@ -21,7 +21,7 @@
     let projects = [];
     let currentProject = null;
     let message = null
-    let error = false
+    let messageType = "info"
     let totalTime = null
     let timerStart = null;
     let elapsedTime = "00:00:00";
@@ -74,7 +74,7 @@
             const response  = await FinishDay();
             workDayStarted = false
             message = response
-            error = false
+            messageType = "info"
             totalTime = null
             workTime = null
             timerStart = null;
@@ -84,7 +84,7 @@
 
         } catch(err){
             message = err.message
-            error = true
+            messageType = "error"
 
         }
     }
@@ -103,24 +103,32 @@
     }
  
     const takeBreak = async () => {
-        message = await TakeBreak(workTime.ID)
-        breakTime = true
-        timerStart = new Date();
-        intervalName = "Break time"
-    }
+        try {
+            let response = await TakeBreak(workTime.ID);
+            message = response + " You are on a break. Any interaction with the app will signal the end of your break.";
+            
+            breakTime = true;
+            timerStart = new Date();
+            intervalName = "Break time";
+            messageType = "alert"
+        } catch (err) {
+            console.error("Error while creating break:", err);
+            message = "An error occurred while trying to start the break.";
+            messageType = "error"; 
+        }
+    };
     const endBreak = async () => {
         try {
             const response = await EndBreak()
-            console.log(response.workTime)
             breakTime = false
             workTime = response.workTime
-            error = false
+            messageType = false
             message = response.message
             timerStart = new Date(workTime.StartTime);
             intervalName = "Work time"
         } catch (error) {
             message = err.message
-            error = true
+            messageType = "error"
         }
     }
 
@@ -138,7 +146,7 @@
         try {
             const response = await StartWorkTime();
             workTime = response.workTime;
-            error = false
+            messageType = "info"
             message = doesWorkTimeExist(workTime) 
                 ? "Welcome back! You're continuing your previous work session."
                 : response.message;
@@ -146,7 +154,7 @@
             timerStart = new Date(workTime.StartTime);
             intervalName = "Work Session";
         } catch (err) {
-            error = true
+            messageType = "error"
             message = `Error: ${err.message}`;
         }
     };
@@ -224,7 +232,7 @@
 
 
 <div class="w-full max-w-2xl p-4 space-y-4 bg-gray-800 rounded-lg shadow-lg text-white">
-    <Message message={message} type={error?"error":"info"}></Message>
+    <Message message={message} type={messageType}></Message>
     {#if !workDayStarted}
         <button 
         on:click={() => startWorkDay(false)}
