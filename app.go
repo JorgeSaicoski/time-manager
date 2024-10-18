@@ -18,8 +18,9 @@ type App struct {
 }
 
 type Timer struct {
-	Duration time.Duration
-	Message  string
+	Duration   time.Duration
+	Message    string
+	FinishTime time.Time
 }
 
 type StartDayResponse struct {
@@ -67,23 +68,31 @@ func (a *App) startup(ctx context.Context) {
 }
 
 func (a *App) StartTimer(seconds int, message string) string {
+	for _, timer := range a.Timers {
+		if timer.Message == message {
+			return "A timer with this message already exists."
+		}
+	}
+
 	if len(a.Timers) >= 3 {
 		return "Cannot start more than 3 timers at the same time."
 	}
 
 	newTimer := time.Duration(seconds) * time.Second
+
+	finishTime := time.Now().Add(newTimer)
+
 	a.Timers = append(a.Timers, Timer{
-		Duration: newTimer,
-		Message:  message,
+		Duration:   newTimer,
+		Message:    message,
+		FinishTime: finishTime,
 	})
 
 	go func() {
 		<-time.After(newTimer)
 
-		// Emit the event when the timer finishes
 		runtime.EventsEmit(a.ctx, "timerFinished", fmt.Sprintf("Reminder: '%s' finished after %d minutes.", message, seconds/60))
 
-		// Show a dialog when the timer finishes
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.InfoDialog,
 			Title:   "Alert!",
@@ -93,7 +102,7 @@ func (a *App) StartTimer(seconds int, message string) string {
 		a.RemoveTimer(message)
 	}()
 
-	return "Timer started"
+	return fmt.Sprintf("Timer started and will finish at %s", finishTime.Format("15:04:05"))
 }
 
 func (a *App) RemoveTimer(message string) {

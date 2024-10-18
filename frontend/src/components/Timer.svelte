@@ -1,5 +1,5 @@
 <script>
-  import { StartTimer, GetStartTimes } from "../../wailsjs/go/main/App";
+  import { StartTimer, GetStartTimes, RemoveTimer } from "../../wailsjs/go/main/App";
   import { onMount } from "svelte";
   import Message from "./base/Message.svelte";
   import Button from "./base/Button.svelte";
@@ -9,43 +9,56 @@
   let hours = 1;
   let minutes = 30;
   let alertMessage = "";
+  let messageStyle = "info";
   let activeTimers = []; 
 
   const hourOptions = Array.from({ length: 24 }, (_, i) => i);
   const minuteOptions = Array.from({ length: 60 }, (_, i) => i);
 
   const fetchActiveTimers = async () => {
-        try {
-            const timers = await GetStartTimes();
-            if (timers) {
-                activeTimers = timers.map(timer => {
-                    return {
-                        ...timer,
-                        remainingTime: formatTime(timer.Duration)
-                    };
-                });
-            } else {
-                activeTimers = [];
-            }
-        } catch (error) {
-            console.error("Error fetching active timers:", error);
-            activeTimers = [];
-        }
-    };
+      try {
+          const timers = await GetStartTimes();
+          if (timers) {
+              activeTimers = timers.map(timer => {
+                  return {
+                      ...timer,
+                      formattedFinishTime: formatFinishTime(timer.FinishTime) // Format the finish time
+                  };
+              });
+          } else {
+              activeTimers = [];
+          }
+      } catch (error) {
+          console.error("Error fetching active timers:", error);
+          activeTimers = [];
+      }
+  };
+
+  const removeTimer = async(message) => {
+    try {
+      await RemoveTimer(message);
+      messageStyle = "info";
+      await fetchActiveTimers();
+    } catch (error) {
+      console.error("Error:", error);
+      alertMessage = "Error removing the timer.";
+    }
+  };
 
   const startTimer = async () => {
       timeToTimer = minutes * 60 + hours * 60 * 60;
       if (activeTimers.length >= 3) {
+          messageStyle = "error";
           alertMessage = "You cannot set more than 3 timers at the same time.";
           return;
       }
 
       try {
           const receivedMessage = await StartTimer(timeToTimer, message);
-          alertMessage = `
-              ${receivedMessage}
-              Timer set for ${hours} hour(s) and ${minutes} minute(s). Message: "${message}"
-          `;
+          messageStyle = "info";
+
+          alertMessage = receivedMessage;
+
           await fetchActiveTimers();
           timeToTimer = 0;
           message = "";
@@ -57,11 +70,9 @@
       }
   };
 
-  const formatTime = (nanoseconds) => {
-        let totalSeconds = nanoseconds / 1e9; 
-        let hours = Math.floor(totalSeconds / 3600);
-        let minutes = Math.floor((totalSeconds % 3600) / 60);
-        return `${hours}h ${minutes}m`;
+  const formatFinishTime = (finishTime) => {
+      const finish = new Date(finishTime);
+      return finish.toLocaleTimeString(); 
   };
 
   onMount(() => {
@@ -69,7 +80,7 @@
   });
 </script>
 
-<div class="flex flex-col gap-4 max-w-md mx-auto p-6 bg-secondary text-textPrimary rounded-lg">
+<div class="flex flex-col gap-4 mx-auto p-6 bg-secondary text-textPrimary rounded-lg">
   <div>
     <label for="hours" class="block text-sm font-medium">Hours</label>
     <select
@@ -111,7 +122,9 @@
     <Button label="Set Timer" onClick={()=>{startTimer()}}></Button>
   </div>
 
-  <Message message={alertMessage} type="info"></Message>
+  {#if alertMessage}
+    <Message message={alertMessage} type={messageStyle}></Message>
+  {/if}
 
   <div>
     <h3 class="text-xl font-bold text-gray-200">Active Timers:</h3>
@@ -120,8 +133,12 @@
     {:else}
       <ul class="list-disc list-inside text-gray-200">
         {#each activeTimers as timer}
-          <li>
-            Timer for "{timer.Message}" - {timer.remainingTime} remaining.
+          <li class="my-2 flex justify-start border-2 rounded-md p-2 bg-secondaryAccent">
+            <button
+            class="bg-accent rounded-md text-textDark mx-2"
+            on:click={()=>{removeTimer(timer.Message)}}
+             >Remove</button>
+            Timer for "{timer.Message}" - will trigger at {timer.formattedFinishTime}
           </li>
         {/each}
       </ul>
