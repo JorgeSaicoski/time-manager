@@ -10,7 +10,8 @@
     let workData = {};
     let message = null;
     let messageType = "info";
-
+    let loading = true;
+    
 
     const getMonthName = (date) => format(date, 'MMMM yyyy');
 
@@ -29,49 +30,69 @@
         daysInMonth = eachDayOfInterval({ start, end });
 
         workData = {};
+        loading = true;
 
         for (let day of daysInMonth) {
-            console.log(day)
+            const utcDay = new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate()));
             try {
-                console.log("try from try catch")
-                const totalTime = await CalculateWorkTimeForDay(day);  
-                workData[format(day, 'yyyy-MM-dd')] = totalTime ? (totalTime / (60 * 60 * 1e9)).toFixed(1) : 0; 
+                const totalTime = await CalculateWorkTimeForDay(utcDay);
+                workData[format(utcDay, 'yyyy-MM-dd')] = totalTime ? (totalTime / (1e9 * 3600)).toFixed(1) : 0;
             } catch (err) {
                 message = "Error loading work data.";
                 messageType = "error";
                 break;
             }
         }
-    }
+        
+        loading = false; 
+    };
+
 
     onMount(() => {
         fetchMonthSummary();
     });
 
     const formatDay = (day) => format(day, 'd');
-    const getWorkTimeForDay = (day) => workData[format(day, 'yyyy-MM-dd')] || 0;
+
+        const getWorkTimeForDay = (day) => {
+        const utcDay = new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate()));
+        const formattedDate = format(utcDay, 'yyyy-MM-dd');
+        
+        // Print formattedDate and all keys in workData
+        console.log("Formatted date:", formattedDate);
+        console.log("workData keys:", Object.keys(workData));
+        console.log("Trying to access workData[formattedDate]:", workData[formattedDate]);
+
+        return workData[formattedDate] || 0;
+    };
+
 </script>
 
+<!-- Calendar component -->
 <div class="container mx-auto bg-secondary text-textPrimary p-6 rounded-lg shadow-lg font-nerd">
     {#if message}
         <Message message={message} type={messageType}></Message>
     {/if}
 
-    <div class="flex justify-between items-center mb-6">
-        <Button label="Previous" onClick={() => changeMonth('prev')} />
-        <h2 class="text-2xl font-bold">{getMonthName(selectedMonth)}</h2>
-        <Button label="Next" onClick={() => changeMonth('next')} />
-    </div>
+        <div class="flex justify-between items-center mb-6">
+            <Button label="Previous" onClick={() => changeMonth('prev')} />
+            <h2 class="text-2xl font-bold">{getMonthName(selectedMonth)}</h2>
+            <Button label="Next" onClick={() => changeMonth('next')} />
+        </div>
 
-    <div class="grid grid-cols-7 gap-4">
-        {#each daysInMonth as day}
-            <div class="text-center p-4 rounded-lg {getWorkTimeForDay(day) > 0 ? 'bg-blue-100' : 'bg-secondaryAccent'}">
-                <p class="text-lg font-bold">{formatDay(day)}</p>
-                <p class={getWorkTimeForDay(day) > 0 ? 'text-blue-600' : 'text-gray-400'}>
-                    {getWorkTimeForDay(day)}h
-                </p>
-            </div>
-        {/each}
-    </div>
+    {#if loading}
+        <div>Loading data, please wait...</div>
+    {:else}
+        <div class="grid grid-cols-7 gap-4">
+            {#each daysInMonth as day}
+                <div class="text-center p-4 rounded-lg {getWorkTimeForDay(day) > 0 ? 'bg-secondaryAccent' : 'bg-hover'}">
+                    <p class="text-lg font-bold">{formatDay(day)}</p>
+                    <p class={getWorkTimeForDay(day) > 0 ? 'text-blue-600' : 'text-gray-400'}>
+                        {getWorkTimeForDay(day)}h
+                    </p>
+                </div>
+            {/each}
+        </div>
+    {/if}
+
 </div>
-

@@ -322,9 +322,11 @@ func GetUnfinishedWorkTimeProject() (*WorkTimeProject, error) {
 
 func GetWorkTimesForDay(day time.Time) ([]WorkTime, error) {
 	var workTimes []WorkTime
-	dayStart := day.Truncate(24 * time.Hour)
 
-	result := DB.Where("start_time >= ? AND start_time < ?", dayStart, dayStart.Add(24*time.Hour)).Find(&workTimes)
+	dayStart := day.UTC().Truncate(24 * time.Hour)
+	dayEnd := dayStart.Add(24 * time.Hour)
+
+	result := DB.Where("start_time >= ? AND start_time < ?", dayStart, dayEnd).Find(&workTimes)
 	if result.Error != nil {
 		return nil, result.Error
 	}
