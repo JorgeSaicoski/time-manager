@@ -85,9 +85,9 @@
     {:else}
         <div class="grid grid-cols-7 gap-4">
             {#each daysInMonth as day}
-                <div class="text-center p-4 rounded-lg {getWorkTimeForDay(day) > 0 ? 'bg-secondaryAccent' : 'bg-hover'}">
-                    <p class="text-lg font-bold">{formatDay(day)}</p>
-                    <p class={getWorkTimeForDay(day) > 0 ? 'text-blue-600' : 'text-gray-400'}>
+                <div class="text-center p-4 rounded-lg {getWorkTimeForDay(day) > 0 ? 'bg-hover' : 'bg-secondaryAccent'}">
+                    <p class="text-lg font-bold text-textSecondary">{formatDay(day)}</p>
+                    <p class={getWorkTimeForDay(day) > 0 ? 'text-textPrimary' : 'text-textDark'}>
                         {getWorkTimeForDay(day)}h
                     </p>
                 </div>
