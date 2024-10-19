@@ -1,27 +1,41 @@
 <script>
     import { onMount } from 'svelte';
-    import { GetDaySummary } from '../../../wailsjs/go/main/App'; 
+    import { CalculateWorkTimeForDay } from '../../../wailsjs/go/main/App';
+    import { eachDayOfInterval, format, startOfMonth, endOfMonth, addMonths, subMonths } from 'date-fns';
+    import Button from '../base/Button.svelte'; 
     import Message from '../base/Message.svelte';
-    import { eachDayOfInterval, format, startOfMonth, endOfMonth } from 'date-fns'; 
 
-    let selectedMonth = new Date();  
+    let selectedMonth = new Date(); 
     let daysInMonth = [];
     let workData = {};
     let message = null;
     let messageType = "info";
+
+
+    const getMonthName = (date) => format(date, 'MMMM yyyy');
+
+    const changeMonth = (direction) => {
+        if (direction === 'next') {
+            selectedMonth = addMonths(selectedMonth, 1);
+        } else if (direction === 'prev') {
+            selectedMonth = subMonths(selectedMonth, 1);
+        }
+        fetchMonthSummary();
+    }
 
     const fetchMonthSummary = async () => {
         const start = startOfMonth(selectedMonth);
         const end = endOfMonth(selectedMonth);
         daysInMonth = eachDayOfInterval({ start, end });
 
-        workData = {};  // Reset work data
+        workData = {};
 
         for (let day of daysInMonth) {
+            console.log(day)
             try {
-                const response = await GetDaySummary(day);
-                Ge
-                workData[format(day, 'yyyy-MM-dd')] = response.totalTime ? (response.totalTime / (60 * 60 * 1e9)).toFixed(1) : 0;  // Convert nanoseconds to hours
+                console.log("try from try catch")
+                const totalTime = await CalculateWorkTimeForDay(day);  
+                workData[format(day, 'yyyy-MM-dd')] = totalTime ? (totalTime / (60 * 60 * 1e9)).toFixed(1) : 0; 
             } catch (err) {
                 message = "Error loading work data.";
                 messageType = "error";
@@ -43,6 +57,12 @@
         <Message message={message} type={messageType}></Message>
     {/if}
 
+    <div class="flex justify-between items-center mb-6">
+        <Button label="Previous" onClick={() => changeMonth('prev')} />
+        <h2 class="text-2xl font-bold">{getMonthName(selectedMonth)}</h2>
+        <Button label="Next" onClick={() => changeMonth('next')} />
+    </div>
+
     <div class="grid grid-cols-7 gap-4">
         {#each daysInMonth as day}
             <div class="text-center p-4 rounded-lg {getWorkTimeForDay(day) > 0 ? 'bg-blue-100' : 'bg-secondaryAccent'}">
@@ -54,3 +74,4 @@
         {/each}
     </div>
 </div>
+

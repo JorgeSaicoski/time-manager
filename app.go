@@ -368,6 +368,7 @@ func (a *App) GetUnfinishedWorkTimeProjectWithoutSendingError() *database.WorkTi
 }
 
 func (a *App) CalculateWorkTimeForDay(day time.Time) (time.Duration, error) {
+	fmt.Println(day)
 	workTimes, err := database.GetWorkTimesForDay(day)
 	if err != nil {
 		log.Printf("Error fetching work times: %v", err)
