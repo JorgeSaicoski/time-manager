@@ -319,3 +319,20 @@ func GetUnfinishedWorkTimeProject() (*WorkTimeProject, error) {
 	}
 	return &workTimeProject, nil
 }
+
+func GetWorkTimesForDay(day time.Time) ([]WorkTime, error) {
+	var workTimes []WorkTime
+	dayStart := day.Truncate(24 * time.Hour)
+
+	result := DB.Where("start_time >= ? AND start_time < ?", dayStart, dayStart.Add(24*time.Hour)).Find(&workTimes)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return workTimes, nil
+}
+
+func UpdateWorkTimeTrustworthy(workTime *WorkTime, trustworthy bool) error {
+	workTime.Trustworthy = trustworthy
+	return DB.Save(workTime).Error
+}

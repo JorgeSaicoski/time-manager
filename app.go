@@ -357,3 +357,27 @@ func (a *App) GetUnfinishedWorkTimeProjectWithoutSendingError() *database.WorkTi
 	}
 	return workTimeProject
 }
+
+func (a *App) CalculateWorkTimeForDay(day time.Time) (time.Duration, error) {
+	workTimes, err := database.GetWorkTimesForDay(day)
+	if err != nil {
+		log.Printf("Error fetching work times: %v", err)
+		return 0, err
+	}
+
+	var totalDuration time.Duration
+
+	for _, workTime := range workTimes {
+		totalDuration += workTime.Duration
+
+		if totalDuration > 24*time.Hour {
+			err := database.UpdateWorkTimeTrustworthy(&workTime, false)
+			if err != nil {
+				log.Printf("Error updating trustworthy status: %v", err)
+			}
+			totalDuration = 24 * time.Hour
+		}
+	}
+
+	return totalDuration, nil
+}
