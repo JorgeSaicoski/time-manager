@@ -57,11 +57,6 @@
         const getWorkTimeForDay = (day) => {
         const utcDay = new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate()));
         const formattedDate = format(utcDay, 'yyyy-MM-dd');
-        
-        // Print formattedDate and all keys in workData
-        console.log("Formatted date:", formattedDate);
-        console.log("workData keys:", Object.keys(workData));
-        console.log("Trying to access workData[formattedDate]:", workData[formattedDate]);
 
         return workData[formattedDate] || 0;
     };
@@ -69,16 +64,16 @@
 </script>
 
 <!-- Calendar component -->
-<div class="container mx-auto bg-secondary text-textPrimary p-6 rounded-lg shadow-lg font-nerd">
+<div class="container mx-auto bg-secondary text-textPrimary p-6 rounded-lg shadow-lg font-nerd w-[1000px]">
     {#if message}
         <Message message={message} type={messageType}></Message>
     {/if}
 
-        <div class="flex justify-between items-center mb-6">
-            <Button label="Previous" onClick={() => changeMonth('prev')} />
-            <h2 class="text-2xl font-bold">{getMonthName(selectedMonth)}</h2>
-            <Button label="Next" onClick={() => changeMonth('next')} />
-        </div>
+    <div class="flex justify-between items-center mb-6">
+        <Button label="Previous" onClick={() => changeMonth('prev')} />
+        <h2 class="text-2xl font-bold">{getMonthName(selectedMonth)}</h2>
+        <Button label="Next" onClick={() => changeMonth('next')} />
+    </div>
 
     {#if loading}
         <div>Loading data, please wait...</div>
@@ -94,5 +89,4 @@
             {/each}
         </div>
     {/if}
-
 </div>
