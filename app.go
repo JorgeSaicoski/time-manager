@@ -56,6 +56,15 @@ type ProjectsResponse struct {
 	ItemsPerPage int                `json:"itemsPerPage"`
 }
 
+type DaySummary struct {
+	WorkTimesStarted      []database.WorkTime  `json:"workTimesStarted"`
+	WorkTimesCrossingDays []database.WorkTime  `json:"workTimesCrossingDays"`
+	TotalTime             time.Duration        `json:"totalTime"`
+	Projects              []database.Project   `json:"projects"`
+	Breaks                []database.BreakTime `json:"breaks"`
+	Brbs                  []database.Brb       `json:"brbs"`
+}
+
 func NewApp() *App {
 	return &App{}
 }
@@ -380,4 +389,57 @@ func (a *App) CalculateWorkTimeForDay(day time.Time) (time.Duration, error) {
 	}
 
 	return totalDuration, nil
+}
+
+func (a *App) GetDaySummary(day time.Time) (DaySummary, error) {
+	var summary DaySummary
+
+	workTimes, err := database.GetWorkTimesForDay(day)
+	if err != nil {
+		log.Printf("Error fetching work times: %v", err)
+		return summary, err
+	}
+	summary.WorkTimesStarted = workTimes
+
+	workTimesCrossingDays, err := database.GetWorkTimesCrossingDays(day)
+	if err != nil {
+		log.Printf("Error fetching work times crossing days: %v", err)
+		return summary, err
+	}
+	summary.WorkTimesCrossingDays = workTimesCrossingDays
+
+	var totalTime time.Duration
+	for _, workTime := range workTimes {
+		totalTime += workTime.Duration
+	}
+	if totalTime > 24*time.Hour {
+		totalTime = 24 * time.Hour
+	}
+	summary.TotalTime = totalTime
+
+	projectSet := make(map[int64]database.Project)
+	for _, workTime := range workTimes {
+		for _, project := range workTime.Projects {
+			projectSet[project.ID] = project
+		}
+	}
+	for _, project := range projectSet {
+		summary.Projects = append(summary.Projects, project)
+	}
+
+	breakTimes, err := database.GetBreakTimesForDay(day)
+	if err != nil {
+		log.Printf("Error fetching break times: %v", err)
+		return summary, err
+	}
+	summary.Breaks = breakTimes
+
+	brbs, err := database.GetBrbsForDay(day)
+	if err != nil {
+		log.Printf("Error fetching brb sessions: %v", err)
+		return summary, err
+	}
+	summary.Brbs = brbs
+
+	return summary, nil
 }

@@ -336,3 +336,39 @@ func UpdateWorkTimeTrustworthy(workTime *WorkTime, trustworthy bool) error {
 	workTime.Trustworthy = trustworthy
 	return DB.Save(workTime).Error
 }
+
+func GetWorkTimesCrossingDays(day time.Time) ([]WorkTime, error) {
+	var workTimes []WorkTime
+	dayStart := day.Truncate(24 * time.Hour)
+
+	result := DB.Where("start_time >= ? AND start_time < ? AND duration > ?", dayStart, dayStart.Add(24*time.Hour), 24*time.Hour).Find(&workTimes)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return workTimes, nil
+}
+
+func GetBreakTimesForDay(day time.Time) ([]BreakTime, error) {
+	var breakTimes []BreakTime
+	dayStart := day.Truncate(24 * time.Hour)
+
+	result := DB.Where("start_time >= ? AND start_time < ?", dayStart, dayStart.Add(24*time.Hour)).Find(&breakTimes)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return breakTimes, nil
+}
+
+func GetBrbsForDay(day time.Time) ([]Brb, error) {
+	var brbs []Brb
+	dayStart := day.Truncate(24 * time.Hour)
+
+	result := DB.Where("start_time >= ? AND start_time < ?", dayStart, dayStart.Add(24*time.Hour)).Find(&brbs)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return brbs, nil
+}
