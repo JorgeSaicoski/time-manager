@@ -5,6 +5,7 @@
   import CreateProject from "./components/projects/CreateProject.svelte";
   import Projects from "./components/projects/Projects.svelte";
   import Project from "./components/projects/Project.svelte";
+  import WorkSumary from "./components/summary/WorkSumary.svelte";
 
   let currentTab = 'Work';
 
@@ -64,6 +65,15 @@
       >
         Projects
       </button>
+
+      <button
+        class="shrink-0 rounded-lg p-2 text-sm font-medium text-textSecondary hover:bg-buttonAccentBg hover:text-buttonAccentText"
+        on:click={() => setTab('Summary')}
+        class:bg-buttonPrimaryBg={currentTab === 'Summary'}
+        class:hover:bg-buttonHoverBg={currentTab === 'Summary'}
+      >
+        Summary
+      </button>
     </nav>
   </div>
   <section class="my-2">
@@ -81,6 +91,9 @@
     {/if}
     {#if currentTab === 'Project'}
       <Project projectID={projectID}></Project>
+    {/if}
+    {#if currentTab === 'Summary'}
+      <WorkSumary></WorkSumary>
     {/if}
   </section>
   

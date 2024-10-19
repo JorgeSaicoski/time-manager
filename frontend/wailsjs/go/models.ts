@@ -1,17 +1,57 @@
 export namespace database {
 	
+	export class Brb {
+	    ID: number;
+	    CreatedAt: time.Time;
+	    UpdatedAt: time.Time;
+	    // Go type: gorm
+	    DeletedAt: any;
+	    ID: number;
+	    StartTime: time.Time;
+	    Duration: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new Brb(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.ID = source["ID"];
+	        this.CreatedAt = this.convertValues(source["CreatedAt"], time.Time);
+	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], time.Time);
+	        this.DeletedAt = this.convertValues(source["DeletedAt"], null);
+	        this.ID = source["ID"];
+	        this.StartTime = this.convertValues(source["StartTime"], time.Time);
+	        this.Duration = source["Duration"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class BreakTime {
 	    ID: number;
-	    // Go type: time
-	    CreatedAt: any;
-	    // Go type: time
-	    UpdatedAt: any;
+	    CreatedAt: time.Time;
+	    UpdatedAt: time.Time;
 	    // Go type: gorm
 	    DeletedAt: any;
 	    ID: number;
 	    TotalTimeID: number;
-	    // Go type: time
-	    StartTime: any;
+	    StartTime: time.Time;
 	    Duration: number;
 	
 	    static createFrom(source: any = {}) {
@@ -21,12 +61,12 @@ export namespace database {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.ID = source["ID"];
-	        this.CreatedAt = this.convertValues(source["CreatedAt"], null);
-	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], null);
+	        this.CreatedAt = this.convertValues(source["CreatedAt"], time.Time);
+	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], time.Time);
 	        this.DeletedAt = this.convertValues(source["DeletedAt"], null);
 	        this.ID = source["ID"];
 	        this.TotalTimeID = source["TotalTimeID"];
-	        this.StartTime = this.convertValues(source["StartTime"], null);
+	        this.StartTime = this.convertValues(source["StartTime"], time.Time);
 	        this.Duration = source["Duration"];
 	    }
 	
@@ -50,16 +90,13 @@ export namespace database {
 	}
 	export class Cost {
 	    ID: number;
-	    // Go type: time
-	    CreatedAt: any;
-	    // Go type: time
-	    UpdatedAt: any;
+	    CreatedAt: time.Time;
+	    UpdatedAt: time.Time;
 	    // Go type: gorm
 	    DeletedAt: any;
 	    ID: number;
 	    ProjectID: number;
-	    // Go type: time
-	    Time: any;
+	    Time: time.Time;
 	    HourCost: number;
 	
 	    static createFrom(source: any = {}) {
@@ -69,12 +106,12 @@ export namespace database {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.ID = source["ID"];
-	        this.CreatedAt = this.convertValues(source["CreatedAt"], null);
-	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], null);
+	        this.CreatedAt = this.convertValues(source["CreatedAt"], time.Time);
+	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], time.Time);
 	        this.DeletedAt = this.convertValues(source["DeletedAt"], null);
 	        this.ID = source["ID"];
 	        this.ProjectID = source["ProjectID"];
-	        this.Time = this.convertValues(source["Time"], null);
+	        this.Time = this.convertValues(source["Time"], time.Time);
 	        this.HourCost = source["HourCost"];
 	    }
 	
@@ -98,16 +135,13 @@ export namespace database {
 	}
 	export class Task {
 	    ID: number;
-	    // Go type: time
-	    CreatedAt: any;
-	    // Go type: time
-	    UpdatedAt: any;
+	    CreatedAt: time.Time;
+	    UpdatedAt: time.Time;
 	    // Go type: gorm
 	    DeletedAt: any;
 	    ID: number;
 	    ProjectID: number;
-	    // Go type: time
-	    Deadline: any;
+	    Deadline: time.Time;
 	    Description: string;
 	    Closed: boolean;
 	
@@ -118,12 +152,12 @@ export namespace database {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.ID = source["ID"];
-	        this.CreatedAt = this.convertValues(source["CreatedAt"], null);
-	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], null);
+	        this.CreatedAt = this.convertValues(source["CreatedAt"], time.Time);
+	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], time.Time);
 	        this.DeletedAt = this.convertValues(source["DeletedAt"], null);
 	        this.ID = source["ID"];
 	        this.ProjectID = source["ProjectID"];
-	        this.Deadline = this.convertValues(source["Deadline"], null);
+	        this.Deadline = this.convertValues(source["Deadline"], time.Time);
 	        this.Description = source["Description"];
 	        this.Closed = source["Closed"];
 	    }
@@ -148,19 +182,17 @@ export namespace database {
 	}
 	export class WorkTime {
 	    ID: number;
-	    // Go type: time
-	    CreatedAt: any;
-	    // Go type: time
-	    UpdatedAt: any;
+	    CreatedAt: time.Time;
+	    UpdatedAt: time.Time;
 	    // Go type: gorm
 	    DeletedAt: any;
 	    ID: number;
 	    TotalTimeID: number;
-	    // Go type: time
-	    StartTime: any;
+	    StartTime: time.Time;
 	    Duration: number;
 	    Projects: Project[];
 	    Closed: boolean;
+	    Trustworthy: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new WorkTime(source);
@@ -169,15 +201,16 @@ export namespace database {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.ID = source["ID"];
-	        this.CreatedAt = this.convertValues(source["CreatedAt"], null);
-	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], null);
+	        this.CreatedAt = this.convertValues(source["CreatedAt"], time.Time);
+	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], time.Time);
 	        this.DeletedAt = this.convertValues(source["DeletedAt"], null);
 	        this.ID = source["ID"];
 	        this.TotalTimeID = source["TotalTimeID"];
-	        this.StartTime = this.convertValues(source["StartTime"], null);
+	        this.StartTime = this.convertValues(source["StartTime"], time.Time);
 	        this.Duration = source["Duration"];
 	        this.Projects = this.convertValues(source["Projects"], Project);
 	        this.Closed = source["Closed"];
+	        this.Trustworthy = source["Trustworthy"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -200,16 +233,13 @@ export namespace database {
 	}
 	export class Project {
 	    ID: number;
-	    // Go type: time
-	    CreatedAt: any;
-	    // Go type: time
-	    UpdatedAt: any;
+	    CreatedAt: time.Time;
+	    UpdatedAt: time.Time;
 	    // Go type: gorm
 	    DeletedAt: any;
 	    ID: number;
 	    Name: string;
-	    // Go type: time
-	    StartTime: any;
+	    StartTime: time.Time;
 	    Duration: number;
 	    Closed: boolean;
 	    Cost?: Cost;
@@ -223,12 +253,12 @@ export namespace database {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.ID = source["ID"];
-	        this.CreatedAt = this.convertValues(source["CreatedAt"], null);
-	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], null);
+	        this.CreatedAt = this.convertValues(source["CreatedAt"], time.Time);
+	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], time.Time);
 	        this.DeletedAt = this.convertValues(source["DeletedAt"], null);
 	        this.ID = source["ID"];
 	        this.Name = source["Name"];
-	        this.StartTime = this.convertValues(source["StartTime"], null);
+	        this.StartTime = this.convertValues(source["StartTime"], time.Time);
 	        this.Duration = source["Duration"];
 	        this.Closed = source["Closed"];
 	        this.Cost = this.convertValues(source["Cost"], Cost);
@@ -257,17 +287,13 @@ export namespace database {
 	
 	export class TotalTime {
 	    ID: number;
-	    // Go type: time
-	    CreatedAt: any;
-	    // Go type: time
-	    UpdatedAt: any;
+	    CreatedAt: time.Time;
+	    UpdatedAt: time.Time;
 	    // Go type: gorm
 	    DeletedAt: any;
 	    ID: number;
-	    // Go type: time
-	    StartTime: any;
-	    // Go type: time
-	    FinishTime: any;
+	    StartTime: time.Time;
+	    FinishTime: time.Time;
 	    WorkTimes: WorkTime[];
 	    BreakTime?: BreakTime;
 	
@@ -278,12 +304,12 @@ export namespace database {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.ID = source["ID"];
-	        this.CreatedAt = this.convertValues(source["CreatedAt"], null);
-	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], null);
+	        this.CreatedAt = this.convertValues(source["CreatedAt"], time.Time);
+	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], time.Time);
 	        this.DeletedAt = this.convertValues(source["DeletedAt"], null);
 	        this.ID = source["ID"];
-	        this.StartTime = this.convertValues(source["StartTime"], null);
-	        this.FinishTime = this.convertValues(source["FinishTime"], null);
+	        this.StartTime = this.convertValues(source["StartTime"], time.Time);
+	        this.FinishTime = this.convertValues(source["FinishTime"], time.Time);
 	        this.WorkTimes = this.convertValues(source["WorkTimes"], WorkTime);
 	        this.BreakTime = this.convertValues(source["BreakTime"], BreakTime);
 	    }
@@ -311,8 +337,7 @@ export namespace database {
 	    ID: number;
 	    WorkTimeID: number;
 	    ProjectID: number;
-	    // Go type: time
-	    StartTime: any;
+	    StartTime: time.Time;
 	    Duration: number;
 	    Closed: boolean;
 	    WorkTime: WorkTime;
@@ -327,7 +352,7 @@ export namespace database {
 	        this.ID = source["ID"];
 	        this.WorkTimeID = source["WorkTimeID"];
 	        this.ProjectID = source["ProjectID"];
-	        this.StartTime = this.convertValues(source["StartTime"], null);
+	        this.StartTime = this.convertValues(source["StartTime"], time.Time);
 	        this.Duration = source["Duration"];
 	        this.Closed = source["Closed"];
 	        this.WorkTime = this.convertValues(source["WorkTime"], WorkTime);
@@ -357,6 +382,46 @@ export namespace database {
 
 export namespace main {
 	
+	export class DaySummary {
+	    workTimesStarted: database.WorkTime[];
+	    workTimesCrossingDays: database.WorkTime[];
+	    totalTime: number;
+	    projects: database.Project[];
+	    breaks: database.BreakTime[];
+	    brbs: database.Brb[];
+	
+	    static createFrom(source: any = {}) {
+	        return new DaySummary(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.workTimesStarted = this.convertValues(source["workTimesStarted"], database.WorkTime);
+	        this.workTimesCrossingDays = this.convertValues(source["workTimesCrossingDays"], database.WorkTime);
+	        this.totalTime = source["totalTime"];
+	        this.projects = this.convertValues(source["projects"], database.Project);
+	        this.breaks = this.convertValues(source["breaks"], database.BreakTime);
+	        this.brbs = this.convertValues(source["brbs"], database.Brb);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class MessageProjectResponse {
 	    message: string;
 	    project?: database.Project;
@@ -558,8 +623,7 @@ export namespace main {
 	export class Timer {
 	    Duration: number;
 	    Message: string;
-	    // Go type: time
-	    FinishTime: any;
+	    FinishTime: time.Time;
 	
 	    static createFrom(source: any = {}) {
 	        return new Timer(source);
@@ -569,7 +633,7 @@ export namespace main {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.Duration = source["Duration"];
 	        this.Message = source["Message"];
-	        this.FinishTime = this.convertValues(source["FinishTime"], null);
+	        this.FinishTime = this.convertValues(source["FinishTime"], time.Time);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -589,6 +653,23 @@ export namespace main {
 		    }
 		    return a;
 		}
+	}
+
+}
+
+export namespace time {
+	
+	export class Time {
+	
+	
+	    static createFrom(source: any = {}) {
+	        return new Time(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	
+	    }
 	}
 
 }

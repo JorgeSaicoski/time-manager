@@ -6,6 +6,10 @@ export function AssociateProjectToWorkTime(arg1) {
   return window['go']['main']['App']['AssociateProjectToWorkTime'](arg1);
 }
 
+export function CalculateWorkTimeForDay(arg1) {
+  return window['go']['main']['App']['CalculateWorkTimeForDay'](arg1);
+}
+
 export function CreateProject(arg1) {
   return window['go']['main']['App']['CreateProject'](arg1);
 }
@@ -24,6 +28,10 @@ export function FinishDay() {
 
 export function GetAllProjects(arg1, arg2) {
   return window['go']['main']['App']['GetAllProjects'](arg1, arg2);
+}
+
+export function GetDaySummary(arg1) {
+  return window['go']['main']['App']['GetDaySummary'](arg1);
 }
 
 export function GetProjectByID(arg1) {
