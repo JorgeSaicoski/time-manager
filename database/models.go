@@ -23,6 +23,7 @@ type WorkTime struct {
 	Duration    time.Duration
 	Projects    []Project `gorm:"many2many:work_time_projects;"`
 	Closed      bool
+	Trustworthy bool `gorm:"default:true"`
 }
 
 type Project struct {
