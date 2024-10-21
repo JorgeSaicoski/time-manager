@@ -96,7 +96,7 @@ export namespace database {
 	    DeletedAt: any;
 	    ID: number;
 	    ProjectID: number;
-	    Time: time.Time;
+	    Duration: number;
 	    HourCost: number;
 	
 	    static createFrom(source: any = {}) {
@@ -111,7 +111,7 @@ export namespace database {
 	        this.DeletedAt = this.convertValues(source["DeletedAt"], null);
 	        this.ID = source["ID"];
 	        this.ProjectID = source["ProjectID"];
-	        this.Time = this.convertValues(source["Time"], time.Time);
+	        this.Duration = source["Duration"];
 	        this.HourCost = source["HourCost"];
 	    }
 	

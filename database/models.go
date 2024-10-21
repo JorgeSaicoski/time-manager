@@ -70,7 +70,7 @@ type Cost struct {
 	gorm.Model
 	ID        int64 `gorm:"primaryKey"`
 	ProjectID int64 `gorm:"uniqueIndex"`
-	Time      time.Time
+	Duration  time.Duration
 	HourCost  int
 }
 
