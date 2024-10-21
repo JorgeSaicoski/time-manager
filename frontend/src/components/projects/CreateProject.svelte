@@ -44,7 +44,6 @@
       placeholder="Enter the project name"
       bind:value={projectName}
     ></textarea>
-    <p class="mt-2 text-sm text-gray-500">You entered: {projectName}</p>
     <div class="flex items-center">
         <input 
           type="checkbox" 
