@@ -49,6 +49,10 @@
         
     }
 
+    const changeCloseProject = () => {
+
+    }
+
     const findProject = async ()=>  {
         try {
             const response  = await GetProjectByID(projectID);
@@ -115,7 +119,11 @@
                 class="w-full p-2 rounded-lg bg-textPrimary text-textDark"
                 />
                 <Button label="Save Name" type="normal" onClick={() => updateProjectName()}></Button>
+                <!-- Close Project -->
+                <Button label={project.Closed ? "Re Open Project" : "Close Project"} type="error" onClick={() => changeCloseProject()}></Button>
             </div>
+        
+
         </div>
     
         <!-- Tasks Section -->
