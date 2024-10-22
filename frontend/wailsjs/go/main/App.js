@@ -6,6 +6,10 @@ export function AssociateProjectToWorkTime(arg1) {
   return window['go']['main']['App']['AssociateProjectToWorkTime'](arg1);
 }
 
+export function CalculateAndSaveProjectCost(arg1, arg2) {
+  return window['go']['main']['App']['CalculateAndSaveProjectCost'](arg1, arg2);
+}
+
 export function CalculateWorkTimeForDay(arg1) {
   return window['go']['main']['App']['CalculateWorkTimeForDay'](arg1);
 }
@@ -68,4 +72,8 @@ export function StartWorkTime() {
 
 export function TakeBreak() {
   return window['go']['main']['App']['TakeBreak']();
+}
+
+export function UpdateProjectName(arg1, arg2) {
+  return window['go']['main']['App']['UpdateProjectName'](arg1, arg2);
 }

@@ -277,6 +277,54 @@ func ChangeProjectClose(id int64) (*Project, error) {
 	return project, nil
 }
 
+func ChangeProjectName(id int64, newName string) (*Project, error) {
+	project, err := GetProject(id)
+	if err != nil {
+		return nil, err
+	}
+
+	project.Name = newName
+
+	if err := DB.Save(&project).Error; err != nil {
+		return nil, err
+	}
+
+	return project, nil
+}
+
+func SaveCost(projectID int64, hourCost int) (*Cost, error) {
+	// Retrieve the project with the total duration
+	project, err := GetProject(projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	cost := Cost{
+		ProjectID: projectID,
+		Duration:  project.Duration,
+		HourCost:  hourCost,
+	}
+
+	if err := DB.Where("project_id = ?", projectID).First(&cost).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+		cost = Cost{
+			ProjectID: projectID,
+			Duration:  project.Duration,
+			HourCost:  hourCost,
+		}
+		if err := DB.Create(&cost).Error; err != nil {
+			return nil, err
+		}
+	} else {
+		cost.Duration = project.Duration
+		cost.HourCost = hourCost
+		if err := DB.Save(&cost).Error; err != nil {
+			return nil, err
+		}
+	}
+
+	return &cost, nil
+}
+
 func CreateTask(projectID int64, description string, deadline time.Time) (*Task, error) {
 	task := &Task{
 		ProjectID:   projectID,

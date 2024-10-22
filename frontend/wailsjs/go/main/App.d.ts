@@ -6,6 +6,8 @@ import {database} from '../models';
 
 export function AssociateProjectToWorkTime(arg1:number):Promise<main.MessageWorkTimeProjectResponse>;
 
+export function CalculateAndSaveProjectCost(arg1:number,arg2:number):Promise<main.MessageCostResponse>;
+
 export function CalculateWorkTimeForDay(arg1:time.Time):Promise<time.Duration>;
 
 export function ChangeProjectClose(arg1:number):Promise<main.MessageProjectResponse>;
@@ -37,3 +39,5 @@ export function StartTimer(arg1:number,arg2:string):Promise<string>;
 export function StartWorkTime():Promise<main.MessageWorkTimeResponse>;
 
 export function TakeBreak():Promise<string>;
+
+export function UpdateProjectName(arg1:number,arg2:string):Promise<main.MessageProjectResponse>;

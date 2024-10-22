@@ -44,6 +44,11 @@ type MessageProjectResponse struct {
 	Project *database.Project `json:"project,omitempty"`
 }
 
+type MessageCostResponse struct {
+	Message string         `json:"message"`
+	Cost    *database.Cost `json:"cost,omitempty"`
+}
+
 type TaskResponse struct {
 	Message string         `json:"message"`
 	Task    *database.Task `json:"task,omitempty"`
@@ -275,6 +280,36 @@ func (a *App) ChangeProjectClose(projectID int64) MessageProjectResponse {
 		Project: project,
 	}
 
+}
+
+func (a *App) UpdateProjectName(projectID int64, newName string) MessageProjectResponse {
+	project, err := database.ChangeProjectName(projectID, newName)
+	if err != nil {
+		log.Printf("Error while changing project name: %v", err)
+		return MessageProjectResponse{
+			Message: "Project name not changed. Error",
+		}
+	}
+	message := fmt.Sprintf("Project %s name changed", project.Name)
+	return MessageProjectResponse{
+		Message: message,
+		Project: project,
+	}
+}
+
+func (a *App) CalculateAndSaveProjectCost(projectID int64, hourCost int) MessageCostResponse {
+	cost, err := database.SaveCost(projectID, hourCost)
+	if err != nil {
+		log.Printf("Error while saving project cost: %v", err)
+		return MessageCostResponse{
+			Message: "Project cost not saved. Error",
+		}
+	}
+	message := fmt.Sprintf("Project cost saved: %d", cost.HourCost)
+	return MessageCostResponse{
+		Message: message,
+		Cost:    cost,
+	}
 }
 
 func (a *App) GetProjectByID(projectID int64) MessageProjectResponse {
