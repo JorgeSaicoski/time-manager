@@ -27,6 +27,7 @@
             message = response.message;
             hourCost = response.cost.HourCost;
             messageType = "info";
+            project.Cost + response.cost
         } catch (err) {
             console.log(err);
             message = err.message;
