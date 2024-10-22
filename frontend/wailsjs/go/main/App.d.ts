@@ -20,7 +20,7 @@ export function EndBreak():Promise<main.MessageWorkTimeResponse>;
 
 export function FinishDay():Promise<string>;
 
-export function GetAllProjects(arg1:number,arg2:number):Promise<main.ProjectsResponse>;
+export function GetAllProjects(arg1:number,arg2:number,arg3:any,arg4:string,arg5:string):Promise<main.ProjectsResponse>;
 
 export function GetDaySummary(arg1:time.Time):Promise<main.DaySummary>;
 

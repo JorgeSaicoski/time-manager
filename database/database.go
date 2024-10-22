@@ -352,17 +352,35 @@ func GetTask(id int64) (*Task, error) {
 	return &task, err
 }
 
-func GetAllProjects(page int, pageSize int) ([]Project, int64, error) {
+func GetAllProjects(page int, pageSize int, closedFilter *bool, orderBy string, orderDirection string) ([]Project, int64, error) {
 	var projects []Project
 	var totalProjects int64
 
-	err := DB.Model(&Project{}).Count(&totalProjects).Error
+	query := DB.Model(&Project{})
+
+	if closedFilter != nil {
+		query = query.Where("closed = ?", *closedFilter)
+	}
+
+	err := query.Count(&totalProjects).Error
 	if err != nil {
 		return nil, 0, err
 	}
 
 	offset := (page - 1) * pageSize
-	err = DB.Order("updated_at DESC").Offset(offset).Limit(pageSize).Find(&projects).Error
+
+	orderField := "updated_at"
+	if orderBy == "duration" {
+		orderField = "duration"
+	}
+
+	if orderDirection != "asc" && orderDirection != "desc" {
+		orderDirection = "desc"
+	}
+
+	orderClause := fmt.Sprintf("%s %s", orderField, strings.ToUpper(orderDirection))
+
+	err = query.Order(orderClause).Offset(offset).Limit(pageSize).Find(&projects).Error
 	if err != nil {
 		return nil, 0, err
 	}

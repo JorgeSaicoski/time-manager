@@ -356,8 +356,8 @@ func (a *App) AssociateProjectToWorkTime(projectID int64) MessageWorkTimeProject
 	}
 }
 
-func (a *App) GetAllProjects(page int, pageSize int) ProjectsResponse {
-	projects, total, err := database.GetAllProjects(page, pageSize)
+func (a *App) GetAllProjects(page int, pageSize int, closedFilter *bool, orderBy string, orderDirection string) ProjectsResponse {
+	projects, total, err := database.GetAllProjects(page, pageSize, closedFilter, orderBy, orderDirection)
 	if err != nil {
 		log.Printf("Error retrieving projects: %v", err)
 		return ProjectsResponse{
