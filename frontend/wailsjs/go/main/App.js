@@ -10,6 +10,10 @@ export function CalculateWorkTimeForDay(arg1) {
   return window['go']['main']['App']['CalculateWorkTimeForDay'](arg1);
 }
 
+export function ChangeProjectClose(arg1) {
+  return window['go']['main']['App']['ChangeProjectClose'](arg1);
+}
+
 export function CreateProject(arg1) {
   return window['go']['main']['App']['CreateProject'](arg1);
 }

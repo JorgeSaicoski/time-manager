@@ -263,10 +263,17 @@ func GetProject(id int64) (*Project, error) {
 
 func ChangeProjectClose(id int64) (*Project, error) {
 	project, error := GetProject(id)
+
 	if error != nil {
 		return nil, error
 	}
+
 	project.Closed = !project.Closed
+
+	if err := DB.Save(&project).Error; err != nil {
+		return nil, err
+	}
+
 	return project, nil
 }
 

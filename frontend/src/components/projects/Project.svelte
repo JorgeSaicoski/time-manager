@@ -1,6 +1,6 @@
 <script>
     import {  onMount } from 'svelte';
-    import { GetProjectByID, CreateTask } from '../../../wailsjs/go/main/App';
+    import { GetProjectByID, CreateTask, ChangeProjectClose } from '../../../wailsjs/go/main/App';
     import Message from '../base/Message.svelte';
     import Button from '../base/Button.svelte';
 
@@ -49,8 +49,16 @@
         
     }
 
-    const changeCloseProject = () => {
-
+    const changeCloseProject = async () => {
+        try {
+            const response = await ChangeProjectClose(projectID)
+            message = response.message
+            messageType="info"
+            project = response.project
+        } catch(err){
+            message = err.message
+            messageType="error"
+        }
     }
 
     const findProject = async ()=>  {
