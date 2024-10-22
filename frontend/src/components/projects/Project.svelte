@@ -1,6 +1,6 @@
 <script>
     import {  onMount } from 'svelte';
-    import { GetProjectByID, CreateTask, ChangeProjectClose } from '../../../wailsjs/go/main/App';
+    import { GetProjectByID, CreateTask, ChangeProjectClose, CalculateAndSaveProjectCost, UpdateProjectName } from '../../../wailsjs/go/main/App';
     import Message from '../base/Message.svelte';
     import Button from '../base/Button.svelte';
 
@@ -17,11 +17,33 @@
     let hours = 0;
     let minutes = 0; 
 
-    const changeCost = async()=>{
-
-    }
+    const changeCost = async () => {
+        try {
+            hourCost = parseInt(hourCost, 10); 
+            if (isNaN(hourCost)) {
+                throw new Error("Invalid cost. Please provide a number.");
+            }
+            const response = await CalculateAndSaveProjectCost(projectID, hourCost);
+            message = response.message;
+            hourCost = response.cost.HourCost;
+            messageType = "info";
+        } catch (err) {
+            console.log(err);
+            message = err.message;
+            messageType = "error";
+        }
+    };
 
     const updateProjectName = async()=>{
+        try {
+            const response = await UpdateProjectName(projectID, project.Name)
+            message = response.message
+            messageType="info"
+            project = response.project
+        } catch(err){
+            message = err.message
+            messageType="error"
+        }
 
     }
     
@@ -84,6 +106,7 @@
         await findProject();
         hourCost = project?.Cost?.HourCost ? project.Cost.HourCost : 10;
         project.Tasks = project.Tasks? project.Tasks : []
+        changeCost()
     });
 </script>
 
