@@ -27,7 +27,7 @@
             message = response.message;
             hourCost = response.cost.HourCost;
             messageType = "info";
-            project.Cost + response.cost
+            project.Cost = response.cost
         } catch (err) {
             console.log(err);
             message = err.message;
@@ -138,7 +138,7 @@
                     {/if}
                 </li>
                 <li class="mb-2">Closed: {project.Closed ? "Yes" : "No"}</li>
-                <li class="mb-2">Cost: {hourCost>0 ? hourCost : "Not Set"}</li>
+                <li class="mb-2">Cost: {project.Cost?.HourCost>0 ? project.Cost.HourCost : "Not Set"}</li>
                 </ul>
             </div>
     
