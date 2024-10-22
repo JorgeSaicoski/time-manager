@@ -21,6 +21,32 @@ func Connect() {
 	}
 }
 
+func updateProjectDuration(projectID int64) error {
+	var project Project
+
+	err := DB.First(&project, projectID).Error
+	if err != nil {
+		return fmt.Errorf("failed to retrieve project: %w", err)
+	}
+
+	var totalDuration time.Duration
+	err = DB.Model(&WorkTimeProject{}).
+		Where("project_id = ?", projectID).
+		Select("SUM(duration)").
+		Scan(&totalDuration).Error
+	if err != nil {
+		return fmt.Errorf("failed to calculate total duration: %w", err)
+	}
+
+	project.Duration = totalDuration
+
+	if err := DB.Save(&project).Error; err != nil {
+		return fmt.Errorf("failed to update project duration: %w", err)
+	}
+
+	return nil
+}
+
 func getUnfinishedWorkTime() (*WorkTime, error) {
 	var workTime WorkTime
 	result := DB.Where("closed = ?", false).First(&workTime)
@@ -50,6 +76,12 @@ func getUnfinishedWorkTimeProjectAndFinish() (*WorkTimeProject, error) {
 	if err := DB.Save(&workTimeProject).Error; err != nil {
 		return nil, fmt.Errorf("failed to update active WorkTimeProject: %w", err)
 	}
+
+	err := updateProjectDuration(workTimeProject.ProjectID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update project duration: %w", err)
+	}
+
 	return &workTimeProject, nil
 }
 
@@ -233,22 +265,15 @@ func GetProject(id int64) (*Project, error) {
 		return nil, errors.New("project not found")
 	}
 
-	var totalDuration *time.Duration
-	result := DB.Model(&WorkTimeProject{}).
-		Where("project_id = ?", id).
-		Select("SUM(duration)").
-		Scan(&totalDuration)
-
-	if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return nil, errors.New(strings.ToLower(result.Error.Error()))
+	err = updateProjectDuration(id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update project duration: %w", err)
 	}
 
-	if totalDuration == nil {
-		totalDurationValue := time.Duration(0)
-		totalDuration = &totalDurationValue
+	err = DB.Preload("Tasks").Preload("Cost").First(&project, id).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errors.New("project not found")
 	}
-
-	project.Duration = *totalDuration
 
 	return &project, nil
 }
