@@ -261,6 +261,22 @@ func (a *App) CreateProject(name string) MessageProjectResponse {
 
 }
 
+func (a *App) ChangeProjectClose(projectID int64) MessageProjectResponse {
+	project, err := database.ChangeProjectClose(projectID)
+	if err != nil {
+		log.Printf("Error while changing project close: %v", err)
+		return MessageProjectResponse{
+			Message: "Project close not changed. Error",
+		}
+	}
+	message := fmt.Sprintf("Project %s closed changed", project.Name)
+	return MessageProjectResponse{
+		Message: message,
+		Project: project,
+	}
+
+}
+
 func (a *App) GetProjectByID(projectID int64) MessageProjectResponse {
 	project, err := database.GetProject(projectID)
 	if err != nil {

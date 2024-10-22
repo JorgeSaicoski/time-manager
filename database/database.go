@@ -248,7 +248,6 @@ func GetProject(id int64) (*Project, error) {
 		Scan(&totalDuration)
 
 	if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		// Normalize the error message to lowercase if it's capitalized
 		return nil, errors.New(strings.ToLower(result.Error.Error()))
 	}
 
@@ -260,6 +259,15 @@ func GetProject(id int64) (*Project, error) {
 	project.Duration = *totalDuration
 
 	return &project, nil
+}
+
+func ChangeProjectClose(id int64) (*Project, error) {
+	project, error := GetProject(id)
+	if error != nil {
+		return nil, error
+	}
+	project.Closed = !project.Closed
+	return project, nil
 }
 
 func CreateTask(projectID int64, description string, deadline time.Time) (*Task, error) {
