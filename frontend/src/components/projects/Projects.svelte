@@ -12,10 +12,9 @@
   let message = null;
   let projectID = 0;
 
-  // New variables for filtering and sorting
-  let closedFilter = null; // can be true, false, or null (for no filter)
-  let orderBy = 'updated_at'; // default to order by 'updated_at'
-  let orderDirection = 'desc'; // default to 'desc'
+  let closedFilter = null; 
+  let orderBy = 'updated_at'; 
+  let orderDirection = 'desc'; 
 
   const dispatch = createEventDispatcher();
 
@@ -24,7 +23,6 @@
     dispatch('tabEvent', { tab: "Project", project: { projectID } });
   }
 
-  // Updated fetchProjects to pass additional parameters for filtering and ordering
   const fetchProjects = async (page) => {
     try {
       const response = await GetAllProjects(page, pageSize, closedFilter, orderBy, orderDirection);
@@ -50,12 +48,10 @@
     }
   };
 
-  // Call fetchProjects on mount
   onMount(() => {
     fetchProjects(currentPage);
   });
 
-  // Helper functions to change filters/sorting
   const setClosedFilter = (value) => {
     closedFilter = value;
     fetchProjects(currentPage);
@@ -85,29 +81,47 @@
   <div>
     <!-- Closed filter -->
     <label for="close">Show Closed:</label>
-    <select id="close" on:change="{(e) => setClosedFilter(e.target.value === 'null' ? null : e.target.value === 'true')}">
-      <option value="null">All</option>
-      <option value="false">Open</option>
-      <option value="true">Closed</option>
-    </select>
+    <div class="w-full max-w-sm min-w-[200px]">      
+      <div class="relative">
+        <select
+        class="w-full bg-transparent placeholder:text-textSecondary text-text-Primary text-sm border border-slate-200 rounded pl-3 pr-8 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md appearance-none cursor-pointer"
+        on:change="{(e) => setClosedFilter(e.target.value === 'null' ? null : e.target.value === 'true')}"
+        >
+          <option value="null">All</option>
+          <option value="false">Open</option>
+          <option value="true">Closed</option>
+        </select>
+      </div>
+    </div>
   </div>
 
   <div>
     <!-- Order by filter -->
     <label for="order">Order By:</label>
-    <select id="order" on:change="{(e) => setOrderBy(e.target.value)}">
-      <option value="updated_at">Updated At</option>
-      <option value="duration">Duration</option>
-    </select>
+    <div class="w-full max-w-sm min-w-[200px]"> 
+      <select 
+      class="w-full bg-transparent placeholder:text-textSecondary text-text-Primary text-sm border border-slate-200 rounded pl-3 pr-8 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md appearance-none cursor-pointer"
+      id="order" 
+      on:change="{(e) => setOrderBy(e.target.value)}"
+      >
+        <option value="updated_at">Updated At</option>
+        <option value="duration">Duration</option>
+      </select>
+    </div>
   </div>
 
   <div>
     <!-- Order direction filter -->
     <label for="direction">Order Direction:</label>
-    <select id="direction" on:change="{(e) => setOrderDirection(e.target.value)}">
-      <option value="desc">Descending</option>
-      <option value="asc">Ascending</option>
-    </select>
+    <div class="w-full max-w-sm min-w-[200px]"> 
+      <select 
+      id="direction" on:change="{(e) => setOrderDirection(e.target.value)}"
+      class="w-full bg-transparent placeholder:text-textSecondary text-text-Primary text-sm border border-slate-200 rounded pl-3 pr-8 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md appearance-none cursor-pointer"
+      >
+        <option value="desc">Descending</option>
+        <option value="asc">Ascending</option>
+      </select>
+    </div>
   </div>
 </div>
 
