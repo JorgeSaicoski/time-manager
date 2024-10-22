@@ -138,7 +138,14 @@
                     {/if}
                 </li>
                 <li class="mb-2">Closed: {project.Closed ? "Yes" : "No"}</li>
-                <li class="mb-2">Cost: {project.Cost?.HourCost>0 ? project.Cost.HourCost : "Not Set"}</li>
+                <li class="mb-2">
+                    Cost: 
+                    {#if project.Cost?.HourCost > 0}
+                      {(project.Cost.HourCost * hours + (project.Cost.HourCost / 60) * minutes).toFixed(2)}$
+                    {:else}
+                      "Not Set"
+                    {/if}
+                  </li>
                 </ul>
             </div>
     
