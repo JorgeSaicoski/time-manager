@@ -106,8 +106,9 @@
         await findProject();
         hourCost = project?.Cost?.HourCost ? project.Cost.HourCost : 10;
         project.Tasks = project.Tasks? project.Tasks : []
-        changeCost()
+        changeCost();
     });
+
 </script>
 
 <div class="container mx-auto bg-secondary text-textPrimary p-6 rounded-lg shadow-lg font-nerd">
@@ -136,7 +137,7 @@
                     {/if}
                 </li>
                 <li class="mb-2">Closed: {project.Closed ? "Yes" : "No"}</li>
-                <li class="mb-2">Cost: {project.Cost ? project.Cost.HourCost : "Not Set"}</li>
+                <li class="mb-2">Cost: {hourCost>0 ? hourCost : "Not Set"}</li>
                 </ul>
             </div>
     
@@ -215,6 +216,8 @@
                 <input
                     class="bg-secondary h-full text-textPrimary m-0"
                     bind:value={hourCost}
+                    type="number"
+                    min="0"
                 />
                 <span>per hour</span>
             </div>
