@@ -2,20 +2,28 @@
   import { onMount } from 'svelte';
   import { GetDaySummary } from '../../../wailsjs/go/main/App';
   import Message from '../base/Message.svelte';
+  import {  format } from 'date-fns';
 
   export let data;  
 
   let day = null  
-  let daySummary = null;
-  let message = null;
+  let daySummary = {
+    workTimesStarted:[],
+    workTimesCrossingDays:[],
+    projects:[],
+    breaks:[],
+    brbs:[]
+
+  };
+  let message = "";
   let messageType = "info";
   
   onMount(async () => {
     day = data.day
-    console.log(day)  
     try {
-        const isoDay = day.toISOString();  // Ensure it's a valid ISO string
-        const summary = await GetDaySummary(isoDay);  // Passing ISO date string
+        const isoDay = day.toISOString().split('T')[0]; 
+        const summary = await GetDaySummary(isoDay);
+        console.log(summary)
         daySummary = summary;
         message = "Day summary loaded successfully!";
         messageType = "info";
@@ -39,7 +47,9 @@
 
 <div class="w-full max-w-2xl p-4 space-y-4 bg-secondary rounded-lg shadow-lg text-white">
   <h2>Day Summary</h2>
-  <Message message={message} type={messageType}></Message>
+  {#if message}
+    <Message message={message} type={messageType}></Message>
+  {/if}
   
   {#if daySummary}
       <div>

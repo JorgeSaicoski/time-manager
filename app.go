@@ -444,7 +444,7 @@ func (a *App) CalculateWorkTimeForDay(day time.Time) (time.Duration, error) {
 }
 
 func (a *App) GetDaySummary(dayString string) DaySummary {
-	day, err := time.Parse(time.RFC3339, dayString)
+	day, err := time.Parse("2006-01-02", dayString)
 	if err != nil {
 		log.Printf("Error parsing day: %v", err)
 		return DaySummary{

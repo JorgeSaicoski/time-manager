@@ -61,7 +61,7 @@
 
     const formatDay = (day) => format(day, 'd');
 
-        const getWorkTimeForDay = (day) => {
+    const getWorkTimeForDay = (day) => {
         const utcDay = new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate()));
         const formattedDate = format(utcDay, 'yyyy-MM-dd');
 
