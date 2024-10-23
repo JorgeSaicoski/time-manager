@@ -46,50 +46,61 @@
 
 
 <div class="w-full max-w-2xl p-4 space-y-4 bg-secondary rounded-lg shadow-lg text-white">
-  <h2>Day Summary</h2>
-  {#if message}
-    <Message message={message} type={messageType}></Message>
-  {/if}
+    <h2>Day Summary</h2>
+    {#if message}
+      <Message message={message} type={messageType}></Message>
+    {/if}
+    
+    {#if daySummary}
+        <div>
+            <h2 class="text-xl font-bold">Day Summary for {day}</h2>
+            <p>Total Time Worked: {formatDuration(daySummary.totalTime)}</p>
   
-  {#if daySummary}
-      <div>
-          <h2 class="text-xl font-bold">Day Summary for {day}</h2>
-          <p>Total Time Worked: {formatDuration(daySummary.totalTime)}</p>
-
-          <h3 class="font-bold mt-4">Work Times Started</h3>
-          <ul>
-              {#each daySummary.workTimesStarted as workTime}
-                  <li>{workTime.StartTime} - {formatDuration(workTime.Duration)}</li>
-              {/each}
-          </ul>
-
-          <h3 class="font-bold mt-4">Work Times Crossing Days</h3>
-          <ul>
-              {#each daySummary.workTimesCrossingDays as workTime}
-                  <li>{workTime.StartTime} - {formatDuration(workTime.Duration)}</li>
-              {/each}
-          </ul>
-
-          <h3 class="font-bold mt-4">Projects</h3>
-          <ul>
-              {#each daySummary.projects as project}
-                  <li>{project.Name}</li>
-              {/each}
-          </ul>
-
-          <h3 class="font-bold mt-4">Breaks</h3>
-          <ul>
-              {#each daySummary.breaks as breakTime}
-                  <li>{breakTime.StartTime} - {formatDuration(breakTime.Duration)}</li>
-              {/each}
-          </ul>
-
-          <h3 class="font-bold mt-4">BRBs</h3>
-          <ul>
-              {#each daySummary.brbs as brb}
-                  <li>{brb.StartTime} - {formatDuration(brb.Duration)}</li>
-              {/each}
-          </ul>
-      </div>
-  {/if}
-</div>
+            {#if Array.isArray(daySummary.workTimesStarted) && daySummary.workTimesStarted.length > 0}
+              <h3 class="font-bold mt-4">Work Times Started</h3>
+              <ul>
+                  {#each daySummary.workTimesStarted as workTime}
+                      <li>{workTime.StartTime} - {formatDuration(workTime.Duration)}</li>
+                  {/each}
+              </ul>
+            {/if}
+  
+            {#if Array.isArray(daySummary.workTimesCrossingDays) && daySummary.workTimesCrossingDays.length > 0}
+              <h3 class="font-bold mt-4">Work Times Crossing Days</h3>
+              <ul>
+                  {#each daySummary.workTimesCrossingDays as workTime}
+                      <li>{workTime.StartTime} - {formatDuration(workTime.Duration)}</li>
+                  {/each}
+              </ul>
+            {/if}
+  
+            {#if Array.isArray(daySummary.projects) && daySummary.projects.length > 0}
+              <h3 class="font-bold mt-4">Projects</h3>
+              <ul>
+                  {#each daySummary.projects as project}
+                      <li>{project.Name}</li>
+                  {/each}
+              </ul>
+            {/if}
+  
+            {#if Array.isArray(daySummary.breaks) && daySummary.breaks.length > 0}
+              <h3 class="font-bold mt-4">Breaks</h3>
+              <ul>
+                  {#each daySummary.breaks as breakTime}
+                      <li>{breakTime.StartTime} - {formatDuration(breakTime.Duration)}</li>
+                  {/each}
+              </ul>
+            {/if}
+  
+            {#if Array.isArray(daySummary.brbs) && daySummary.brbs.length > 0}
+              <h3 class="font-bold mt-4">BRBs</h3>
+              <ul>
+                  {#each daySummary.brbs as brb}
+                      <li>{brb.StartTime} - {formatDuration(brb.Duration)}</li>
+                  {/each}
+              </ul>
+            {/if}
+        </div>
+    {/if}
+  </div>
+  
