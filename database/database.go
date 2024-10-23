@@ -486,7 +486,7 @@ func GetBrbsForDay(day time.Time) ([]Brb, error) {
 
 func GetWorkTimeProjectsByWorkTimeID(workTimeID int64) ([]WorkTimeProject, error) {
 	var workTimeProjects []WorkTimeProject
-	result := DB.Where("work_time_id = ?", workTimeID).Find(&workTimeProjects)
+	result := DB.Where("work_time_id = ?", workTimeID).Preload("Project").Find(&workTimeProjects)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -500,4 +500,13 @@ func GetBreakTime(id int64) (*BreakTime, error) {
 		return nil, errors.New("BreakTime not found")
 	}
 	return &breakTime, err
+}
+
+func GetWorkTimeProjectByID(id int64) (*WorkTimeProject, error) {
+	var workTimeProject WorkTimeProject
+	err := DB.First(&workTimeProject, id).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errors.New("WorkTimeProject not found")
+	}
+	return &workTimeProject, err
 }

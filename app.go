@@ -492,8 +492,11 @@ func (a *App) GetDaySummary(dayString string) DaySummary {
 			continue
 		}
 		workTimeProjects = append(workTimeProjects, wtpList...)
+		log.Printf("Fetched WorkTimeProjects for WorkTime %d: %v", workTime.ID, wtpList)
 	}
+
 	summary.WorkTimeProjects = workTimeProjects
+	log.Printf("wokr time projects in sumary: %v", workTimeProjects)
 
 	breakTimes, err := database.GetBreakTimesForDay(day)
 	if err != nil {
@@ -556,4 +559,29 @@ func (a *App) UpdateBreakTimeDuration(breakTimeID int64, newDurationSeconds int6
 	}
 
 	return fmt.Sprintf("BreakTime duration updated to %v", breakTime.Duration)
+}
+
+func (a *App) UpdateWorkTimeProjectDuration(workTimeProjectID int64, newDurationSeconds int64) MessageWorkTimeProjectResponse {
+	workTimeProject, err := database.GetWorkTimeProjectByID(workTimeProjectID)
+	if err != nil {
+		log.Printf("Error retrieving WorkTimeProject: %v", err)
+		return MessageWorkTimeProjectResponse{
+			Message: "WorkTimeProject not found",
+		}
+	}
+
+	workTimeProject.Duration = time.Duration(newDurationSeconds) * time.Second
+
+	if err := database.DB.Save(workTimeProject).Error; err != nil {
+		log.Printf("Error updating WorkTimeProject duration: %v", err)
+		return MessageWorkTimeProjectResponse{
+			Message: "Failed to update WorkTimeProject duration",
+		}
+	}
+
+	message := fmt.Sprintf("WorkTimeProject duration updated to %v", workTimeProject.Duration)
+	return MessageWorkTimeProjectResponse{
+		Message:         message,
+		WorkTimeProject: workTimeProject,
+	}
 }

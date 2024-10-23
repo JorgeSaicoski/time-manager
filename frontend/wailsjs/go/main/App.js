@@ -85,3 +85,7 @@ export function UpdateProjectName(arg1, arg2) {
 export function UpdateWorkTimeDuration(arg1, arg2) {
   return window['go']['main']['App']['UpdateWorkTimeDuration'](arg1, arg2);
 }
+
+export function UpdateWorkTimeProjectDuration(arg1, arg2) {
+  return window['go']['main']['App']['UpdateWorkTimeProjectDuration'](arg1, arg2);
+}
