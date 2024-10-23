@@ -24,19 +24,24 @@
     let currentBreakTime = null;
     let currentBreakTimeHours = 0;
     let currentBreakTimeMinutes = 0;
+    let isoDay
+    let loading = false
   
     onMount(async () => {
-      day = data.day;
-      try {
-        const isoDay = day.toISOString().split('T')[0];
+        day = data.day;
+        loading = true;
+        try {
+        isoDay = day.toISOString().split('T')[0];
         const summary = await GetDaySummary(isoDay);
         daySummary = summary;
         message = "Day summary loaded successfully!";
         messageType = "info";
-      } catch (error) {
+        } catch (error) {
         message = `Error loading day summary: ${error.message}`;
         messageType = "error";
-      }
+        } finally {
+        loading = false;
+        }
     });
   
     function changeProject(id, duration) {
@@ -54,22 +59,29 @@
     }
   
     async function saveUpdatedDuration(newHours, newMinutes, model) {
-      try {
-        const newDurationSeconds = (newHours * 3600 + newMinutes * 60);
-        
-        if (model === "workTime") {
-          await UpdateWorkTimeDuration(currentProject, newDurationSeconds);
-          message = "WorkTime duration updated!";
-        } else if (model === "breakTime") {
-          await UpdateBreakTimeDuration(currentBreakTime, newDurationSeconds);
-          message = "BreakTime duration updated!";
+        loading = true;
+        try {
+            const newDurationSeconds = (newHours * 3600 + newMinutes * 60);
+            
+            if (model === "workTime") {
+            await UpdateWorkTimeDuration(currentProject, newDurationSeconds);
+            message = "WorkTime duration updated!";
+            } else if (model === "breakTime") {
+            await UpdateBreakTimeDuration(currentBreakTime, newDurationSeconds);
+            message = "BreakTime duration updated!";
+            }
+            
+            isoDay = day.toISOString().split('T')[0];
+            const summary = await GetDaySummary(isoDay);
+            daySummary = summary;
+            
+            messageType = "info";
+        } catch (error) {
+            message = `Error saving updated duration: ${error.message}`;
+            messageType = "error";
+        } finally {
+            loading = false;
         }
-        
-        messageType = "info";
-      } catch (error) {
-        message = `Error saving updated duration: ${error.message}`;
-        messageType = "error";
-      }
     }
   
     function formatTimeToHourAndMinute(startTime) {
@@ -88,6 +100,9 @@
   </script>
   
   <div class="w-full max-w-2xl p-0 space-y-4 bg-secondary rounded-lg shadow-lg text-white">
+    {#if loading}
+        <p class="bg-accent text-buttonAccentText">Loading...</p>
+    {/if}
     <h2>Day Summary</h2>
     {#if message}
       <Message message={message} type={messageType}></Message>
