@@ -34,13 +34,19 @@
   });
 
 
+  function formatTimeToHourAndMinute(startTime) {
+    return format(new Date(startTime), 'HH:mm');
+  }
 
   function formatDuration(duration) {
-      const hours = Math.floor(duration / 3600);
-      const minutes = Math.floor((duration % 3600) / 60);
-      const seconds = Math.floor(duration % 60);
-      return `${hours}h ${minutes}m ${seconds}s`;
-  }
+    const totalSeconds = Math.floor(duration / 1000000000);
+    
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    
+    return `${hours}h ${minutes}m ${seconds}s`;
+}
 
 </script>
 
@@ -60,7 +66,7 @@
               <h3 class="font-bold mt-4">Work Times Started</h3>
               <ul>
                   {#each daySummary.workTimesStarted as workTime}
-                      <li>{workTime.StartTime} - {formatDuration(workTime.Duration)}</li>
+                      <li>{formatTimeToHourAndMinute(workTime.StartTime)} - {formatDuration(workTime.Duration)}</li>
                   {/each}
               </ul>
             {/if}
@@ -69,7 +75,7 @@
               <h3 class="font-bold mt-4">Work Times Crossing Days</h3>
               <ul>
                   {#each daySummary.workTimesCrossingDays as workTime}
-                      <li>{workTime.StartTime} - {formatDuration(workTime.Duration)}</li>
+                      <li>{formatTimeToHourAndMinute(workTime.StartTime)} - {formatDuration(workTime.Duration)}</li>
                   {/each}
               </ul>
             {/if}
@@ -87,7 +93,7 @@
               <h3 class="font-bold mt-4">Breaks</h3>
               <ul>
                   {#each daySummary.breaks as breakTime}
-                      <li>{breakTime.StartTime} - {formatDuration(breakTime.Duration)}</li>
+                      <li>{formatTimeToHourAndMinute(breakTime.StartTime)} - {formatDuration(breakTime.Duration)}</li>
                   {/each}
               </ul>
             {/if}
