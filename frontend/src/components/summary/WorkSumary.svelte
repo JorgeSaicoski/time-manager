@@ -1,5 +1,5 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onMount, createEventDispatcher } from 'svelte';
     import { CalculateWorkTimeForDay } from '../../../wailsjs/go/main/App';
     import { eachDayOfInterval, format, startOfMonth, endOfMonth, addMonths, subMonths } from 'date-fns';
     import Button from '../base/Button.svelte'; 
@@ -11,6 +11,13 @@
     let message = null;
     let messageType = "info";
     let loading = true;
+
+    const dispatch = createEventDispatcher();
+
+    function goToDay(day) {
+        dispatch('tabEvent', { tab: "DaySummary", day: { day } });
+    }
+
     
 
     const getMonthName = (date) => format(date, 'MMMM yyyy');
@@ -80,12 +87,14 @@
     {:else}
         <div class="grid grid-cols-7 gap-4">
             {#each daysInMonth as day}
-                <div class="text-center p-4 rounded-lg {getWorkTimeForDay(day) > 0 ? 'bg-hover' : 'bg-secondaryAccent'}">
+                <button
+                on:click={goToDay(day)} 
+                class="text-center p-4 rounded-lg {getWorkTimeForDay(day) > 0 ? 'bg-hover' : 'bg-secondaryAccent'}">
                     <p class="text-lg font-bold text-textSecondary">{formatDay(day)}</p>
                     <p class={getWorkTimeForDay(day) > 0 ? 'text-textPrimary' : 'text-textDark'}>
                         {getWorkTimeForDay(day)}h
                     </p>
-                </div>
+                </button>
             {/each}
         </div>
     {/if}

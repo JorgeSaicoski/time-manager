@@ -6,10 +6,12 @@
   import Projects from "./components/projects/Projects.svelte";
   import Project from "./components/projects/Project.svelte";
   import WorkSumary from "./components/summary/WorkSumary.svelte";
+  import DaySummary from "./components/summary/DaySummary.svelte";
 
   let currentTab = 'Work';
 
   let projectID = 0
+  let day = null
 
   function updateTab(event) {
     currentTab = event.target.value;
@@ -17,6 +19,10 @@
 
   function handleTabEvent(event){
     projectID = event.detail.project?.projectID
+    if (event.detail.day){
+      console.log(event.detail.day)
+      day = event.detail.day
+    }
     currentTab = event.detail.tab
   }
 
@@ -74,6 +80,7 @@
       >
         Summary
       </button>
+      
     </nav>
   </div>
   <section class="my-2">
@@ -93,7 +100,10 @@
       <Project projectID={projectID}></Project>
     {/if}
     {#if currentTab === 'Summary'}
-      <WorkSumary></WorkSumary>
+      <WorkSumary on:tabEvent={handleTabEvent}></WorkSumary>
+    {/if}
+    {#if currentTab === 'DaySummary'}
+      <DaySummary data={day}></DaySummary>
     {/if}
   </section>
   

@@ -389,6 +389,7 @@ export namespace main {
 	    projects: database.Project[];
 	    breaks: database.BreakTime[];
 	    brbs: database.Brb[];
+	    message: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new DaySummary(source);
@@ -402,6 +403,7 @@ export namespace main {
 	        this.projects = this.convertValues(source["projects"], database.Project);
 	        this.breaks = this.convertValues(source["breaks"], database.BreakTime);
 	        this.brbs = this.convertValues(source["brbs"], database.Brb);
+	        this.message = source["message"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

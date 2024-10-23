@@ -68,6 +68,7 @@ type DaySummary struct {
 	Projects              []database.Project   `json:"projects"`
 	Breaks                []database.BreakTime `json:"breaks"`
 	Brbs                  []database.Brb       `json:"brbs"`
+	Message               string               `json:"message"`
 }
 
 func NewApp() *App {
@@ -442,20 +443,32 @@ func (a *App) CalculateWorkTimeForDay(day time.Time) (time.Duration, error) {
 	return totalDuration, nil
 }
 
-func (a *App) GetDaySummary(day time.Time) (DaySummary, error) {
+func (a *App) GetDaySummary(dayString string) DaySummary {
+	day, err := time.Parse(time.RFC3339, dayString)
+	if err != nil {
+		log.Printf("Error parsing day: %v", err)
+		return DaySummary{
+			Message: "Invalid date format",
+		}
+	}
+
 	var summary DaySummary
+
+	fmt.Println(day)
 
 	workTimes, err := database.GetWorkTimesForDay(day)
 	if err != nil {
 		log.Printf("Error fetching work times: %v", err)
-		return summary, err
+		summary.Message = "Error fetching work times"
+		return summary
 	}
 	summary.WorkTimesStarted = workTimes
 
 	workTimesCrossingDays, err := database.GetWorkTimesCrossingDays(day)
 	if err != nil {
 		log.Printf("Error fetching work times crossing days: %v", err)
-		return summary, err
+		summary.Message = "Error fetching work times crossing days"
+		return summary
 	}
 	summary.WorkTimesCrossingDays = workTimesCrossingDays
 
@@ -481,16 +494,20 @@ func (a *App) GetDaySummary(day time.Time) (DaySummary, error) {
 	breakTimes, err := database.GetBreakTimesForDay(day)
 	if err != nil {
 		log.Printf("Error fetching break times: %v", err)
-		return summary, err
+		summary.Message = "Error fetching break times"
+		return summary
 	}
 	summary.Breaks = breakTimes
 
 	brbs, err := database.GetBrbsForDay(day)
 	if err != nil {
 		log.Printf("Error fetching brb sessions: %v", err)
-		return summary, err
+		summary.Message = "Error fetching brb sessions"
+		return summary
 	}
 	summary.Brbs = brbs
 
-	return summary, nil
+	summary.Message = "Day summary successfully fetched"
+
+	return summary
 }
