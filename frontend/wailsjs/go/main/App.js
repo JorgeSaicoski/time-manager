@@ -74,6 +74,14 @@ export function TakeBreak() {
   return window['go']['main']['App']['TakeBreak']();
 }
 
+export function UpdateBreakTimeDuration(arg1, arg2) {
+  return window['go']['main']['App']['UpdateBreakTimeDuration'](arg1, arg2);
+}
+
 export function UpdateProjectName(arg1, arg2) {
   return window['go']['main']['App']['UpdateProjectName'](arg1, arg2);
+}
+
+export function UpdateWorkTimeDuration(arg1, arg2) {
+  return window['go']['main']['App']['UpdateWorkTimeDuration'](arg1, arg2);
 }

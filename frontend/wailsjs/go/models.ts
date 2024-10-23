@@ -388,7 +388,7 @@ export namespace main {
 	    workTimesStarted: database.WorkTime[];
 	    workTimesCrossingDays: database.WorkTime[];
 	    totalTime: number;
-	    projects: database.Project[];
+	    workTimeProjects: database.WorkTimeProject[];
 	    breaks: database.BreakTime[];
 	    brbs: database.Brb[];
 	    message: string;
@@ -402,7 +402,7 @@ export namespace main {
 	        this.workTimesStarted = this.convertValues(source["workTimesStarted"], database.WorkTime);
 	        this.workTimesCrossingDays = this.convertValues(source["workTimesCrossingDays"], database.WorkTime);
 	        this.totalTime = source["totalTime"];
-	        this.projects = this.convertValues(source["projects"], database.Project);
+	        this.workTimeProjects = this.convertValues(source["workTimeProjects"], database.WorkTimeProject);
 	        this.breaks = this.convertValues(source["breaks"], database.BreakTime);
 	        this.brbs = this.convertValues(source["brbs"], database.Brb);
 	        this.message = source["message"];

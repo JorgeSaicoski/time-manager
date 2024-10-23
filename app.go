@@ -62,13 +62,13 @@ type ProjectsResponse struct {
 }
 
 type DaySummary struct {
-	WorkTimesStarted      []database.WorkTime  `json:"workTimesStarted"`
-	WorkTimesCrossingDays []database.WorkTime  `json:"workTimesCrossingDays"`
-	TotalTime             time.Duration        `json:"totalTime"`
-	Projects              []database.Project   `json:"projects"`
-	Breaks                []database.BreakTime `json:"breaks"`
-	Brbs                  []database.Brb       `json:"brbs"`
-	Message               string               `json:"message"`
+	WorkTimesStarted      []database.WorkTime        `json:"workTimesStarted"`
+	WorkTimesCrossingDays []database.WorkTime        `json:"workTimesCrossingDays"`
+	TotalTime             time.Duration              `json:"totalTime"`
+	WorkTimeProjects      []database.WorkTimeProject `json:"workTimeProjects"`
+	Breaks                []database.BreakTime       `json:"breaks"`
+	Brbs                  []database.Brb             `json:"brbs"`
+	Message               string                     `json:"message"`
 }
 
 func NewApp() *App {
@@ -459,8 +459,6 @@ func (a *App) GetDaySummary(dayString string) DaySummary {
 
 	var summary DaySummary
 
-	fmt.Println(day)
-
 	workTimes, err := database.GetWorkTimesForDay(day)
 	if err != nil {
 		log.Printf("Error fetching work times: %v", err)
@@ -486,15 +484,16 @@ func (a *App) GetDaySummary(dayString string) DaySummary {
 	}
 	summary.TotalTime = totalTime
 
-	projectSet := make(map[int64]database.Project)
+	var workTimeProjects []database.WorkTimeProject
 	for _, workTime := range workTimes {
-		for _, project := range workTime.Projects {
-			projectSet[project.ID] = project
+		wtpList, err := database.GetWorkTimeProjectsByWorkTimeID(workTime.ID)
+		if err != nil {
+			log.Printf("Error fetching WorkTimeProjects for WorkTime %d: %v", workTime.ID, err)
+			continue
 		}
+		workTimeProjects = append(workTimeProjects, wtpList...)
 	}
-	for _, project := range projectSet {
-		summary.Projects = append(summary.Projects, project)
-	}
+	summary.WorkTimeProjects = workTimeProjects
 
 	breakTimes, err := database.GetBreakTimesForDay(day)
 	if err != nil {
@@ -513,6 +512,48 @@ func (a *App) GetDaySummary(dayString string) DaySummary {
 	summary.Brbs = brbs
 
 	summary.Message = "Day summary successfully fetched"
-
 	return summary
+
+}
+
+func (a *App) UpdateWorkTimeDuration(workTimeID int64, newDurationSeconds int64) MessageWorkTimeResponse {
+	workTime, err := database.GetWorkTime(workTimeID)
+	if err != nil {
+		log.Printf("Error retrieving WorkTime: %v", err)
+		return MessageWorkTimeResponse{
+			Message: "Work time not found",
+		}
+	}
+
+	workTime.Duration = time.Duration(newDurationSeconds) * time.Second
+
+	if err := database.DB.Save(workTime).Error; err != nil {
+		log.Printf("Error updating WorkTime duration: %v", err)
+		return MessageWorkTimeResponse{
+			Message: "Failed to update WorkTime duration",
+		}
+	}
+
+	message := fmt.Sprintf("WorkTime duration updated to %v", workTime.Duration)
+	return MessageWorkTimeResponse{
+		Message:  message,
+		WorkTime: workTime,
+	}
+}
+
+func (a *App) UpdateBreakTimeDuration(breakTimeID int64, newDurationSeconds int64) string {
+	breakTime, err := database.GetBreakTime(breakTimeID)
+	if err != nil {
+		log.Printf("Error retrieving BreakTime: %v", err)
+		return "Break time not found"
+	}
+
+	breakTime.Duration = time.Duration(newDurationSeconds) * time.Second
+
+	if err := database.DB.Save(breakTime).Error; err != nil {
+		log.Printf("Error updating BreakTime duration: %v", err)
+		return "Failed to update BreakTime duration"
+	}
+
+	return fmt.Sprintf("BreakTime duration updated to %v", breakTime.Duration)
 }

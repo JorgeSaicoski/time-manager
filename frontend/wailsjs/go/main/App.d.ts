@@ -40,4 +40,8 @@ export function StartWorkTime():Promise<main.MessageWorkTimeResponse>;
 
 export function TakeBreak():Promise<string>;
 
+export function UpdateBreakTimeDuration(arg1:number,arg2:number):Promise<string>;
+
 export function UpdateProjectName(arg1:number,arg2:string):Promise<main.MessageProjectResponse>;
+
+export function UpdateWorkTimeDuration(arg1:number,arg2:number):Promise<main.MessageWorkTimeResponse>;
