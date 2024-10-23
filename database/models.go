@@ -13,6 +13,7 @@ type TotalTime struct {
 	FinishTime time.Time
 	WorkTimes  []WorkTime `gorm:"foreignKey:TotalTimeID"`
 	BreakTime  *BreakTime `gorm:"foreignKey:TotalTimeID;constraint:OnDelete:CASCADE"`
+	Closed     bool
 }
 
 type WorkTime struct {

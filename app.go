@@ -153,6 +153,7 @@ func (a *App) StartDay() StartDayResponse {
 	}
 
 	totalTime, err := database.CreateTotalTime()
+	fmt.Println(totalTime.Closed)
 	if err != nil {
 		log.Printf("Error creating TotalTime: %v", err)
 		return StartDayResponse{
@@ -169,7 +170,6 @@ func (a *App) StartDay() StartDayResponse {
 
 func (a *App) FinishDay() string {
 	unfinishedTotalTime, err := database.GetUnfinishedTotalTime()
-	database.FinishWorkTime()
 	if err != nil {
 		log.Printf("Error checking unfinished TotalTime: %v", err)
 		return "Error checking for unfinished days"
@@ -177,6 +177,11 @@ func (a *App) FinishDay() string {
 	if unfinishedTotalTime == nil {
 		log.Printf("None unfinished time found to close")
 		return "None unfinished time found to close"
+	}
+	_, err = database.FinishWorkTime()
+	if err != nil {
+		log.Printf("Error finishing WorkTime: %v", err)
+		return "Error finishing WorkTime"
 	}
 
 	if _, err := database.FinishTotalTime(unfinishedTotalTime.ID); err != nil {

@@ -296,6 +296,7 @@ export namespace database {
 	    FinishTime: time.Time;
 	    WorkTimes: WorkTime[];
 	    BreakTime?: BreakTime;
+	    Closed: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new TotalTime(source);
@@ -312,6 +313,7 @@ export namespace database {
 	        this.FinishTime = this.convertValues(source["FinishTime"], time.Time);
 	        this.WorkTimes = this.convertValues(source["WorkTimes"], WorkTime);
 	        this.BreakTime = this.convertValues(source["BreakTime"], BreakTime);
+	        this.Closed = source["Closed"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
