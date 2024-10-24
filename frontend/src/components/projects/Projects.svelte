@@ -34,8 +34,9 @@
     }
   };
 
+
   const nextPage = () => {
-    if (currentPage < totalPages) {
+     if (currentPage < totalPages) {
       currentPage++;
       fetchProjects(currentPage);
     }

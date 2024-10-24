@@ -1,19 +1,19 @@
 <script>
-    export let message = "";
-    export let type = "info"; 
-  
-    let messageClass = "";
-    $: {
-      if (type === "info") {
-        messageClass = "bg-secondaryAccent text-textPrimary";
-      } else if (type === "error") {
-        messageClass = "bg-error text-white";
-      } else{
-        messageClass = "bg-accent text-secondary"
-      }
+  export let message = "";
+  export let type = "info"; 
+
+  let messageClass = "";
+  $: {
+    if (type === "info") {
+      messageClass = "bg-secondaryAccent text-textPrimary";
+    } else if (type === "error") {
+      messageClass = "bg-error text-white";
+    } else{
+      messageClass = "bg-accent text-secondary"
     }
-  </script>
-  
-  <div class={`p-4 rounded-md ${messageClass}`}>
-    <p>{message}</p>
-  </div>
+  }
+</script>
+
+<div class={`p-4 rounded-md ${messageClass}`}>
+  <p>{message}</p>
+</div>

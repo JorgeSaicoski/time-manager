@@ -12,10 +12,20 @@
     "@sveltejs/vite-plugin-svelte": "^1.0.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
+    "prettier": "^3.3.3",
+    "prettier-plugin-svelte": "^3.2.7",
     "svelte": "^3.49.0",
     "svelte-preprocess": "^4.10.7",
     "tailwindcss": "^3.4.13",
     "vite": "^3.0.7"
+  },
+  "prettier": {
+    "plugins": [
+      "prettier-plugin-svelte"
+    ],
+    "svelteSortOrder": "scripts-markup-styles",
+    "svelteStrictMode": false,
+    "svelteBracketNewLine": true
   },
   "dependencies": {
     "date-fns": "^4.1.0"
