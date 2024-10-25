@@ -29,16 +29,16 @@ func updateProjectDuration(projectID int64) error {
 		return fmt.Errorf("failed to retrieve project: %w", err)
 	}
 
-	var totalDuration time.Duration
+	var totalDuration int64
 	err = DB.Model(&WorkTimeProject{}).
 		Where("project_id = ?", projectID).
-		Select("SUM(duration)").
+		Select("COALESCE(SUM(duration), 0)").
 		Scan(&totalDuration).Error
 	if err != nil {
 		return fmt.Errorf("failed to calculate total duration: %w", err)
 	}
 
-	project.Duration = totalDuration
+	project.Duration = time.Duration(totalDuration)
 
 	if err := DB.Save(&project).Error; err != nil {
 		return fmt.Errorf("failed to update project duration: %w", err)

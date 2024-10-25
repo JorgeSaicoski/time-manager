@@ -320,6 +320,7 @@ func (a *App) CalculateAndSaveProjectCost(projectID int64, hourCost int) Message
 
 func (a *App) GetProjectByID(projectID int64) MessageProjectResponse {
 	project, err := database.GetProject(projectID)
+	fmt.Println(projectID)
 	if err != nil {
 		log.Printf("Error while geting project: %v", err)
 		return MessageProjectResponse{
