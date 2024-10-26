@@ -13,6 +13,7 @@ type TotalTime struct {
 	FinishTime time.Time
 	WorkTimes  []WorkTime `gorm:"foreignKey:TotalTimeID"`
 	BreakTime  *BreakTime `gorm:"foreignKey:TotalTimeID;constraint:OnDelete:CASCADE"`
+	Brb        *Brb       `gorm:"foreignKey:TotalTimeID;constraint:OnDelete:CASCADE"`
 	Closed     bool
 }
 
@@ -77,7 +78,8 @@ type Cost struct {
 
 type Brb struct {
 	gorm.Model
-	ID        int64 `gorm:"primaryKey"`
-	StartTime time.Time
-	Duration  time.Duration
+	ID          int64 `gorm:"primaryKey"`
+	TotalTimeID int64
+	StartTime   time.Time
+	Duration    time.Duration
 }

@@ -16,6 +16,8 @@ export function CreateProject(arg1:string):Promise<main.MessageProjectResponse>;
 
 export function CreateTask(arg1:number,arg2:string,arg3:string):Promise<main.TaskResponse>;
 
+export function EndBrb():Promise<main.MessageWorkTimeResponse>;
+
 export function EndBreak():Promise<main.MessageWorkTimeResponse>;
 
 export function FinishDay():Promise<string>;
@@ -37,6 +39,8 @@ export function StartDay():Promise<main.StartDayResponse>;
 export function StartTimer(arg1:number,arg2:string):Promise<string>;
 
 export function StartWorkTime():Promise<main.MessageWorkTimeResponse>;
+
+export function TakeBrb():Promise<string>;
 
 export function TakeBreak():Promise<string>;
 

@@ -26,6 +26,10 @@ export function CreateTask(arg1, arg2, arg3) {
   return window['go']['main']['App']['CreateTask'](arg1, arg2, arg3);
 }
 
+export function EndBrb() {
+  return window['go']['main']['App']['EndBrb']();
+}
+
 export function EndBreak() {
   return window['go']['main']['App']['EndBreak']();
 }
@@ -68,6 +72,10 @@ export function StartTimer(arg1, arg2) {
 
 export function StartWorkTime() {
   return window['go']['main']['App']['StartWorkTime']();
+}
+
+export function TakeBrb() {
+  return window['go']['main']['App']['TakeBrb']();
 }
 
 export function TakeBreak() {

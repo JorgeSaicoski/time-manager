@@ -186,7 +186,9 @@ func GetWorkTime(id int64) (*WorkTime, error) {
 }
 
 func FinishWorkTime() (*WorkTime, error) {
+	fmt.Println("finsihworktime")
 	workTime, err := getUnfinishedWorkTime()
+	fmt.Println(workTime)
 	if err != nil {
 		return nil, fmt.Errorf("failed to retrieve unfinished WorkTime: %w", err)
 	}
@@ -321,7 +323,6 @@ func ChangeProjectName(id int64, newName string) (*Project, error) {
 }
 
 func SaveCost(projectID int64, hourCost int) (*Cost, error) {
-	// Retrieve the project with the total duration
 	project, err := GetProject(projectID)
 	if err != nil {
 		return nil, err

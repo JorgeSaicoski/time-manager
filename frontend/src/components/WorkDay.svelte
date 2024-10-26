@@ -9,6 +9,8 @@
     GetAllProjects,
     GetUnfinishedWorkTimeProjectWithoutSendingError,
     CreateTask,
+    TakeBrb,
+    EndBrb,
   } from "../../wailsjs/go/main/App";
   import { onDestroy, onMount, createEventDispatcher } from "svelte";
   import Button from "./base/Button.svelte";
@@ -16,6 +18,7 @@
 
   let workDayStarted = false;
   let breakTime = false;
+  let brbTime = false;
   let workTime = null;
   let selectedProject = null;
   let projects = [];
@@ -105,7 +108,7 @@
 
   const takeBreak = async () => {
     try {
-      let response = await TakeBreak(workTime.ID);
+      let response = await TakeBreak();
       message =
         response +
         " You are on a break. Any interaction with the app will signal the end of your break.";
@@ -174,7 +177,38 @@
     }
   };
 
-  function brb() {}
+  const brb = async () => {
+    try {
+      let response = await TakeBrb();
+      message =
+        response +
+        " You are on a brb. Any interaction with the app will signal the end of your break.";
+
+      brbTime = true;
+      timerStart = new Date();
+      intervalName = "Brb time";
+      messageType = "alert";
+    } catch (err) {
+      console.error("Error while creating brb:", err);
+      message = "An error occurred while trying to start the brb.";
+      messageType = "error";
+    }
+  };
+
+  const brbBack = async () => {
+    try {
+      const response = await EndBrb();
+      brbTime = false;
+      workTime = response.workTime;
+      messageType = "info";
+      message = response.message;
+      timerStart = new Date(workTime.StartTime);
+      intervalName = "Work time";
+    } catch (error) {
+      message = err.message;
+      messageType = "error";
+    }
+  };
 
   function createProject() {
     dispatch("tabEvent", { tab: "createProject" });
@@ -252,7 +286,12 @@
           ></Button>
         {/if}
         {#if !breakTime}
-          <Button label="BRB" type="normal" onClick={() => brb()}></Button>
+          {#if brbTime}
+            <Button label="BRB Back" type="normal" onClick={() => brbBack()}
+            ></Button>
+          {:else}
+            <Button label="BRB" type="normal" onClick={() => brb()}></Button>
+          {/if}
           <Button label="Take Break" type="normal" onClick={() => takeBreak()}
           ></Button>
         {/if}

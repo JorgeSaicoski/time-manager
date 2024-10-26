@@ -7,6 +7,7 @@ export namespace database {
 	    // Go type: gorm
 	    DeletedAt: any;
 	    ID: number;
+	    TotalTimeID: number;
 	    StartTime: time.Time;
 	    Duration: number;
 	
@@ -21,6 +22,7 @@ export namespace database {
 	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], time.Time);
 	        this.DeletedAt = this.convertValues(source["DeletedAt"], null);
 	        this.ID = source["ID"];
+	        this.TotalTimeID = source["TotalTimeID"];
 	        this.StartTime = this.convertValues(source["StartTime"], time.Time);
 	        this.Duration = source["Duration"];
 	    }
@@ -296,6 +298,7 @@ export namespace database {
 	    FinishTime: time.Time;
 	    WorkTimes: WorkTime[];
 	    BreakTime?: BreakTime;
+	    Brb?: Brb;
 	    Closed: boolean;
 	
 	    static createFrom(source: any = {}) {
@@ -313,6 +316,7 @@ export namespace database {
 	        this.FinishTime = this.convertValues(source["FinishTime"], time.Time);
 	        this.WorkTimes = this.convertValues(source["WorkTimes"], WorkTime);
 	        this.BreakTime = this.convertValues(source["BreakTime"], BreakTime);
+	        this.Brb = this.convertValues(source["Brb"], Brb);
 	        this.Closed = source["Closed"];
 	    }
 	

@@ -255,6 +255,56 @@ func (a *App) EndBreak() MessageWorkTimeResponse {
 
 }
 
+func (a *App) TakeBrb() string {
+	fmt.Println("take")
+	_, err := database.FinishWorkTime()
+	if err != nil {
+		log.Printf("Error retrieving WorkTime: %v", err)
+		return "Work Time Not Found"
+	}
+
+	if a.TotalTime.Brb == nil {
+		log.Printf("a.TotalTime.Brb is nil, initializing new BreakTime")
+		a.TotalTime.Brb = &database.Brb{}
+	}
+
+	a.TotalTime.Brb.StartTime = time.Now()
+
+	a.TotalTime.Brb.TotalTimeID = a.TotalTime.ID
+
+	if err := database.DB.Save(a.TotalTime.BreakTime).Error; err != nil {
+		log.Printf("Error saving updated BreakTime: %v", err)
+		return "Failed to start Break"
+	}
+
+	return "Brb started!"
+
+}
+
+func (a *App) EndBrb() MessageWorkTimeResponse {
+	endTime := time.Now()
+
+	breakDuration := endTime.Sub(a.TotalTime.Brb.StartTime)
+
+	a.TotalTime.Brb.Duration += breakDuration
+
+	newWorkTime, err := database.CreateWorkTime(a.TotalTime.ID)
+	if err != nil {
+		log.Printf("Error creating WorkTime: %v", err)
+		return MessageWorkTimeResponse{
+			Message: "Work time not created. Error",
+		}
+	}
+
+	message := fmt.Sprintf("Brb ended! Total break time: %v", a.TotalTime.Brb.Duration)
+
+	return MessageWorkTimeResponse{
+		Message:  message,
+		WorkTime: newWorkTime,
+	}
+
+}
+
 func (a *App) CreateProject(name string) MessageProjectResponse {
 	newProject, err := database.CreateProject(name)
 	if err != nil {
