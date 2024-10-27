@@ -1,29 +1,28 @@
 <script>
-  import Timer from "./components/Timer.svelte"
+  import Timer from "./components/Timer.svelte";
   import WorkDay from "./components/WorkDay.svelte";
-  import Sarkis from "./assets/images/sarkis-dev.png"
+  import Sarkis from "./assets/images/sarkis-dev.png";
   import CreateProject from "./components/projects/CreateProject.svelte";
   import Projects from "./components/projects/Projects.svelte";
   import Project from "./components/projects/Project.svelte";
   import WorkSumary from "./components/summary/WorkSumary.svelte";
   import DaySummary from "./components/summary/DaySummary.svelte";
 
-  let currentTab = 'Work';
+  let currentTab = "Work";
 
-  let projectID = 0
-  let day = null
+  let projectID = 0;
+  let day = null;
 
   function updateTab(event) {
     currentTab = event.target.value;
   }
 
-  function handleTabEvent(event){
-    projectID = event.detail.project?.projectID
-    if (event.detail.day){
-      console.log(event.detail.day)
-      day = event.detail.day
+  function handleTabEvent(event) {
+    projectID = event.detail.project?.projectID;
+    if (event.detail.day) {
+      day = event.detail.day;
     }
-    currentTab = event.detail.tab
+    currentTab = event.detail.tab;
   }
 
   function setTab(tab) {
@@ -31,11 +30,18 @@
   }
 </script>
 
-<div class="min-h-screen h-auto flex w-full flex-col justify-between items-center bg-primary p-0 font-body">
+<div
+  class="min-h-screen h-auto flex w-full flex-col justify-between items-center bg-primary p-0 font-body"
+>
   <!-- Dropdown for smaller screens -->
   <div class="sm:hidden">
     <label for="Tab" class="sr-only">Tab</label>
-    <select id="Tab" class="w-full rounded-md border-secondary bg-accent" bind:value={currentTab} on:change={updateTab}>
+    <select
+      id="Tab"
+      class="w-full rounded-md border-secondary bg-accent"
+      bind:value={currentTab}
+      on:change={updateTab}
+    >
       <option>Work</option>
       <option>Timer</option>
       <option>Projects</option>
@@ -47,76 +53,74 @@
     <nav class="flex w-full justify-center gap-6 m-auto" aria-label="Tabs">
       <button
         class="shrink-0 rounded-lg p-2 text-sm font-medium text-textSecondary hover:bg-buttonAccentBg hover:text-buttonAccentText"
-        on:click={() => setTab('Work')}
-        class:bg-buttonPrimaryBg={currentTab === 'Work'}
-        class:hover:bg-buttonHoverBg={currentTab === 'Work'}
+        on:click={() => setTab("Work")}
+        class:bg-buttonPrimaryBg={currentTab === "Work"}
+        class:hover:bg-buttonHoverBg={currentTab === "Work"}
       >
         Work Day
       </button>
 
       <button
         class="shrink-0 rounded-lg p-2 text-sm font-medium text-textSecondary hover:bg-buttonAccentBg hover:text-buttonAccentText"
-        on:click={() => setTab('Timer')}
-        class:bg-buttonPrimaryBg={currentTab === 'Timer'}
-        class:hover:bg-buttonHoverBg={currentTab === 'Timer'}
+        on:click={() => setTab("Timer")}
+        class:bg-buttonPrimaryBg={currentTab === "Timer"}
+        class:hover:bg-buttonHoverBg={currentTab === "Timer"}
       >
         Timer
       </button>
 
       <button
         class="shrink-0 rounded-lg p-2 text-sm font-medium text-textSecondary hover:bg-buttonAccentBg hover:text-buttonAccentText"
-        on:click={() => setTab('Projects')}
-        class:bg-buttonPrimaryBg={currentTab === 'Projects'}
-        class:hover:bg-buttonHoverBg={currentTab === 'Projects'}
+        on:click={() => setTab("Projects")}
+        class:bg-buttonPrimaryBg={currentTab === "Projects"}
+        class:hover:bg-buttonHoverBg={currentTab === "Projects"}
       >
         Projects
       </button>
 
       <button
         class="shrink-0 rounded-lg p-2 text-sm font-medium text-textSecondary hover:bg-buttonAccentBg hover:text-buttonAccentText"
-        on:click={() => setTab('Summary')}
-        class:bg-buttonPrimaryBg={currentTab === 'Summary'}
-        class:hover:bg-buttonHoverBg={currentTab === 'Summary'}
+        on:click={() => setTab("Summary")}
+        class:bg-buttonPrimaryBg={currentTab === "Summary"}
+        class:hover:bg-buttonHoverBg={currentTab === "Summary"}
       >
         Summary
       </button>
-      
     </nav>
   </div>
   <section class="my-2">
-    {#if currentTab === 'Work'}
+    {#if currentTab === "Work"}
       <WorkDay on:tabEvent={handleTabEvent}></WorkDay>
     {/if}
-    {#if currentTab === 'Timer'}
-      <Timer></Timer>    
+    {#if currentTab === "Timer"}
+      <Timer></Timer>
     {/if}
-    {#if currentTab === 'Projects'}
+    {#if currentTab === "Projects"}
       <Projects on:tabEvent={handleTabEvent}></Projects>
     {/if}
-    {#if currentTab === 'createProject'}
+    {#if currentTab === "createProject"}
       <CreateProject on:tabEvent={handleTabEvent}></CreateProject>
     {/if}
-    {#if currentTab === 'Project'}
-      <Project projectID={projectID}></Project>
+    {#if currentTab === "Project"}
+      <Project {projectID}></Project>
     {/if}
-    {#if currentTab === 'Summary'}
+    {#if currentTab === "Summary"}
       <WorkSumary on:tabEvent={handleTabEvent}></WorkSumary>
     {/if}
-    {#if currentTab === 'DaySummary'}
+    {#if currentTab === "DaySummary"}
       <DaySummary data={day}></DaySummary>
     {/if}
   </section>
-  
-  <footer class="w-full bg-secondary text-textPrimary shadow-sm focus:border-sky-500 focus:ring-sky-500 font-nerd">
+
+  <footer
+    class="w-full bg-secondary text-textPrimary shadow-sm focus:border-sky-500 focus:ring-sky-500 font-nerd"
+  >
     <div class="mx-auto flex flex-col items-center space-y-4">
-      <p>
-        Developed by: 
-      </p>
+      <p>Developed by:</p>
       <img src={Sarkis} alt="Sarkis DEV logo" class="w-32 h-auto" />
-      <p >
-        Contact: <a href="mailto:jorge@sarkis.dev" >jorge@sarkis.dev</a>
+      <p>
+        Contact: <a href="mailto:jorge@sarkis.dev">jorge@sarkis.dev</a>
       </p>
     </div>
   </footer>
 </div>
-

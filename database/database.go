@@ -144,6 +144,25 @@ func FinishTotalTime(id int64) (*TotalTime, error) {
 	return &totalTime, nil
 }
 
+func SaveCurrentTotalTime() error {
+	var totalTime TotalTime
+
+	if err := DB.Where("closed = ?", false).First(&totalTime).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			log.Println("No active TotalTime found.")
+			return fmt.Errorf("no active TotalTime to save")
+		}
+		log.Printf("Error retrieving active TotalTime: %v", err)
+		return fmt.Errorf("failed to retrieve current TotalTime: %w", err)
+	}
+
+	if err := DB.Save(&totalTime).Error; err != nil {
+		log.Printf("Error saving current TotalTime: %v", err)
+		return fmt.Errorf("failed to save current TotalTime: %w", err)
+	}
+	return nil
+}
+
 func CreateWorkTime(totalTimeID int64) (*WorkTime, error) {
 	workTime, _ := getUnfinishedWorkTime()
 

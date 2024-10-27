@@ -145,7 +145,11 @@ func (a *App) StartDay() StartDayResponse {
 	}
 
 	if unfinishedTotalTime != nil {
+		fmt.Println("a.TotalTime")
+		fmt.Println(a.TotalTime)
+		fmt.Println("a.TotalTime")
 		a.TotalTime = unfinishedTotalTime
+		fmt.Println(a.TotalTime)
 		return StartDayResponse{
 			Message:   "Unfinished day found",
 			TotalTime: unfinishedTotalTime,
@@ -227,6 +231,11 @@ func (a *App) TakeBreak() string {
 		return "Failed to start Break"
 	}
 
+	if err := database.SaveCurrentTotalTime(); err != nil {
+		log.Printf("Error saving current TotalTime: %v", err)
+		return "No Current Total Time, can't take a Break"
+	}
+
 	return "Break started!"
 
 }
@@ -243,6 +252,14 @@ func (a *App) EndBreak() MessageWorkTimeResponse {
 		log.Printf("Error creating WorkTime: %v", err)
 		return MessageWorkTimeResponse{
 			Message: "Work time not created. Error",
+		}
+	}
+
+	if err := database.SaveCurrentTotalTime(); err != nil {
+		log.Printf("Error saving current TotalTime: %v", err)
+		return MessageWorkTimeResponse{
+			Message:  "Error finding the current TotalTime and saving it",
+			WorkTime: nil,
 		}
 	}
 
@@ -276,6 +293,11 @@ func (a *App) TakeBrb() string {
 		return "Failed to start Break"
 	}
 
+	if err := database.SaveCurrentTotalTime(); err != nil {
+		log.Printf("Error saving current TotalTime: %v", err)
+		return "No Current Total Time, can't take a BRB"
+	}
+
 	return "Brb started!"
 
 }
@@ -292,6 +314,14 @@ func (a *App) EndBrb() MessageWorkTimeResponse {
 		log.Printf("Error creating WorkTime: %v", err)
 		return MessageWorkTimeResponse{
 			Message: "Work time not created. Error",
+		}
+	}
+
+	if err := database.SaveCurrentTotalTime(); err != nil {
+		log.Printf("Error saving current TotalTime: %v", err)
+		return MessageWorkTimeResponse{
+			Message:  "Error finding the current TotalTime and saving it",
+			WorkTime: nil,
 		}
 	}
 
@@ -546,7 +576,7 @@ func (a *App) GetDaySummary(dayString string) DaySummary {
 	}
 
 	summary.WorkTimeProjects = workTimeProjects
-	log.Printf("wokr time projects in sumary: %v", workTimeProjects)
+	log.Printf("work time projects in sumary: %v", workTimeProjects)
 
 	breakTimes, err := database.GetBreakTimesForDay(day)
 	if err != nil {
