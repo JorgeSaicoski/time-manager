@@ -186,9 +186,7 @@ func GetWorkTime(id int64) (*WorkTime, error) {
 }
 
 func FinishWorkTime() (*WorkTime, error) {
-	fmt.Println("finsihworktime")
 	workTime, err := getUnfinishedWorkTime()
-	fmt.Println(workTime)
 	if err != nil {
 		return nil, fmt.Errorf("failed to retrieve unfinished WorkTime: %w", err)
 	}

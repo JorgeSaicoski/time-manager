@@ -256,7 +256,6 @@ func (a *App) EndBreak() MessageWorkTimeResponse {
 }
 
 func (a *App) TakeBrb() string {
-	fmt.Println("take")
 	_, err := database.FinishWorkTime()
 	if err != nil {
 		log.Printf("Error retrieving WorkTime: %v", err)
@@ -272,8 +271,8 @@ func (a *App) TakeBrb() string {
 
 	a.TotalTime.Brb.TotalTimeID = a.TotalTime.ID
 
-	if err := database.DB.Save(a.TotalTime.BreakTime).Error; err != nil {
-		log.Printf("Error saving updated BreakTime: %v", err)
+	if err := database.DB.Save(a.TotalTime.Brb).Error; err != nil {
+		log.Printf("Error saving updated Brb: %v", err)
 		return "Failed to start Break"
 	}
 
