@@ -145,11 +145,7 @@ func (a *App) StartDay() StartDayResponse {
 	}
 
 	if unfinishedTotalTime != nil {
-		fmt.Println("a.TotalTime")
-		fmt.Println(a.TotalTime)
-		fmt.Println("a.TotalTime")
 		a.TotalTime = unfinishedTotalTime
-		fmt.Println(a.TotalTime)
 		return StartDayResponse{
 			Message:   "Unfinished day found",
 			TotalTime: unfinishedTotalTime,
@@ -186,10 +182,6 @@ func (a *App) FinishDay() string {
 	if err != nil {
 		log.Printf("Error finishing WorkTime: %v", err)
 		return "Error finishing WorkTime"
-	}
-	if err := database.SaveCurrentTotalTime(); err != nil {
-		log.Printf("Error saving current TotalTime: %v", err)
-		return "no current total time, can't save"
 	}
 
 	if _, err := database.FinishTotalTime(unfinishedTotalTime.ID); err != nil {
