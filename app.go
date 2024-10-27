@@ -187,15 +187,14 @@ func (a *App) FinishDay() string {
 		log.Printf("Error finishing WorkTime: %v", err)
 		return "Error finishing WorkTime"
 	}
+	if err := database.SaveCurrentTotalTime(); err != nil {
+		log.Printf("Error saving current TotalTime: %v", err)
+		return "no current total time, can't save"
+	}
 
 	if _, err := database.FinishTotalTime(unfinishedTotalTime.ID); err != nil {
 		log.Printf("Error finishing TotalTime: %v", err)
 		return "error finishing Total Time"
-	}
-
-	if err := database.SaveCurrentTotalTime(); err != nil {
-		log.Printf("Error saving current TotalTime: %v", err)
-		return "no current total time, can't save"
 	}
 
 	return "Total Time finished"
