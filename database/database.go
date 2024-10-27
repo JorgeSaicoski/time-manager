@@ -105,7 +105,7 @@ func GetTotalTime(id int64) (*TotalTime, error) {
 
 func GetUnfinishedTotalTime() (*TotalTime, error) {
 	var totalTime TotalTime
-	result := DB.Where("closed = ?", false).First(&totalTime)
+	result := DB.Preload("Brb").Preload("BreakTime").Where("closed = ?", false).First(&totalTime)
 	if result.Error != nil {
 		fmt.Println("109")
 		fmt.Println(result.Error)
@@ -137,17 +137,13 @@ func FinishTotalTime(id int64) (*TotalTime, error) {
 		return nil, fmt.Errorf("error finishing WorkTime: %w", err)
 	}
 
-	if err := DB.Save(&totalTime).Error; err != nil {
-		return nil, fmt.Errorf("failed to finish TotalTime: %w", err)
-	}
-
 	return &totalTime, nil
 }
 
 func SaveCurrentTotalTime() error {
 	var totalTime TotalTime
 
-	if err := DB.Where("closed = ?", false).First(&totalTime).Error; err != nil {
+	if err := DB.Preload("BreakTime").Preload("Brb").Where("closed = ?", false).First(&totalTime).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			log.Println("No active TotalTime found.")
 			return fmt.Errorf("no active TotalTime to save")
@@ -160,6 +156,8 @@ func SaveCurrentTotalTime() error {
 		log.Printf("Error saving current TotalTime: %v", err)
 		return fmt.Errorf("failed to save current TotalTime: %w", err)
 	}
+	fmt.Println("SaveCurrentTotalTime")
+	fmt.Println(totalTime.BreakTime)
 	return nil
 }
 

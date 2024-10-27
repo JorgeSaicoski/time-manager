@@ -291,9 +291,9 @@
             ></Button>
           {:else}
             <Button label="BRB" type="normal" onClick={() => brb()}></Button>
+            <Button label="Take Break" type="normal" onClick={() => takeBreak()}
+            ></Button>
           {/if}
-          <Button label="Take Break" type="normal" onClick={() => takeBreak()}
-          ></Button>
         {/if}
         <Button
           label="Create Project"

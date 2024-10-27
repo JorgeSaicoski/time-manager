@@ -193,6 +193,11 @@ func (a *App) FinishDay() string {
 		return "error finishing Total Time"
 	}
 
+	if err := database.SaveCurrentTotalTime(); err != nil {
+		log.Printf("Error saving current TotalTime: %v", err)
+		return "no current total time, can't save"
+	}
+
 	return "Total Time finished"
 }
 
@@ -226,6 +231,9 @@ func (a *App) TakeBreak() string {
 
 	a.TotalTime.BreakTime.TotalTimeID = a.TotalTime.ID
 
+	fmt.Println("TakeBreakPreSaveCurrentTotalTime:")
+	fmt.Println(a.TotalTime.BreakTime)
+
 	if err := database.DB.Save(a.TotalTime.BreakTime).Error; err != nil {
 		log.Printf("Error saving updated BreakTime: %v", err)
 		return "Failed to start Break"
@@ -254,6 +262,9 @@ func (a *App) EndBreak() MessageWorkTimeResponse {
 			Message: "Work time not created. Error",
 		}
 	}
+
+	fmt.Println("EndBreakPreSaveCurrentTotalTime:")
+	fmt.Println(a.TotalTime.BreakTime)
 
 	if err := database.SaveCurrentTotalTime(); err != nil {
 		log.Printf("Error saving current TotalTime: %v", err)
