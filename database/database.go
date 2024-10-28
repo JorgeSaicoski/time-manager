@@ -149,11 +149,25 @@ func FinishTotalTime(id int64) (*TotalTime, error) {
 }
 
 func SaveTotalTime(totalTime *TotalTime) error {
-	fmt.Println("SaveTotalTime")
-	log.Printf("Saving TotalTime with current break duration: %v", totalTime.BreakTime.Duration)
 
 	if totalTime.ID == 0 {
 		return fmt.Errorf("cannot save TotalTime: ID is missing or invalid")
+	}
+
+	if totalTime.BreakTime != nil {
+		if err := DB.Save(totalTime.BreakTime).Error; err != nil {
+			log.Printf("Error saving BreakTime: %v", err)
+			return fmt.Errorf("failed to save BreakTime: %w", err)
+		}
+		log.Printf("Successfully saved BreakTime with duration: %v", totalTime.BreakTime.Duration)
+	}
+
+	if totalTime.Brb != nil {
+		if err := DB.Save(totalTime.Brb).Error; err != nil {
+			log.Printf("Error saving Brb: %v", err)
+			return fmt.Errorf("failed to save Brb: %w", err)
+		}
+		log.Printf("Successfully saved Brb with duration: %v", totalTime.Brb.Duration)
 	}
 
 	if err := DB.Save(totalTime).Error; err != nil {
