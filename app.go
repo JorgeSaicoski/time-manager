@@ -153,7 +153,6 @@ func (a *App) StartDay() StartDayResponse {
 	}
 
 	totalTime, err := database.CreateTotalTime()
-	fmt.Println(totalTime.Closed)
 	if err != nil {
 		log.Printf("Error creating TotalTime: %v", err)
 		return StartDayResponse{
@@ -200,6 +199,15 @@ func (a *App) StartWorkTime() MessageWorkTimeResponse {
 			Message: "Error creating work time",
 		}
 	}
+
+	if err := database.SaveTotalTime(a.TotalTime); err != nil {
+		log.Printf("Error saving current TotalTime: %v", err)
+		return MessageWorkTimeResponse{
+			Message:  "No Current Total Time, can't start work time",
+			WorkTime: nil,
+		}
+	}
+
 	return MessageWorkTimeResponse{
 		Message:  "Work Time!",
 		WorkTime: newWorkTime,
@@ -222,15 +230,12 @@ func (a *App) TakeBreak() string {
 
 	a.TotalTime.BreakTime.TotalTimeID = a.TotalTime.ID
 
-	fmt.Println("TakeBreakPreSaveCurrentTotalTime:")
-	fmt.Println(a.TotalTime.BreakTime)
-
 	if err := database.DB.Save(a.TotalTime.BreakTime).Error; err != nil {
 		log.Printf("Error saving updated BreakTime: %v", err)
 		return "Failed to start Break"
 	}
 
-	if err := database.SaveCurrentTotalTime(); err != nil {
+	if err := database.SaveTotalTime(a.TotalTime); err != nil {
 		log.Printf("Error saving current TotalTime: %v", err)
 		return "No Current Total Time, can't take a Break"
 	}
@@ -254,10 +259,7 @@ func (a *App) EndBreak() MessageWorkTimeResponse {
 		}
 	}
 
-	fmt.Println("EndBreakPreSaveCurrentTotalTime:")
-	fmt.Println(a.TotalTime.BreakTime)
-
-	if err := database.SaveCurrentTotalTime(); err != nil {
+	if err := database.SaveTotalTime(a.TotalTime); err != nil {
 		log.Printf("Error saving current TotalTime: %v", err)
 		return MessageWorkTimeResponse{
 			Message:  "Error finding the current TotalTime and saving it",
@@ -295,7 +297,7 @@ func (a *App) TakeBrb() string {
 		return "Failed to start Break"
 	}
 
-	if err := database.SaveCurrentTotalTime(); err != nil {
+	if err := database.SaveTotalTime(a.TotalTime); err != nil {
 		log.Printf("Error saving current TotalTime: %v", err)
 		return "No Current Total Time, can't take a BRB"
 	}
@@ -319,7 +321,7 @@ func (a *App) EndBrb() MessageWorkTimeResponse {
 		}
 	}
 
-	if err := database.SaveCurrentTotalTime(); err != nil {
+	if err := database.SaveTotalTime(a.TotalTime); err != nil {
 		log.Printf("Error saving current TotalTime: %v", err)
 		return MessageWorkTimeResponse{
 			Message:  "Error finding the current TotalTime and saving it",
@@ -401,7 +403,6 @@ func (a *App) CalculateAndSaveProjectCost(projectID int64, hourCost int) Message
 
 func (a *App) GetProjectByID(projectID int64) MessageProjectResponse {
 	project, err := database.GetProject(projectID)
-	fmt.Println(projectID)
 	if err != nil {
 		log.Printf("Error while geting project: %v", err)
 		return MessageProjectResponse{
