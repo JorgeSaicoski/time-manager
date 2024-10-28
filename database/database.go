@@ -622,17 +622,29 @@ func GetCurrentActiveTimers() (*CurrentTimers, error) {
 	if err := DB.Where("closed = ?", false).First(&currentTimers.WorkTime).Error; err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
+	if currentTimers.WorkTime != nil && currentTimers.WorkTime.ID == 0 {
+		currentTimers.WorkTime = nil
+	}
 
 	if err := DB.Where("active = ?", true).First(&currentTimers.BreakTime).Error; err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
+	}
+	if currentTimers.BreakTime != nil && currentTimers.BreakTime.ID == 0 {
+		currentTimers.BreakTime = nil
 	}
 
 	if err := DB.Where("active = ?", true).First(&currentTimers.Brb).Error; err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
+	if currentTimers.Brb != nil && currentTimers.Brb.ID == 0 {
+		currentTimers.Brb = nil
+	}
 
 	if err := DB.Where("closed = ?", false).First(&currentTimers.TotalTime).Error; err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
+	}
+	if currentTimers.TotalTime != nil && currentTimers.TotalTime.ID == 0 {
+		currentTimers.TotalTime = nil
 	}
 
 	return &currentTimers, nil
