@@ -179,6 +179,46 @@ func SaveTotalTime(totalTime *TotalTime) error {
 	return nil
 }
 
+func finishAnyUnfinishedBreakOrBrb() error {
+	log.Println("Checking for any active BreakTime or Brb")
+
+	var activeBreakTimes []BreakTime
+	if err := DB.Where("active = ?", true).Find(&activeBreakTimes).Error; err != nil {
+		log.Printf("Error retrieving active BreakTimes: %v", err)
+		return fmt.Errorf("failed to retrieve active BreakTimes: %w", err)
+	}
+	for _, breakTime := range activeBreakTimes {
+		duration := time.Since(breakTime.StartTime)
+		breakTime.Duration += duration
+		breakTime.Active = false
+
+		if err := DB.Save(&breakTime).Error; err != nil {
+			log.Printf("Error finishing BreakTime ID %d: %v", breakTime.ID, err)
+			return fmt.Errorf("failed to finish BreakTime ID %d: %w", breakTime.ID, err)
+		}
+		log.Printf("Successfully finished BreakTime ID %d with duration: %v", breakTime.ID, breakTime.Duration)
+	}
+
+	var activeBrbs []Brb
+	if err := DB.Where("active = ?", true).Find(&activeBrbs).Error; err != nil {
+		log.Printf("Error retrieving active Brbs: %v", err)
+		return fmt.Errorf("failed to retrieve active Brbs: %w", err)
+	}
+	for _, brb := range activeBrbs {
+		duration := time.Since(brb.StartTime)
+		brb.Duration += duration
+		brb.Active = false
+
+		if err := DB.Save(&brb).Error; err != nil {
+			log.Printf("Error finishing Brb ID %d: %v", brb.ID, err)
+			return fmt.Errorf("failed to finish Brb ID %d: %w", brb.ID, err)
+		}
+		log.Printf("Successfully finished Brb ID %d with duration: %v", brb.ID, brb.Duration)
+	}
+
+	return nil
+}
+
 func CreateWorkTime(totalTimeID int64) (*WorkTime, error) {
 	fmt.Println("CreateWorkTime")
 
@@ -208,6 +248,10 @@ func CreateWorkTime(totalTimeID int64) (*WorkTime, error) {
 	err = DB.Save(&totalTime).Error
 	if err != nil {
 		return nil, fmt.Errorf("failed to update TotalTime with new WorkTime: %w", err)
+	}
+
+	if err := finishAnyUnfinishedBreakOrBrb(); err != nil {
+		return nil, fmt.Errorf("error finishing any unfinished BreakTime or Brb: %w", err)
 	}
 
 	return workTime, nil

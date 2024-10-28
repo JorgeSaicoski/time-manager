@@ -51,14 +51,6 @@ type WorkTimeProject struct {
 	Project    Project  `gorm:"foreignKey:ProjectID"`
 }
 
-type BreakTime struct {
-	gorm.Model
-	ID          int64 `gorm:"primaryKey"`
-	TotalTimeID int64
-	StartTime   time.Time
-	Duration    time.Duration
-}
-
 type Task struct {
 	gorm.Model
 	ID          int64 `gorm:"primaryKey"`
@@ -76,10 +68,20 @@ type Cost struct {
 	HourCost  int
 }
 
+type BreakTime struct {
+	gorm.Model
+	ID          int64 `gorm:"primaryKey"`
+	TotalTimeID int64
+	StartTime   time.Time
+	Duration    time.Duration
+	Active      bool `gorm:"default:true"`
+}
+
 type Brb struct {
 	gorm.Model
 	ID          int64 `gorm:"primaryKey"`
 	TotalTimeID int64
 	StartTime   time.Time
 	Duration    time.Duration
+	Active      bool `gorm:"default:true"`
 }

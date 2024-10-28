@@ -228,6 +228,8 @@ func (a *App) TakeBreak() string {
 
 	a.TotalTime.BreakTime.StartTime = time.Now()
 
+	a.TotalTime.BreakTime.Active = true
+
 	a.TotalTime.BreakTime.TotalTimeID = a.TotalTime.ID
 
 	if err := database.DB.Save(a.TotalTime.BreakTime).Error; err != nil {
@@ -289,6 +291,8 @@ func (a *App) TakeBrb() string {
 	}
 
 	a.TotalTime.Brb.StartTime = time.Now()
+
+	a.TotalTime.Brb.Active = true
 
 	a.TotalTime.Brb.TotalTimeID = a.TotalTime.ID
 
