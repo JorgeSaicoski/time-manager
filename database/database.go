@@ -11,6 +11,13 @@ import (
 	"gorm.io/gorm"
 )
 
+type CurrentTimers struct {
+	WorkTime  *WorkTime
+	BreakTime *BreakTime
+	Brb       *Brb
+	TotalTime *TotalTime
+}
+
 var DB *gorm.DB
 
 func Connect() {
@@ -591,6 +598,15 @@ func GetBreakTime(id int64) (*BreakTime, error) {
 	return &breakTime, err
 }
 
+func GetBrb(id int64) (*Brb, error) {
+	var brb Brb
+	err := DB.First(&brb, id).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errors.New("Brb not found")
+	}
+	return &brb, err
+}
+
 func GetWorkTimeProjectByID(id int64) (*WorkTimeProject, error) {
 	var workTimeProject WorkTimeProject
 	err := DB.First(&workTimeProject, id).Error
@@ -598,4 +614,26 @@ func GetWorkTimeProjectByID(id int64) (*WorkTimeProject, error) {
 		return nil, errors.New("WorkTimeProject not found")
 	}
 	return &workTimeProject, err
+}
+
+func GetCurrentActiveTimers() (*CurrentTimers, error) {
+	var currentTimers CurrentTimers
+
+	if err := DB.Where("closed = ?", false).First(&currentTimers.WorkTime).Error; err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	if err := DB.Where("active = ?", true).First(&currentTimers.BreakTime).Error; err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	if err := DB.Where("active = ?", true).First(&currentTimers.Brb).Error; err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	if err := DB.Where("closed = ?", false).First(&currentTimers.TotalTime).Error; err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	return &currentTimers, nil
 }

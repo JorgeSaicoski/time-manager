@@ -7,11 +7,13 @@
   import Project from "./components/projects/Project.svelte";
   import WorkSumary from "./components/summary/WorkSumary.svelte";
   import DaySummary from "./components/summary/DaySummary.svelte";
+  import Currently from "./components/Currently.svelte";
 
-  let currentTab = "Work";
+  let currentTab = "Currently";
 
   let projectID = 0;
   let day = null;
+  const navItem = ["Currently", "Work", "Timer", "Projects", "Summary"];
 
   function updateTab(event) {
     currentTab = event.target.value;
@@ -51,44 +53,22 @@
   <!-- Navigation for larger screens -->
   <div class="hidden sm:block bg-secondary w-full p-2">
     <nav class="flex w-full justify-center gap-6 m-auto" aria-label="Tabs">
-      <button
-        class="shrink-0 rounded-lg p-2 text-sm font-medium text-textSecondary hover:bg-buttonAccentBg hover:text-buttonAccentText"
-        on:click={() => setTab("Work")}
-        class:bg-buttonPrimaryBg={currentTab === "Work"}
-        class:hover:bg-buttonHoverBg={currentTab === "Work"}
-      >
-        Work Day
-      </button>
-
-      <button
-        class="shrink-0 rounded-lg p-2 text-sm font-medium text-textSecondary hover:bg-buttonAccentBg hover:text-buttonAccentText"
-        on:click={() => setTab("Timer")}
-        class:bg-buttonPrimaryBg={currentTab === "Timer"}
-        class:hover:bg-buttonHoverBg={currentTab === "Timer"}
-      >
-        Timer
-      </button>
-
-      <button
-        class="shrink-0 rounded-lg p-2 text-sm font-medium text-textSecondary hover:bg-buttonAccentBg hover:text-buttonAccentText"
-        on:click={() => setTab("Projects")}
-        class:bg-buttonPrimaryBg={currentTab === "Projects"}
-        class:hover:bg-buttonHoverBg={currentTab === "Projects"}
-      >
-        Projects
-      </button>
-
-      <button
-        class="shrink-0 rounded-lg p-2 text-sm font-medium text-textSecondary hover:bg-buttonAccentBg hover:text-buttonAccentText"
-        on:click={() => setTab("Summary")}
-        class:bg-buttonPrimaryBg={currentTab === "Summary"}
-        class:hover:bg-buttonHoverBg={currentTab === "Summary"}
-      >
-        Summary
-      </button>
+      {#each navItem as tab}
+        <button
+          class="shrink-0 rounded-lg p-2 text-sm font-medium text-textSecondary hover:bg-buttonAccentBg hover:text-buttonAccentText"
+          on:click={() => setTab(tab)}
+          class:bg-buttonPrimaryBg={currentTab === tab}
+          class:hover:bg-buttonHoverBg={currentTab === tab}
+        >
+          {tab}
+        </button>
+      {/each}
     </nav>
   </div>
   <section class="my-2">
+    {#if currentTab === "Currently"}
+      <Currently></Currently>
+    {/if}
     {#if currentTab === "Work"}
       <WorkDay on:tabEvent={handleTabEvent}></WorkDay>
     {/if}

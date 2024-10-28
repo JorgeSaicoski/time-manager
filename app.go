@@ -71,6 +71,13 @@ type DaySummary struct {
 	Message               string                     `json:"message"`
 }
 
+type CurrentTimersResponse struct {
+	WorkTime  *database.WorkTime  `json:"workTime,omitempty"`
+	BreakTime *database.BreakTime `json:"breakTime,omitempty"`
+	Brb       *database.Brb       `json:"brb,omitempty"`
+	TotalTime *database.TotalTime `json:"totalTime,omitempty"`
+}
+
 func NewApp() *App {
 	return &App{}
 }
@@ -647,6 +654,23 @@ func (a *App) UpdateBreakTimeDuration(breakTimeID int64, newDurationSeconds int6
 	return fmt.Sprintf("BreakTime duration updated to %v", breakTime.Duration)
 }
 
+func (a *App) UpdateBrbDuration(brbID int64, newDurationSeconds int64) string {
+	brb, err := database.GetBrb(brbID)
+	if err != nil {
+		log.Printf("Error retrieving Brb: %v", err)
+		return "Brb time not found"
+	}
+
+	brb.Duration = time.Duration(newDurationSeconds) * time.Second
+
+	if err := database.DB.Save(brb).Error; err != nil {
+		log.Printf("Error updating Brb duration: %v", err)
+		return "Failed to update Brb duration"
+	}
+
+	return fmt.Sprintf("Brb duration updated to %v", brb.Duration)
+}
+
 func (a *App) UpdateWorkTimeProjectDuration(workTimeProjectID int64, newDurationSeconds int64) MessageWorkTimeProjectResponse {
 	workTimeProject, err := database.GetWorkTimeProjectByID(workTimeProjectID)
 	if err != nil {
@@ -670,4 +694,18 @@ func (a *App) UpdateWorkTimeProjectDuration(workTimeProjectID int64, newDuration
 		Message:         message,
 		WorkTimeProject: workTimeProject,
 	}
+}
+
+func (a *App) GetCurrentActiveTimers() (*CurrentTimersResponse, error) {
+	currentTimers, err := database.GetCurrentActiveTimers()
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch active timers: %w", err)
+	}
+
+	return &CurrentTimersResponse{
+		WorkTime:  currentTimers.WorkTime,
+		BreakTime: currentTimers.BreakTime,
+		Brb:       currentTimers.Brb,
+		TotalTime: currentTimers.TotalTime,
+	}, nil
 }

@@ -24,6 +24,8 @@ export function FinishDay():Promise<string>;
 
 export function GetAllProjects(arg1:number,arg2:number,arg3:any,arg4:string,arg5:string):Promise<main.ProjectsResponse>;
 
+export function GetCurrentActiveTimers():Promise<main.CurrentTimersResponse>;
+
 export function GetDaySummary(arg1:string):Promise<main.DaySummary>;
 
 export function GetProjectByID(arg1:number):Promise<main.MessageProjectResponse>;
@@ -43,6 +45,8 @@ export function StartWorkTime():Promise<main.MessageWorkTimeResponse>;
 export function TakeBrb():Promise<string>;
 
 export function TakeBreak():Promise<string>;
+
+export function UpdateBrbDuration(arg1:number,arg2:number):Promise<string>;
 
 export function UpdateBreakTimeDuration(arg1:number,arg2:number):Promise<string>;
 

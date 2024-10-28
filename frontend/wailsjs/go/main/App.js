@@ -42,6 +42,10 @@ export function GetAllProjects(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['main']['App']['GetAllProjects'](arg1, arg2, arg3, arg4, arg5);
 }
 
+export function GetCurrentActiveTimers() {
+  return window['go']['main']['App']['GetCurrentActiveTimers']();
+}
+
 export function GetDaySummary(arg1) {
   return window['go']['main']['App']['GetDaySummary'](arg1);
 }
@@ -80,6 +84,10 @@ export function TakeBrb() {
 
 export function TakeBreak() {
   return window['go']['main']['App']['TakeBreak']();
+}
+
+export function UpdateBrbDuration(arg1, arg2) {
+  return window['go']['main']['App']['UpdateBrbDuration'](arg1, arg2);
 }
 
 export function UpdateBreakTimeDuration(arg1, arg2) {
