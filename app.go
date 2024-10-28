@@ -151,7 +151,6 @@ func (a *App) StartDay() StartDayResponse {
 			TotalTime: unfinishedTotalTime,
 		}
 	}
-
 	totalTime, err := database.CreateTotalTime()
 	if err != nil {
 		log.Printf("Error creating TotalTime: %v", err)

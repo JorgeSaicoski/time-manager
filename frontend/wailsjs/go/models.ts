@@ -10,6 +10,7 @@ export namespace database {
 	    TotalTimeID: number;
 	    StartTime: time.Time;
 	    Duration: number;
+	    Active: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new Brb(source);
@@ -25,6 +26,7 @@ export namespace database {
 	        this.TotalTimeID = source["TotalTimeID"];
 	        this.StartTime = this.convertValues(source["StartTime"], time.Time);
 	        this.Duration = source["Duration"];
+	        this.Active = source["Active"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -55,6 +57,7 @@ export namespace database {
 	    TotalTimeID: number;
 	    StartTime: time.Time;
 	    Duration: number;
+	    Active: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new BreakTime(source);
@@ -70,6 +73,7 @@ export namespace database {
 	        this.TotalTimeID = source["TotalTimeID"];
 	        this.StartTime = this.convertValues(source["StartTime"], time.Time);
 	        this.Duration = source["Duration"];
+	        this.Active = source["Active"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

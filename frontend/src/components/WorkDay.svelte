@@ -169,7 +169,6 @@
     try {
       const response = await GetAllProjects(1, 10, false);
       projects = response.projects;
-      console.log(projects[0]);
       checkUnfinishedWorkTimeProject();
     } catch (error) {
       message = "Error loading projects";

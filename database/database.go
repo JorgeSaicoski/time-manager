@@ -109,6 +109,9 @@ func GetTotalTime(id int64) (*TotalTime, error) {
 
 func GetUnfinishedTotalTime() (*TotalTime, error) {
 	fmt.Println("GetUnfinishedTotalTime")
+	if err := finishAnyUnfinishedBreakOrBrb(); err != nil {
+		return nil, fmt.Errorf("error finishing any unfinished BreakTime or Brb: %w", err)
+	}
 	var totalTime TotalTime
 	result := DB.Preload("Brb").Preload("BreakTime").Where("closed = ?", false).First(&totalTime)
 	if result.Error != nil {
@@ -154,22 +157,6 @@ func SaveTotalTime(totalTime *TotalTime) error {
 		return fmt.Errorf("cannot save TotalTime: ID is missing or invalid")
 	}
 
-	if totalTime.BreakTime != nil {
-		if err := DB.Save(totalTime.BreakTime).Error; err != nil {
-			log.Printf("Error saving BreakTime: %v", err)
-			return fmt.Errorf("failed to save BreakTime: %w", err)
-		}
-		log.Printf("Successfully saved BreakTime with duration: %v", totalTime.BreakTime.Duration)
-	}
-
-	if totalTime.Brb != nil {
-		if err := DB.Save(totalTime.Brb).Error; err != nil {
-			log.Printf("Error saving Brb: %v", err)
-			return fmt.Errorf("failed to save Brb: %w", err)
-		}
-		log.Printf("Successfully saved Brb with duration: %v", totalTime.Brb.Duration)
-	}
-
 	if err := DB.Save(totalTime).Error; err != nil {
 		log.Printf("Error saving TotalTime with ID %d: %v", totalTime.ID, err)
 		return fmt.Errorf("failed to save TotalTime with ID %d: %w", totalTime.ID, err)
@@ -180,7 +167,9 @@ func SaveTotalTime(totalTime *TotalTime) error {
 }
 
 func finishAnyUnfinishedBreakOrBrb() error {
-	log.Println("Checking for any active BreakTime or Brb")
+	log.Println("Checking for any active BreakTime or Brb globally")
+
+	totalTimeIDs := make(map[int64]struct{})
 
 	var activeBreakTimes []BreakTime
 	if err := DB.Where("active = ?", true).Find(&activeBreakTimes).Error; err != nil {
@@ -188,6 +177,7 @@ func finishAnyUnfinishedBreakOrBrb() error {
 		return fmt.Errorf("failed to retrieve active BreakTimes: %w", err)
 	}
 	for _, breakTime := range activeBreakTimes {
+		log.Println("-----------------------------------")
 		duration := time.Since(breakTime.StartTime)
 		breakTime.Duration += duration
 		breakTime.Active = false
@@ -196,6 +186,7 @@ func finishAnyUnfinishedBreakOrBrb() error {
 			log.Printf("Error finishing BreakTime ID %d: %v", breakTime.ID, err)
 			return fmt.Errorf("failed to finish BreakTime ID %d: %w", breakTime.ID, err)
 		}
+		totalTimeIDs[breakTime.TotalTimeID] = struct{}{}
 		log.Printf("Successfully finished BreakTime ID %d with duration: %v", breakTime.ID, breakTime.Duration)
 	}
 
@@ -213,7 +204,22 @@ func finishAnyUnfinishedBreakOrBrb() error {
 			log.Printf("Error finishing Brb ID %d: %v", brb.ID, err)
 			return fmt.Errorf("failed to finish Brb ID %d: %w", brb.ID, err)
 		}
+		totalTimeIDs[brb.TotalTimeID] = struct{}{}
 		log.Printf("Successfully finished Brb ID %d with duration: %v", brb.ID, brb.Duration)
+	}
+
+	for totalTimeID := range totalTimeIDs {
+		var totalTime TotalTime
+		if err := DB.First(&totalTime, totalTimeID).Error; err != nil {
+			log.Printf("Error retrieving TotalTime ID %d: %v", totalTimeID, err)
+			return fmt.Errorf("failed to retrieve TotalTime ID %d: %w", totalTimeID, err)
+		}
+
+		if err := DB.Save(&totalTime).Error; err != nil {
+			log.Printf("Error saving TotalTime ID %d: %v", totalTimeID, err)
+			return fmt.Errorf("failed to save TotalTime ID %d: %w", totalTimeID, err)
+		}
+		log.Printf("TotalTime ID %d successfully saved after finishing BreakTime/Brb", totalTimeID)
 	}
 
 	return nil
