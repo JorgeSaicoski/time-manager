@@ -18,8 +18,16 @@ export function ChangeProjectClose(arg1) {
   return window['go']['main']['App']['ChangeProjectClose'](arg1);
 }
 
+export function CloseResolutionTracker(arg1) {
+  return window['go']['main']['App']['CloseResolutionTracker'](arg1);
+}
+
 export function CreateProject(arg1) {
   return window['go']['main']['App']['CreateProject'](arg1);
+}
+
+export function CreateResolutionUnit(arg1) {
+  return window['go']['main']['App']['CreateResolutionUnit'](arg1);
 }
 
 export function CreateTask(arg1, arg2, arg3) {
@@ -32,6 +40,10 @@ export function EndBrb() {
 
 export function EndBreak() {
   return window['go']['main']['App']['EndBreak']();
+}
+
+export function FindResolutionTrackerByDay(arg1) {
+  return window['go']['main']['App']['FindResolutionTrackerByDay'](arg1);
 }
 
 export function FinishDay() {
@@ -50,6 +62,10 @@ export function GetDaySummary(arg1) {
   return window['go']['main']['App']['GetDaySummary'](arg1);
 }
 
+export function GetOrCreateTodayResolutionTracker() {
+  return window['go']['main']['App']['GetOrCreateTodayResolutionTracker']();
+}
+
 export function GetProjectByID(arg1) {
   return window['go']['main']['App']['GetProjectByID'](arg1);
 }
@@ -62,8 +78,16 @@ export function GetUnfinishedWorkTimeProjectWithoutSendingError() {
   return window['go']['main']['App']['GetUnfinishedWorkTimeProjectWithoutSendingError']();
 }
 
+export function GetUnitsByResolutionTracker(arg1) {
+  return window['go']['main']['App']['GetUnitsByResolutionTracker'](arg1);
+}
+
 export function RemoveTimer(arg1) {
   return window['go']['main']['App']['RemoveTimer'](arg1);
+}
+
+export function ResolveResolutionUnit(arg1) {
+  return window['go']['main']['App']['ResolveResolutionUnit'](arg1);
 }
 
 export function StartDay() {
@@ -96,6 +120,10 @@ export function UpdateBreakTimeDuration(arg1, arg2) {
 
 export function UpdateProjectName(arg1, arg2) {
   return window['go']['main']['App']['UpdateProjectName'](arg1, arg2);
+}
+
+export function UpdateResolutionTrackerCategory(arg1, arg2) {
+  return window['go']['main']['App']['UpdateResolutionTrackerCategory'](arg1, arg2);
 }
 
 export function UpdateWorkTimeDuration(arg1, arg2) {

@@ -290,6 +290,99 @@ export namespace database {
 		    return a;
 		}
 	}
+	export class ResolutionUnit {
+	    ID: number;
+	    CreatedAt: time.Time;
+	    UpdatedAt: time.Time;
+	    // Go type: gorm
+	    DeletedAt: any;
+	    ID: number;
+	    TrackerID: number;
+	    Identifier: string;
+	    Resolved: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new ResolutionUnit(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.ID = source["ID"];
+	        this.CreatedAt = this.convertValues(source["CreatedAt"], time.Time);
+	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], time.Time);
+	        this.DeletedAt = this.convertValues(source["DeletedAt"], null);
+	        this.ID = source["ID"];
+	        this.TrackerID = source["TrackerID"];
+	        this.Identifier = source["Identifier"];
+	        this.Resolved = source["Resolved"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class ResolutionTracker {
+	    ID: number;
+	    CreatedAt: time.Time;
+	    UpdatedAt: time.Time;
+	    // Go type: gorm
+	    DeletedAt: any;
+	    ID: number;
+	    Day: time.Time;
+	    Category: string;
+	    Closed: boolean;
+	    Units: ResolutionUnit[];
+	
+	    static createFrom(source: any = {}) {
+	        return new ResolutionTracker(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.ID = source["ID"];
+	        this.CreatedAt = this.convertValues(source["CreatedAt"], time.Time);
+	        this.UpdatedAt = this.convertValues(source["UpdatedAt"], time.Time);
+	        this.DeletedAt = this.convertValues(source["DeletedAt"], null);
+	        this.ID = source["ID"];
+	        this.Day = this.convertValues(source["Day"], time.Time);
+	        this.Category = source["Category"];
+	        this.Closed = source["Closed"];
+	        this.Units = this.convertValues(source["Units"], ResolutionUnit);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	
 	
 	export class TotalTime {
 	    ID: number;
@@ -616,6 +709,44 @@ export namespace main {
 	        this.total = source["total"];
 	        this.currentPage = source["currentPage"];
 	        this.itemsPerPage = source["itemsPerPage"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class ResolutionMessageResponse {
+	    message: string;
+	    tracker?: database.ResolutionTracker;
+	    units?: database.ResolutionUnit[];
+	    unit?: database.ResolutionUnit;
+	    success: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new ResolutionMessageResponse(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.message = source["message"];
+	        this.tracker = this.convertValues(source["tracker"], database.ResolutionTracker);
+	        this.units = this.convertValues(source["units"], database.ResolutionUnit);
+	        this.unit = this.convertValues(source["unit"], database.ResolutionUnit);
+	        this.success = source["success"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

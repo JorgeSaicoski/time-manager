@@ -12,13 +12,19 @@ export function CalculateWorkTimeForDay(arg1:time.Time):Promise<time.Duration>;
 
 export function ChangeProjectClose(arg1:number):Promise<main.MessageProjectResponse>;
 
+export function CloseResolutionTracker(arg1:number):Promise<main.ResolutionMessageResponse>;
+
 export function CreateProject(arg1:string):Promise<main.MessageProjectResponse>;
+
+export function CreateResolutionUnit(arg1:string):Promise<main.ResolutionMessageResponse>;
 
 export function CreateTask(arg1:number,arg2:string,arg3:string):Promise<main.TaskResponse>;
 
 export function EndBrb():Promise<main.MessageWorkTimeResponse>;
 
 export function EndBreak():Promise<main.MessageWorkTimeResponse>;
+
+export function FindResolutionTrackerByDay(arg1:string):Promise<main.ResolutionMessageResponse>;
 
 export function FinishDay():Promise<string>;
 
@@ -28,13 +34,19 @@ export function GetCurrentActiveTimers():Promise<main.CurrentTimersResponse>;
 
 export function GetDaySummary(arg1:string):Promise<main.DaySummary>;
 
+export function GetOrCreateTodayResolutionTracker():Promise<main.ResolutionMessageResponse>;
+
 export function GetProjectByID(arg1:number):Promise<main.MessageProjectResponse>;
 
 export function GetStartTimes():Promise<Array<main.Timer>>;
 
 export function GetUnfinishedWorkTimeProjectWithoutSendingError():Promise<database.WorkTimeProject>;
 
+export function GetUnitsByResolutionTracker(arg1:number):Promise<main.ResolutionMessageResponse>;
+
 export function RemoveTimer(arg1:string):Promise<string>;
+
+export function ResolveResolutionUnit(arg1:number):Promise<main.ResolutionMessageResponse>;
 
 export function StartDay():Promise<main.StartDayResponse>;
 
@@ -51,6 +63,8 @@ export function UpdateBrbDuration(arg1:number,arg2:number):Promise<string>;
 export function UpdateBreakTimeDuration(arg1:number,arg2:number):Promise<string>;
 
 export function UpdateProjectName(arg1:number,arg2:string):Promise<main.MessageProjectResponse>;
+
+export function UpdateResolutionTrackerCategory(arg1:number,arg2:string):Promise<main.ResolutionMessageResponse>;
 
 export function UpdateWorkTimeDuration(arg1:number,arg2:number):Promise<main.MessageWorkTimeResponse>;
 

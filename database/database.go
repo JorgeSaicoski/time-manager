@@ -637,3 +637,95 @@ func GetCurrentActiveTimers() (*CurrentTimers, error) {
 
 	return &currentTimers, nil
 }
+
+func GetOrCreateTodayResolutionTracker() (*ResolutionTracker, error) {
+	var tracker ResolutionTracker
+	today := time.Now().Truncate(24 * time.Hour)
+
+	result := DB.Where("day = ? AND closed = ?", today, false).First(&tracker)
+	if result.Error == nil {
+		return &tracker, nil
+	} else if result.Error != gorm.ErrRecordNotFound {
+		return nil, result.Error
+	}
+
+	tracker = ResolutionTracker{
+		Day:      today,
+		Category: "tkt",
+		Closed:   false,
+	}
+	if err := DB.Create(&tracker).Error; err != nil {
+		return nil, err
+	}
+
+	return &tracker, nil
+}
+
+func UpdateResolutionTrackerCategory(trackerID int64, newCategory string) error {
+	var tracker ResolutionTracker
+	if err := DB.First(&tracker, trackerID).Error; err != nil {
+		return fmt.Errorf("ResolutionTracker not found: %w", err)
+	}
+
+	tracker.Category = newCategory
+	return DB.Save(&tracker).Error
+}
+
+func CloseResolutionTracker(trackerID int64) error {
+	var tracker ResolutionTracker
+	if err := DB.First(&tracker, trackerID).Error; err != nil {
+		return fmt.Errorf("ResolutionTracker not found: %w", err)
+	}
+
+	tracker.Closed = true
+	return DB.Save(&tracker).Error
+}
+
+func FindResolutionTrackerByDay(day time.Time) (*ResolutionTracker, error) {
+	var tracker ResolutionTracker
+	day = day.Truncate(24 * time.Hour)
+
+	if err := DB.Where("day = ?", day).First(&tracker).Error; err != nil {
+		return nil, fmt.Errorf("ResolutionTracker not found for the given day: %w", err)
+	}
+
+	return &tracker, nil
+}
+
+func CreateResolutionUnit(identifier string) (*ResolutionUnit, error) {
+	tracker, err := GetOrCreateTodayResolutionTracker()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get or create today's ResolutionTracker: %w", err)
+	}
+
+	unit := ResolutionUnit{
+		TrackerID:  tracker.ID,
+		Identifier: identifier,
+		Resolved:   false,
+	}
+
+	if err := DB.Create(&unit).Error; err != nil {
+		return nil, fmt.Errorf("failed to create ResolutionUnit: %w", err)
+	}
+
+	return &unit, nil
+}
+
+func ResolveResolutionUnit(unitID int64) error {
+	var unit ResolutionUnit
+	if err := DB.First(&unit, unitID).Error; err != nil {
+		return fmt.Errorf("ResolutionUnit not found: %w", err)
+	}
+
+	unit.Resolved = true
+	return DB.Save(&unit).Error
+}
+
+func GetUnitsByResolutionTracker(trackerID int64) ([]ResolutionUnit, error) {
+	var units []ResolutionUnit
+	if err := DB.Where("tracker_id = ?", trackerID).Find(&units).Error; err != nil {
+		return nil, fmt.Errorf("failed to retrieve units for tracker ID %d: %w", trackerID, err)
+	}
+
+	return units, nil
+}

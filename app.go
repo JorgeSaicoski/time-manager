@@ -78,6 +78,14 @@ type CurrentTimersResponse struct {
 	TotalTime *database.TotalTime `json:"totalTime,omitempty"`
 }
 
+type ResolutionMessageResponse struct {
+	Message string                      `json:"message"`
+	Tracker *database.ResolutionTracker `json:"tracker,omitempty"`
+	Units   []database.ResolutionUnit   `json:"units,omitempty"`
+	Unit    *database.ResolutionUnit    `json:"unit,omitempty"`
+	Success bool                        `json:"success"`
+}
+
 func NewApp() *App {
 	return &App{}
 }
@@ -708,4 +716,121 @@ func (a *App) GetCurrentActiveTimers() (*CurrentTimersResponse, error) {
 		Brb:       currentTimers.Brb,
 		TotalTime: currentTimers.TotalTime,
 	}, nil
+}
+
+func (a *App) GetOrCreateTodayResolutionTracker() ResolutionMessageResponse {
+	tracker, err := database.GetOrCreateTodayResolutionTracker()
+	if err != nil {
+		return ResolutionMessageResponse{
+			Message: "Failed to retrieve or create today's tracker.",
+			Success: false,
+		}
+	}
+
+	return ResolutionMessageResponse{
+		Message: "Successfully retrieved today's tracker.",
+		Tracker: tracker,
+		Success: true,
+	}
+}
+
+func (a *App) UpdateResolutionTrackerCategory(trackerID int64, newCategory string) ResolutionMessageResponse {
+	err := database.UpdateResolutionTrackerCategory(trackerID, newCategory)
+	if err != nil {
+		return ResolutionMessageResponse{
+			Message: "Failed to update tracker category.",
+			Success: false,
+		}
+	}
+
+	return ResolutionMessageResponse{
+		Message: "Category updated successfully.",
+		Success: true,
+	}
+}
+
+func (a *App) CloseResolutionTracker(trackerID int64) ResolutionMessageResponse {
+	err := database.CloseResolutionTracker(trackerID)
+	if err != nil {
+		return ResolutionMessageResponse{
+			Message: "Failed to close tracker.",
+			Success: false,
+		}
+	}
+
+	return ResolutionMessageResponse{
+		Message: "Tracker closed successfully.",
+		Success: true,
+	}
+}
+
+func (a *App) FindResolutionTrackerByDay(day string) ResolutionMessageResponse {
+	parsedDay, err := time.Parse("2006-01-02", day)
+	if err != nil {
+		return ResolutionMessageResponse{
+			Message: "Invalid date format, use YYYY-MM-DD.",
+			Success: false,
+		}
+	}
+
+	tracker, err := database.FindResolutionTrackerByDay(parsedDay)
+	if err != nil {
+		return ResolutionMessageResponse{
+			Message: "No tracker found for the given day.",
+			Success: false,
+		}
+	}
+
+	return ResolutionMessageResponse{
+		Message: "Tracker found successfully.",
+		Tracker: tracker,
+		Success: true,
+	}
+}
+
+func (a *App) CreateResolutionUnit(identifier string) ResolutionMessageResponse {
+	unit, err := database.CreateResolutionUnit(identifier)
+	if err != nil {
+		return ResolutionMessageResponse{
+			Message: "Failed to create ResolutionUnit.",
+			Success: false,
+		}
+	}
+
+	return ResolutionMessageResponse{
+		Message: "ResolutionUnit created successfully.",
+		Unit:    unit,
+		Success: true,
+	}
+}
+
+func (a *App) ResolveResolutionUnit(unitID int64) ResolutionMessageResponse {
+	err := database.ResolveResolutionUnit(unitID)
+	if err != nil {
+		return ResolutionMessageResponse{
+			Message: "Failed to mark ResolutionUnit as resolved.",
+			Success: false,
+		}
+	}
+
+	return ResolutionMessageResponse{
+		Message: "ResolutionUnit marked as resolved successfully.",
+		Success: true,
+	}
+}
+
+func (a *App) GetUnitsByResolutionTracker(trackerID int64) ResolutionMessageResponse {
+	units, err := database.GetUnitsByResolutionTracker(trackerID)
+	if err != nil {
+		return ResolutionMessageResponse{
+			Message: "Failed to retrieve ResolutionUnits.",
+			Success: false,
+		}
+	}
+
+	return ResolutionMessageResponse{
+		Message: "ResolutionUnits retrieved successfully.",
+		Units:   units,
+		Success: true,
+	}
 }

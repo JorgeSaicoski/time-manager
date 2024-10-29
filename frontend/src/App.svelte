@@ -8,12 +8,20 @@
   import WorkSumary from "./components/summary/WorkSumary.svelte";
   import DaySummary from "./components/summary/DaySummary.svelte";
   import Currently from "./components/Currently.svelte";
+  import Tracker from "./components/Tracker.svelte";
 
   let currentTab = "Currently";
 
   let projectID = 0;
   let day = null;
-  const navItem = ["Currently", "Work", "Timer", "Projects", "Summary"];
+  const navItem = [
+    "Currently",
+    "Work",
+    "Timer",
+    "Projects",
+    "Summary",
+    "Tracker",
+  ];
 
   function updateTab(event) {
     currentTab = event.target.value;
@@ -89,6 +97,9 @@
     {/if}
     {#if currentTab === "DaySummary"}
       <DaySummary data={day}></DaySummary>
+    {/if}
+    {#if currentTab === "Tracker"}
+      <Tracker></Tracker>
     {/if}
   </section>
 
