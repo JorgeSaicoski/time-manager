@@ -55,7 +55,6 @@ func updateProjectDuration(projectID int64) error {
 }
 
 func getUnfinishedWorkTime() (*WorkTime, error) {
-	fmt.Println("getUnfinishedWorkTime")
 	var workTime WorkTime
 	result := DB.Where("closed = ?", false).First(&workTime)
 	if result.Error != nil {
@@ -69,7 +68,6 @@ func getUnfinishedWorkTime() (*WorkTime, error) {
 }
 
 func getUnfinishedWorkTimeProjectAndFinish() (*WorkTimeProject, error) {
-	fmt.Println("getUnfinishedWorkTimeProjectAndFinish")
 	var workTimeProject WorkTimeProject
 	result := DB.Where("closed = ?", false).First(&workTimeProject)
 	if result.Error != nil {
@@ -95,7 +93,6 @@ func getUnfinishedWorkTimeProjectAndFinish() (*WorkTimeProject, error) {
 }
 
 func CreateTotalTime() (*TotalTime, error) {
-	fmt.Println("CreateTotalTime")
 	totalTime := &TotalTime{
 		StartTime: time.Now(),
 		Closed:    false,
@@ -105,7 +102,6 @@ func CreateTotalTime() (*TotalTime, error) {
 }
 
 func GetTotalTime(id int64) (*TotalTime, error) {
-	fmt.Println("GetTotalTime")
 	var totalTime TotalTime
 	err := DB.Preload("WorkTimes").Preload("BreakTime").First(&totalTime, id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -115,7 +111,6 @@ func GetTotalTime(id int64) (*TotalTime, error) {
 }
 
 func GetUnfinishedTotalTime() (*TotalTime, error) {
-	fmt.Println("GetUnfinishedTotalTime")
 	if err := finishAnyUnfinishedBreakOrBrb(); err != nil {
 		return nil, fmt.Errorf("error finishing any unfinished BreakTime or Brb: %w", err)
 	}
@@ -133,7 +128,6 @@ func GetUnfinishedTotalTime() (*TotalTime, error) {
 }
 
 func FinishTotalTime(id int64) (*TotalTime, error) {
-	fmt.Println("FinishTotalTime")
 	var totalTime TotalTime
 
 	err := DB.First(&totalTime, id).Error
@@ -233,8 +227,6 @@ func finishAnyUnfinishedBreakOrBrb() error {
 }
 
 func CreateWorkTime(totalTimeID int64) (*WorkTime, error) {
-	fmt.Println("CreateWorkTime")
-
 	workTime, _ := getUnfinishedWorkTime()
 
 	if workTime != nil {
@@ -271,8 +263,6 @@ func CreateWorkTime(totalTimeID int64) (*WorkTime, error) {
 }
 
 func GetWorkTime(id int64) (*WorkTime, error) {
-	fmt.Println("GetWorkTime")
-
 	var workTime WorkTime
 	err := DB.Preload("Projects").First(&workTime, id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -282,7 +272,6 @@ func GetWorkTime(id int64) (*WorkTime, error) {
 }
 
 func FinishWorkTime() (*WorkTime, error) {
-	fmt.Println("FinishWorkTime")
 	workTime, err := getUnfinishedWorkTime()
 	if err != nil {
 		return nil, fmt.Errorf("failed to retrieve unfinished WorkTime: %w", err)
@@ -311,7 +300,6 @@ func FinishWorkTime() (*WorkTime, error) {
 }
 
 func CreateProject(name string) (*Project, error) {
-	fmt.Println("CreateProject")
 	project := &Project{
 		Name:      name,
 		StartTime: time.Now(),
