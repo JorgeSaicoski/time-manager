@@ -85,3 +85,20 @@ type Brb struct {
 	Duration    time.Duration
 	Active      bool `gorm:"default:true"`
 }
+
+type ResolutionTracker struct {
+	gorm.Model
+	ID       int64 `gorm:"primaryKey"`
+	Day      time.Time
+	Category string `gorm:"size:255"`
+	Closed   bool
+	Units    []ResolutionUnit `gorm:"foreignKey:TrackerID"`
+}
+
+type ResolutionUnit struct {
+	gorm.Model
+	ID         int64 `gorm:"primaryKey"`
+	TrackerID  int64
+	Identifier string `gorm:"size:255"`
+	Resolved   bool
+}
