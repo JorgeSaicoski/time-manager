@@ -686,7 +686,10 @@ func FindResolutionTrackerByDay(day time.Time) (*ResolutionTracker, error) {
 	day = day.Truncate(24 * time.Hour)
 
 	if err := DB.Where("day = ?", day).First(&tracker).Error; err != nil {
-		return nil, fmt.Errorf("ResolutionTracker not found for the given day: %w", err)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil // Return nil if no record is found, not an error
+		}
+		return nil, fmt.Errorf("error fetching resolution tracker: %w", err)
 	}
 
 	return &tracker, nil

@@ -834,3 +834,48 @@ func (a *App) GetUnitsByResolutionTracker(trackerID int64) ResolutionMessageResp
 		Success: true,
 	}
 }
+
+func (a *App) GetUnitsTrackerByDay(dayString string) ResolutionMessageResponse {
+	parsedDay, err := time.Parse("2006-01-02", dayString)
+	if err != nil {
+		log.Printf("Error parsing day: %v", err)
+		return ResolutionMessageResponse{
+			Message: "Invalid date format",
+			Success: false,
+		}
+	}
+	log.Printf("day: %v", parsedDay)
+
+	tracker, err := database.FindResolutionTrackerByDay(parsedDay)
+	if err != nil {
+		log.Printf("Error fetching Tracker By Day: %v", err)
+		return ResolutionMessageResponse{
+			Message: "Error fetching tracker for the day",
+			Success: false,
+		}
+	}
+
+	if tracker == nil {
+		log.Printf("Null: %v", parsedDay)
+		return ResolutionMessageResponse{
+			Message: "No tracker data available for this day.",
+			Units:   nil,
+			Success: true,
+		}
+	}
+
+	units, err := database.GetUnitsByResolutionTracker(tracker.ID)
+	if err != nil {
+		log.Printf("Error fetching units: %v", err)
+		return ResolutionMessageResponse{
+			Message: "Error fetching units for the day",
+			Success: false,
+		}
+	}
+
+	return ResolutionMessageResponse{
+		Message: "Units retrieved successfully",
+		Units:   units,
+		Success: true,
+	}
+}

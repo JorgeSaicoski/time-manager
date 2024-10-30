@@ -44,6 +44,8 @@ export function GetUnfinishedWorkTimeProjectWithoutSendingError():Promise<databa
 
 export function GetUnitsByResolutionTracker(arg1:number):Promise<main.ResolutionMessageResponse>;
 
+export function GetUnitsTrackerByDay(arg1:string):Promise<main.ResolutionMessageResponse>;
+
 export function RemoveTimer(arg1:string):Promise<string>;
 
 export function ResolveResolutionUnit(arg1:number):Promise<main.ResolutionMessageResponse>;

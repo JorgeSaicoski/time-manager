@@ -82,6 +82,10 @@ export function GetUnitsByResolutionTracker(arg1) {
   return window['go']['main']['App']['GetUnitsByResolutionTracker'](arg1);
 }
 
+export function GetUnitsTrackerByDay(arg1) {
+  return window['go']['main']['App']['GetUnitsTrackerByDay'](arg1);
+}
+
 export function RemoveTimer(arg1) {
   return window['go']['main']['App']['RemoveTimer'](arg1);
 }
