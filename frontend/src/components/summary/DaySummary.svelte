@@ -81,15 +81,18 @@
       if (model === "workTime") {
         await UpdateWorkTimeDuration(currentProject, newDurationSeconds);
         message = "WorkTime duration updated!";
+        currentProject = null;
       } else if (model === "breakTime") {
         await UpdateBreakTimeDuration(currentBreakTime, newDurationSeconds);
         message = "BreakTime duration updated!";
+        currentBreakTime = null;
       } else if (model === "workTimeProject") {
         await UpdateWorkTimeProjectDuration(
           currentWorkTimeProject,
           newDurationSeconds,
         );
         message = "WorkTimeProject duration updated!";
+        currentWorkTimeProject = null;
       }
 
       isoDay = day.toISOString().split("T")[0];

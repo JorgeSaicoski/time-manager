@@ -85,12 +85,12 @@
     loading = true;
 
     for (let day of daysInMonth) {
-      const utcDay = new Date(
-        Date.UTC(day.getFullYear(), day.getMonth(), day.getDate()),
-      );
+      const formattedDate = format(day, "yyyy-MM-dd");
       try {
-        const totalTime = await CalculateWorkTimeForDay(utcDay);
-        workData[format(utcDay, "yyyy-MM-dd")] = totalTime
+        const totalTime = await CalculateWorkTimeForDay(
+          new Date(`${formattedDate}T00:00:00Z`),
+        );
+        workData[formattedDate] = totalTime
           ? (totalTime / (1e9 * 3600)).toFixed(1)
           : 0;
       } catch (err) {
