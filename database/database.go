@@ -640,23 +640,31 @@ func GetCurrentActiveTimers() (*CurrentTimers, error) {
 
 func GetOrCreateTodayResolutionTracker() (*ResolutionTracker, error) {
 	var tracker ResolutionTracker
-	today := time.Now().Truncate(24 * time.Hour)
+	today := time.Now().UTC().Truncate(24 * time.Hour)
+
+	// Log the today variable for debugging
+	log.Printf("Looking for tracker on: %v", today)
 
 	result := DB.Where("day = ? AND closed = ?", today, false).First(&tracker)
 	if result.Error == nil {
+		log.Printf("Found existing tracker: %+v", tracker)
 		return &tracker, nil
 	} else if result.Error != gorm.ErrRecordNotFound {
+		log.Printf("Error querying for tracker: %v", result.Error)
 		return nil, result.Error
 	}
 
+	// Creating a new tracker if none is found
 	tracker = ResolutionTracker{
 		Day:      today,
 		Category: "tkt",
 		Closed:   false,
 	}
 	if err := DB.Create(&tracker).Error; err != nil {
+		log.Printf("Error creating tracker: %v", err)
 		return nil, err
 	}
+	log.Printf("Created new tracker: %+v", tracker)
 
 	return &tracker, nil
 }
@@ -683,15 +691,20 @@ func CloseResolutionTracker(trackerID int64) error {
 
 func FindResolutionTrackerByDay(day time.Time) (*ResolutionTracker, error) {
 	var tracker ResolutionTracker
-	day = day.Truncate(24 * time.Hour)
+	day = day.UTC().Truncate(24 * time.Hour)
+
+	log.Printf("Searching for tracker on day: %v", day)
 
 	if err := DB.Where("day = ?", day).First(&tracker).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil // Return nil if no record is found, not an error
+			log.Printf("No tracker found for day: %v", day)
+			return nil, nil
 		}
+		log.Printf("Error fetching tracker: %v", err)
 		return nil, fmt.Errorf("error fetching resolution tracker: %w", err)
 	}
 
+	log.Printf("Tracker found: %+v", tracker)
 	return &tracker, nil
 }
 

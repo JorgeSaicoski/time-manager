@@ -52,16 +52,17 @@
     const end = endOfMonth(selectedMonth);
     daysInMonth = eachDayOfInterval({ start, end });
 
-    workData = {}; // Reusing workData for simplicity
+    workData = {};
     loading = true;
 
     for (let day of daysInMonth) {
-      const utcDay = format(day, "yyyy-MM-dd"); // Format for backend request
+      const utcDay = format(day, "yyyy-MM-dd");
       try {
         const response = await GetUnitsTrackerByDay(utcDay);
-        console.log(response);
-        workData[utcDay] = response.Success ? response.Units.length : 0; // Store the unit count or data as needed
+        console.log(`Response for ${utcDay}: `, response);
+        workData[utcDay] = response.success ? response.units?.length : 0;
       } catch (err) {
+        console.log(`Error loading tracker data for ${utcDay}`, err);
         message = "Error loading tracker data.";
         messageType = "error";
         break;
@@ -105,10 +106,7 @@
   const formatDay = (day) => format(day, "d");
 
   const getWorkTimeForDay = (day) => {
-    const utcDay = new Date(
-      Date.UTC(day.getFullYear(), day.getMonth(), day.getDate()),
-    );
-    const formattedDate = format(utcDay, "yyyy-MM-dd");
+    const formattedDate = format(day, "yyyy-MM-dd"); // Use pre-formatted date as key
 
     return workData[formattedDate] || 0;
   };
