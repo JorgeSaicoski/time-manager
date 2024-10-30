@@ -31,7 +31,11 @@
 
   const toggleTrackerMode = () => {
     isTrackerMode = !isTrackerMode;
-    fetchTrackerData();
+    if (isTrackerMode) {
+      fetchTrackerData(); // Fetch tracker data if in tracker mode
+    } else {
+      fetchMonthSummary(); // Fetch work hours if not in tracker mode
+    }
   };
 
   const getMonthName = (date) => format(date, "MMMM yyyy");
