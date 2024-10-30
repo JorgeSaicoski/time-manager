@@ -593,11 +593,9 @@ func (a *App) GetDaySummary(dayString string) DaySummary {
 			continue
 		}
 		workTimeProjects = append(workTimeProjects, wtpList...)
-		log.Printf("Fetched WorkTimeProjects for WorkTime %d: %v", workTime.ID, wtpList)
 	}
 
 	summary.WorkTimeProjects = workTimeProjects
-	log.Printf("work time projects in sumary: %v", workTimeProjects)
 
 	breakTimes, err := database.GetBreakTimesForDay(day)
 	if err != nil {
@@ -631,7 +629,7 @@ func (a *App) UpdateWorkTimeDuration(workTimeID int64, newDurationSeconds int64)
 
 	workTime.Duration = time.Duration(newDurationSeconds) * time.Second
 
-	if err := database.DB.Save(workTime).Error; err != nil {
+	if err := database.DB.Omit("Projects").Save(workTime).Error; err != nil {
 		log.Printf("Error updating WorkTime duration: %v", err)
 		return MessageWorkTimeResponse{
 			Message: "Failed to update WorkTime duration",
