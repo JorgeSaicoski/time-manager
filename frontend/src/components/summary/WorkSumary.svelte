@@ -29,13 +29,17 @@
     dispatch("tabEvent", { tab: "DaySummary", day: { day } });
   }
 
+  function updateData() {
+    if (isTrackerMode) {
+      fetchTrackerData();
+    } else {
+      fetchMonthSummary();
+    }
+  }
+
   const toggleTrackerMode = () => {
     isTrackerMode = !isTrackerMode;
-    if (isTrackerMode) {
-      fetchTrackerData(); // Fetch tracker data if in tracker mode
-    } else {
-      fetchMonthSummary(); // Fetch work hours if not in tracker mode
-    }
+    updateData();
   };
 
   const getMonthName = (date) => format(date, "MMMM yyyy");
@@ -46,7 +50,7 @@
     } else if (direction === "prev") {
       selectedMonth = subMonths(selectedMonth, 1);
     }
-    fetchMonthSummary();
+    updateData();
   };
 
   const fetchTrackerData = async () => {
@@ -63,10 +67,8 @@
       const utcDay = format(day, "yyyy-MM-dd");
       try {
         const response = await GetUnitsTrackerByDay(utcDay);
-        console.log(`Response for ${utcDay}: `, response);
         workData[utcDay] = response.success ? response.units?.length : 0;
       } catch (err) {
-        console.log(`Error loading tracker data for ${utcDay}`, err);
         message = "Error loading tracker data.";
         messageType = "error";
         break;
