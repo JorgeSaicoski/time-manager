@@ -12,6 +12,7 @@
   let project = null;
 
   const handleInput = async () => {
+    console.log("handling");
     try {
       const response = await CreateProject(projectName);
       message = response.message;
@@ -58,6 +59,7 @@
     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-slate-800"
     placeholder="Enter the project name"
     bind:value={projectName}
+    on:keydown={handleKeydown}
   ></textarea>
   <div class="flex items-center">
     <input
@@ -65,7 +67,6 @@
       id="associateProjectCheckbox"
       class="mr-2"
       bind:checked={associateProject}
-      on:keydown={handleKeydown}
     />
     <label for="associateProjectCheckbox" class="text-sm"
       >Associate project with current work time</label
