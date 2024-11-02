@@ -310,7 +310,7 @@
       <Button label="Finish Day" type="error" onClick={() => finishWorkDay()}
       ></Button>
     </div>
-    {#if workTime}
+    {#if workTime && !breakTime && !brbTime}
       <div class="w-full">
         <h2 class="text-lg font-bold mb-2">Associate Existing Project</h2>
         <div class="flex gap-4">
