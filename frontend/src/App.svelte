@@ -2,6 +2,7 @@
   import Timer from "./components/Timer.svelte";
   import WorkDay from "./components/WorkDay.svelte";
   import Sarkis from "./assets/images/sarkis-dev.png";
+  import Donation from "./assets/images/donation.png";
   import CreateProject from "./components/projects/CreateProject.svelte";
   import Projects from "./components/projects/Projects.svelte";
   import Project from "./components/projects/Project.svelte";
@@ -108,13 +109,31 @@
   </section>
 
   <footer
-    class="w-full bg-secondary text-textPrimary shadow-sm focus:border-sky-500 focus:ring-sky-500 font-nerd"
+    class="w-full bg-secondary text-textPrimary shadow-sm font-nerd flex flex-row justify-between p-6 items-center"
   >
-    <div class="mx-auto flex flex-col items-center space-y-4">
-      <p>Developed by:</p>
+    <!-- Contact Information -->
+    <div class="flex flex-col items-center space-y-4">
+      <h3>Developed by:</h3>
       <img src={Sarkis} alt="Sarkis DEV logo" class="w-32 h-auto" />
       <p>
         Contact: <a href="mailto:jorge@sarkis.dev">jorge@sarkis.dev</a>
+      </p>
+      <p>
+        Code: <a href="https://github.com/JorgeSaicoski1/time-manager"
+          >github.com/JorgeSaicoski1/time-manager</a
+        >
+      </p>
+    </div>
+
+    <!-- Donation Section -->
+    <div class="flex flex-col items-center space-y-4">
+      <h3>Support Our Work</h3>
+      <p>Link for donations:</p>
+      <img src={Donation} alt="Donation QR Code" class="w-32 h-auto" />
+      <p
+        class="bg-gray-700 text-white p-2 rounded-lg font-mono text-sm text-center"
+      >
+        Bitcoin Address: bc1qew0sxw8ph248mqs8t5s3hceu02es4pjpx8737w
       </p>
     </div>
   </footer>
