@@ -14,7 +14,8 @@
   const fetchDay = async () => {
     try {
       day = data.day;
-      const response = await GetUnitsTrackerByDay(day);
+      const isoDay = day.toISOString().split("T")[0];
+      const response = await GetUnitsTrackerByDay(isoDay);
       units = response.units;
       message = response.message;
       isDayFetched = true;
