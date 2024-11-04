@@ -9,6 +9,7 @@
   import DaySummary from "./components/summary/DaySummary.svelte";
   import Currently from "./components/Currently.svelte";
   import Tracker from "./components/Tracker.svelte";
+  import TrackSummary from "./components/summary/TrackSummary.svelte";
 
   let currentTab = "Currently";
 
@@ -100,6 +101,9 @@
     {/if}
     {#if currentTab === "Tracker"}
       <Tracker></Tracker>
+    {/if}
+    {#if currentTab === "TrackSummary"}
+      <TrackSummary data={day}></TrackSummary>
     {/if}
   </section>
 

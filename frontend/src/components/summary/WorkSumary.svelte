@@ -26,7 +26,11 @@
   const dispatch = createEventDispatcher();
 
   function goToDay(day) {
-    dispatch("tabEvent", { tab: "DaySummary", day: { day } });
+    if (isTrackerMode) {
+      dispatch("tabEvent", { tab: "TrackSummary", day: { day } });
+    } else {
+      dispatch("tabEvent", { tab: "DaySummary", day: { day } });
+    }
   }
 
   function updateData() {

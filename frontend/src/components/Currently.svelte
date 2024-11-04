@@ -31,11 +31,7 @@
     try {
       const timers = await GetCurrentActiveTimers();
       currentTimers = timers;
-
-      console.log(timers);
-
       showGuide = !(timers.workTime || timers.breakTime || timers.brb);
-
       message = "Active timers loaded successfully!";
       messageType = "info";
     } catch (error) {
