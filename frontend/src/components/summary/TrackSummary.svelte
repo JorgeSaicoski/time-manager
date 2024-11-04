@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { GetUnitsTrackerByDay } from "../../../wailsjs/go/main/App";
   import Message from "../base/Message.svelte";
+  import Button from "../base/Button.svelte";
 
   export let data;
 
@@ -32,18 +33,42 @@
   });
 </script>
 
-<div>
+<div
+  class="container mx-auto bg-secondary text-textPrimary p-6 rounded-lg shadow-lg font-nerd w-[1000px]"
+>
   <h2>Tracker Summary</h2>
   {#if message}
     <Message {message} type={messageType}></Message>
   {/if}
+
+  <div class="my-5">
+    <div class="mt-4">
+      <label
+        for="identifier"
+        class="block text-sm font-medium text-textPrimary"
+      >
+        New Resolution Unit Identifier:
+      </label>
+      <input
+        id="identifier"
+        type="text"
+        placeholder="Enter a unique identifier (e.g., Tkt #12345)"
+        class="w-full p-2 mt-1 bg-primary text-black border border-gray-500 rounded-md"
+      />
+      <Button label="Create Resolution Unit" />
+    </div>
+  </div>
+
   {#if isDayFetched}
     <h2>Day fetched {day}</h2>
     <p>Trackers</p>
     <ul>
       {#each units as unit}
-        <li>
-          {unit.Identifier}
+        <li
+          class="m-5 border-2 border-primary rounded-md shadow-md bg-buttonPrimaryBg flex flex-row items-center justify-center"
+        >
+          <p class="w-2/3 text-center">{unit.Identifier}</p>
+          <Button label="Delete" type="error"></Button>
         </li>
       {/each}
     </ul>
