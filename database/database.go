@@ -703,7 +703,7 @@ func CloseResolutionTracker(trackerID int64) error {
 	return DB.Save(&tracker).Error
 }
 
-func FindResolutionTrackerByDay(day time.Time) (*ResolutionTracker, error) {
+func FindOrCreateResolutionTrackerByDay(day time.Time) (*ResolutionTracker, error) {
 	var tracker ResolutionTracker
 	day = day.UTC().Truncate(24 * time.Hour)
 
@@ -711,8 +711,15 @@ func FindResolutionTrackerByDay(day time.Time) (*ResolutionTracker, error) {
 
 	if err := DB.Where("day = ?", day).First(&tracker).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			log.Printf("No tracker found for day: %v", day)
-			return nil, nil
+			log.Printf("No tracker found for day: %v, creating new tracker", day)
+			newTracker := &ResolutionTracker{
+				Day: day,
+			}
+			if err := DB.Create(newTracker).Error; err != nil {
+				log.Printf("Error creating tracker: %v", err)
+				return nil, err
+			}
+			return newTracker, nil
 		}
 		log.Printf("Error fetching tracker: %v", err)
 		return nil, fmt.Errorf("error fetching resolution tracker: %w", err)
@@ -742,7 +749,7 @@ func CreateResolutionUnit(identifier string) (*ResolutionUnit, error) {
 }
 
 func CreateResolutionUnitByDay(identifier string, day time.Time) (*ResolutionUnit, error) {
-	tracker, err := FindResolutionTrackerByDay(day)
+	tracker, err := FindOrCreateResolutionTrackerByDay(day)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get or create today's ResolutionTracker: %w", err)
 	}

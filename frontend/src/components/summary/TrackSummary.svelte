@@ -109,22 +109,24 @@
     <div class="my-5">
       <p>Trackers</p>
       <ul>
-        {#each units as unit}
-          <li
-            class="m-5 border-2 border-primary rounded-md shadow-md bg-buttonPrimaryBg flex flex-row items-center justify-center"
-          >
-            <p class="w-2/3 text-center">{unit.Identifier}</p>
-            <Button
-              label="Delete"
-              type="error"
-              onClick={() => {
-                if (confirm("Are you sure you want to delete this unit?")) {
-                  deleteResolutionUnit(unit.ID);
-                }
-              }}
-            ></Button>
-          </li>
-        {/each}
+        {#if Array.isArray(units) && units.length > 0}
+          {#each units as unit}
+            <li
+              class="m-5 border-2 border-primary rounded-md shadow-md bg-buttonPrimaryBg flex flex-row items-center justify-center"
+            >
+              <p class="w-2/3 text-center">{unit.Identifier}</p>
+              <Button
+                label="Delete"
+                type="error"
+                onClick={() => {
+                  if (confirm("Are you sure you want to delete this unit?")) {
+                    deleteResolutionUnit(unit.ID);
+                  }
+                }}
+              ></Button>
+            </li>
+          {/each}
+        {/if}
       </ul>
     </div>
   {/if}

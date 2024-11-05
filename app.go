@@ -784,7 +784,7 @@ func (a *App) FindResolutionTrackerByDay(day string) ResolutionMessageResponse {
 		}
 	}
 
-	tracker, err := database.FindResolutionTrackerByDay(parsedDay)
+	tracker, err := database.FindOrCreateResolutionTrackerByDay(parsedDay)
 	if err != nil {
 		return ResolutionMessageResponse{
 			Message: "No tracker found for the given day.",
@@ -841,7 +841,7 @@ func (a *App) GetUnitsTrackerByDay(dayString string) ResolutionMessageResponse {
 		}
 	}
 
-	tracker, err := database.FindResolutionTrackerByDay(parsedDay)
+	tracker, err := database.FindOrCreateResolutionTrackerByDay(parsedDay)
 	if err != nil {
 		log.Printf("Error fetching Tracker By Day: %v", err)
 		return ResolutionMessageResponse{
