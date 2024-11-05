@@ -6,6 +6,7 @@
     ChangeProjectClose,
     CalculateAndSaveProjectCost,
     UpdateProjectName,
+    DeleteTask,
   } from "../../../wailsjs/go/main/App";
   import Message from "../base/Message.svelte";
   import Button from "../base/Button.svelte";
@@ -52,7 +53,24 @@
     }
   };
 
-  const removeTask = async () => {};
+  const removeTask = async (taskID) => {
+    try {
+      const response = await DeleteTask(taskID);
+      if (response) {
+        message = response.message;
+        messageType = "success";
+        project.Tasks = project.Tasks.filter((task) => task.ID !== taskID);
+      } else {
+        message = response.message;
+        messageType = "error";
+      }
+    } catch (error) {
+      console.log(error);
+      message = error.message;
+      messageType = "error";
+    }
+  };
+
   const addTask = async () => {
     if (!newTaskDeadline) {
       message = "Please provide a valid deadline.";
@@ -198,18 +216,21 @@
         {#each project.Tasks as task}
           <li class="bg-secondaryAccent p-4 rounded-lg mb-2">
             <div class="flex justify-between items-center">
-              <div>
+              <div class="w-2/3">
                 <p>Task ID: {task.ID}</p>
                 <p>Description: {task.Description}</p>
                 <p>Deadline: {new Date(task.Deadline).toLocaleString()}</p>
                 <p>Closed: {task.Closed ? "Yes" : "No"}</p>
               </div>
-              <button
-                on:click={() => removeTask(task.ID)}
-                class="ml-4 px-4 py-2 bg-buttonErrorBg hover:bg-buttonHoverBg text-buttonErrorText rounded-lg"
-              >
-                Remove Task
-              </button>
+              <Button
+                label="Remove Task"
+                type="error"
+                onClick={() => {
+                  if (confirm("Are you sure you want to delete this unit?")) {
+                    removeTask(task.ID);
+                  }
+                }}
+              ></Button>
             </div>
           </li>
         {/each}
