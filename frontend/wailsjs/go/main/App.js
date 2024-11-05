@@ -38,6 +38,10 @@ export function CreateUnitByDay(arg1, arg2) {
   return window['go']['main']['App']['CreateUnitByDay'](arg1, arg2);
 }
 
+export function DeleteResolutionUnit(arg1) {
+  return window['go']['main']['App']['DeleteResolutionUnit'](arg1);
+}
+
 export function EndBrb() {
   return window['go']['main']['App']['EndBrb']();
 }

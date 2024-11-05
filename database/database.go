@@ -464,6 +464,22 @@ func GetTask(id int64) (*Task, error) {
 	return &task, err
 }
 
+func DeleteTask(taskID int64) error {
+	var task Task
+	if err := DB.First(&task, taskID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil
+		}
+		return err
+	}
+
+	if err := DB.Delete(&task).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func GetAllProjects(page int, pageSize int, closedFilter *bool, orderBy string, orderDirection string) ([]Project, int64, error) {
 	var projects []Project
 	var totalProjects int64
@@ -761,4 +777,20 @@ func GetUnitsByResolutionTracker(trackerID int64) ([]ResolutionUnit, error) {
 	}
 
 	return units, nil
+}
+
+func DeleteResolutionUnit(unitID int64) error {
+	var unit ResolutionUnit
+	if err := DB.First(&unit, unitID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil
+		}
+		return err
+	}
+
+	if err := DB.Delete(&unit).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

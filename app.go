@@ -516,6 +516,19 @@ func (a *App) CreateTask(projectID int64, description string, deadline string) T
 	}
 }
 
+func (a *App) DeleteTask(taskID int64) TaskResponse {
+	err := database.DeleteTask(taskID)
+	if err != nil {
+		return TaskResponse{
+			Message: "Failed to delete Task.",
+		}
+	}
+
+	return TaskResponse{
+		Message: "Task deleted successfully.",
+	}
+}
+
 func (a *App) GetUnfinishedWorkTimeProjectWithoutSendingError() *database.WorkTimeProject {
 	workTimeProject, err := database.GetUnfinishedWorkTimeProject()
 	if err != nil {
@@ -883,6 +896,21 @@ func (a *App) CreateUnitByDay(identifier string, dayString string) ResolutionMes
 	return ResolutionMessageResponse{
 		Message: "ResolutionUnit created successfully.",
 		Unit:    unit,
+		Success: true,
+	}
+}
+
+func (a *App) DeleteResolutionUnit(unitID int64) ResolutionMessageResponse {
+	err := database.DeleteResolutionUnit(unitID)
+	if err != nil {
+		return ResolutionMessageResponse{
+			Message: "Failed to delete ResolutionUnit.",
+			Success: false,
+		}
+	}
+
+	return ResolutionMessageResponse{
+		Message: "ResolutionUnit deleted successfully.",
 		Success: true,
 	}
 }
