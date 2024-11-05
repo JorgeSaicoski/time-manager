@@ -24,6 +24,8 @@ export function CreateUnitByDay(arg1:string,arg2:string):Promise<main.Resolution
 
 export function DeleteResolutionUnit(arg1:number):Promise<main.ResolutionMessageResponse>;
 
+export function DeleteTask(arg1:number):Promise<main.TaskResponse>;
+
 export function EndBrb():Promise<main.MessageWorkTimeResponse>;
 
 export function EndBreak():Promise<main.MessageWorkTimeResponse>;

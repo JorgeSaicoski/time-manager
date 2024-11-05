@@ -42,6 +42,10 @@ export function DeleteResolutionUnit(arg1) {
   return window['go']['main']['App']['DeleteResolutionUnit'](arg1);
 }
 
+export function DeleteTask(arg1) {
+  return window['go']['main']['App']['DeleteTask'](arg1);
+}
+
 export function EndBrb() {
   return window['go']['main']['App']['EndBrb']();
 }

@@ -3,6 +3,7 @@
   import {
     GetUnitsTrackerByDay,
     CreateUnitByDay,
+    DeleteResolutionUnit,
   } from "../../../wailsjs/go/main/App";
   import Message from "../base/Message.svelte";
   import Button from "../base/Button.svelte";
@@ -31,7 +32,23 @@
     }
   };
 
-  const deleteResolutionUnit = async (id) => {};
+  const deleteResolutionUnit = async (unitID) => {
+    try {
+      const response = await DeleteResolutionUnit(unitID);
+      if (response.success) {
+        message = response.message;
+        messageType = "success";
+        units = units.filter((unit) => unit.ID !== unitID);
+      } else {
+        message = response.message;
+        messageType = "error";
+      }
+    } catch (error) {
+      console.log(error);
+      message = error.message;
+      messageType = "error";
+    }
+  };
 
   const createResolutionUnit = async () => {
     try {
@@ -100,7 +117,11 @@
             <Button
               label="Delete"
               type="error"
-              onClick={() => deleteResolutionUnit(unit.ID)}
+              onClick={() => {
+                if (confirm("Are you sure you want to delete this unit?")) {
+                  deleteResolutionUnit(unit.ID);
+                }
+              }}
             ></Button>
           </li>
         {/each}
