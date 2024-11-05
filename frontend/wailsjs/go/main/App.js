@@ -34,6 +34,10 @@ export function CreateTask(arg1, arg2, arg3) {
   return window['go']['main']['App']['CreateTask'](arg1, arg2, arg3);
 }
 
+export function CreateUnitByDay(arg1, arg2) {
+  return window['go']['main']['App']['CreateUnitByDay'](arg1, arg2);
+}
+
 export function EndBrb() {
   return window['go']['main']['App']['EndBrb']();
 }
@@ -88,10 +92,6 @@ export function GetUnitsTrackerByDay(arg1) {
 
 export function RemoveTimer(arg1) {
   return window['go']['main']['App']['RemoveTimer'](arg1);
-}
-
-export function ResolveResolutionUnit(arg1) {
-  return window['go']['main']['App']['ResolveResolutionUnit'](arg1);
 }
 
 export function StartDay() {

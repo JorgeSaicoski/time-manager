@@ -642,7 +642,6 @@ func GetOrCreateTodayResolutionTracker() (*ResolutionTracker, error) {
 	var tracker ResolutionTracker
 	today := time.Now().UTC().Truncate(24 * time.Hour)
 
-	// Log the today variable for debugging
 	log.Printf("Looking for tracker on: %v", today)
 
 	result := DB.Where("day = ? AND closed = ?", today, false).First(&tracker)
@@ -654,7 +653,6 @@ func GetOrCreateTodayResolutionTracker() (*ResolutionTracker, error) {
 		return nil, result.Error
 	}
 
-	// Creating a new tracker if none is found
 	tracker = ResolutionTracker{
 		Day:      today,
 		Category: "tkt",
@@ -710,6 +708,25 @@ func FindResolutionTrackerByDay(day time.Time) (*ResolutionTracker, error) {
 
 func CreateResolutionUnit(identifier string) (*ResolutionUnit, error) {
 	tracker, err := GetOrCreateTodayResolutionTracker()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get or create today's ResolutionTracker: %w", err)
+	}
+
+	unit := ResolutionUnit{
+		TrackerID:  tracker.ID,
+		Identifier: identifier,
+		Resolved:   false,
+	}
+
+	if err := DB.Create(&unit).Error; err != nil {
+		return nil, fmt.Errorf("failed to create ResolutionUnit: %w", err)
+	}
+
+	return &unit, nil
+}
+
+func CreateResolutionUnitByDay(identifier string, day time.Time) (*ResolutionUnit, error) {
+	tracker, err := FindResolutionTrackerByDay(day)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get or create today's ResolutionTracker: %w", err)
 	}

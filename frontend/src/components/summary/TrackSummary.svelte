@@ -1,6 +1,9 @@
 <script>
   import { onMount } from "svelte";
-  import { GetUnitsTrackerByDay } from "../../../wailsjs/go/main/App";
+  import {
+    GetUnitsTrackerByDay,
+    CreateUnitByDay,
+  } from "../../../wailsjs/go/main/App";
   import Message from "../base/Message.svelte";
   import Button from "../base/Button.svelte";
 
@@ -11,6 +14,7 @@
   let isDayFetched = false;
   let message = null;
   let messageType = "info";
+  let identifier = "";
 
   const fetchDay = async () => {
     try {
@@ -27,8 +31,29 @@
     }
   };
 
+  const deleteResolutionUnit = async (id) => {};
+
+  const createResolutionUnit = async () => {
+    try {
+      const isoDay = day.toISOString().split("T")[0];
+      const response = await CreateUnitByDay(identifier, isoDay);
+      if (response.success) {
+        message = response.message;
+        messageType = "success";
+        fetchDay();
+      } else {
+        message = response.message;
+        messageType = "error";
+      }
+    } catch (error) {
+      console.log(error);
+      message = error.message;
+      messageType = "error";
+    }
+    identifier = "";
+  };
+
   onMount(async () => {
-    console.log("mount");
     await fetchDay();
   });
 </script>
@@ -41,36 +66,45 @@
     <Message {message} type={messageType}></Message>
   {/if}
 
-  <div class="my-5">
-    <div class="mt-4">
-      <label
-        for="identifier"
-        class="block text-sm font-medium text-textPrimary"
-      >
-        New Resolution Unit Identifier:
-      </label>
-      <input
-        id="identifier"
-        type="text"
-        placeholder="Enter a unique identifier (e.g., Tkt #12345)"
-        class="w-full p-2 mt-1 bg-primary text-black border border-gray-500 rounded-md"
-      />
-      <Button label="Create Resolution Unit" />
-    </div>
-  </div>
-
   {#if isDayFetched}
     <h2>Day fetched {day}</h2>
-    <p>Trackers</p>
-    <ul>
-      {#each units as unit}
-        <li
-          class="m-5 border-2 border-primary rounded-md shadow-md bg-buttonPrimaryBg flex flex-row items-center justify-center"
+    <div class="my-5">
+      <div class="mt-4">
+        <label
+          for="identifier"
+          class="block text-sm font-medium text-textPrimary"
         >
-          <p class="w-2/3 text-center">{unit.Identifier}</p>
-          <Button label="Delete" type="error"></Button>
-        </li>
-      {/each}
-    </ul>
+          New Resolution Unit Identifier:
+        </label>
+        <input
+          id="identifier"
+          type="text"
+          bind:value={identifier}
+          placeholder="Enter a unique identifier (e.g., Tkt #12345)"
+          class="w-full p-2 mt-1 bg-primary text-black border border-gray-500 rounded-md"
+        />
+        <Button
+          label="Create Resolution Unit"
+          onClick={() => createResolutionUnit()}
+        />
+      </div>
+    </div>
+    <div class="my-5">
+      <p>Trackers</p>
+      <ul>
+        {#each units as unit}
+          <li
+            class="m-5 border-2 border-primary rounded-md shadow-md bg-buttonPrimaryBg flex flex-row items-center justify-center"
+          >
+            <p class="w-2/3 text-center">{unit.Identifier}</p>
+            <Button
+              label="Delete"
+              type="error"
+              onClick={() => deleteResolutionUnit(unit.ID)}
+            ></Button>
+          </li>
+        {/each}
+      </ul>
+    </div>
   {/if}
 </div>

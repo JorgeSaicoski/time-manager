@@ -802,21 +802,6 @@ func (a *App) CreateResolutionUnit(identifier string) ResolutionMessageResponse 
 	}
 }
 
-func (a *App) ResolveResolutionUnit(unitID int64) ResolutionMessageResponse {
-	err := database.ResolveResolutionUnit(unitID)
-	if err != nil {
-		return ResolutionMessageResponse{
-			Message: "Failed to mark ResolutionUnit as resolved.",
-			Success: false,
-		}
-	}
-
-	return ResolutionMessageResponse{
-		Message: "ResolutionUnit marked as resolved successfully.",
-		Success: true,
-	}
-}
-
 func (a *App) GetUnitsByResolutionTracker(trackerID int64) ResolutionMessageResponse {
 	units, err := database.GetUnitsByResolutionTracker(trackerID)
 	if err != nil {
@@ -842,7 +827,6 @@ func (a *App) GetUnitsTrackerByDay(dayString string) ResolutionMessageResponse {
 			Success: false,
 		}
 	}
-	log.Printf("day: %v", parsedDay)
 
 	tracker, err := database.FindResolutionTrackerByDay(parsedDay)
 	if err != nil {
@@ -874,6 +858,31 @@ func (a *App) GetUnitsTrackerByDay(dayString string) ResolutionMessageResponse {
 	return ResolutionMessageResponse{
 		Message: "Units retrieved successfully",
 		Units:   units,
+		Success: true,
+	}
+}
+
+func (a *App) CreateUnitByDay(identifier string, dayString string) ResolutionMessageResponse {
+	parsedDay, err := time.Parse("2006-01-02", dayString)
+	if err != nil {
+		log.Printf("Error parsing day: %v", err)
+		return ResolutionMessageResponse{
+			Message: "Invalid date format",
+			Success: false,
+		}
+	}
+
+	unit, err := database.CreateResolutionUnitByDay(identifier, parsedDay)
+	if err != nil {
+		return ResolutionMessageResponse{
+			Message: "Failed to create ResolutionUnit.",
+			Success: false,
+		}
+	}
+
+	return ResolutionMessageResponse{
+		Message: "ResolutionUnit created successfully.",
+		Unit:    unit,
 		Success: true,
 	}
 }
