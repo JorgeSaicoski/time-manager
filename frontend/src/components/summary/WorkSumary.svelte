@@ -11,12 +11,17 @@
     endOfMonth,
     addMonths,
     subMonths,
+    startOfWeek,
+    endOfWeek,
+    isSameMonth,
+    addDays,
   } from "date-fns";
   import Button from "../base/Button.svelte";
   import Message from "../base/Message.svelte";
 
   let selectedMonth = new Date();
   let daysInMonth = [];
+  let weeksInMonth = [];
   let workData = {};
   let message = null;
   let messageType = "info";
@@ -24,6 +29,14 @@
   let isTrackerMode = false;
 
   const dispatch = createEventDispatcher();
+
+  const daysOfWeek = [];
+  const firstDayOfWeek = startOfWeek(new Date(), { weekStartsOn: 1 });
+
+  for (let i = 0; i < 7; i++) {
+    const day = addDays(firstDayOfWeek, i);
+    daysOfWeek.push(format(day, "EEE"));
+  }
 
   function goToDay(day) {
     if (isTrackerMode) {
@@ -57,12 +70,25 @@
     updateData();
   };
 
+  function groupDaysIntoWeeks(days) {
+    const weeks = [];
+    for (let i = 0; i < days.length; i += 7) {
+      weeks.push(days.slice(i, i + 7));
+    }
+    return weeks;
+  }
+
   const fetchTrackerData = async () => {
     if (!isTrackerMode) return;
 
-    const start = startOfMonth(selectedMonth);
-    const end = endOfMonth(selectedMonth);
+    const startMonth = startOfMonth(selectedMonth);
+    const endMonth = endOfMonth(selectedMonth);
+
+    const start = startOfWeek(startMonth, { weekStartsOn: 1 });
+    const end = endOfWeek(endMonth, { weekStartsOn: 1 });
+
     daysInMonth = eachDayOfInterval({ start, end });
+    weeksInMonth = groupDaysIntoWeeks(daysInMonth);
 
     workData = {};
     loading = true;
@@ -83,9 +109,14 @@
   };
 
   const fetchMonthSummary = async () => {
-    const start = startOfMonth(selectedMonth);
-    const end = endOfMonth(selectedMonth);
+    const startMonth = startOfMonth(selectedMonth);
+    const endMonth = endOfMonth(selectedMonth);
+
+    const start = startOfWeek(startMonth, { weekStartsOn: 1 });
+    const end = endOfWeek(endMonth, { weekStartsOn: 1 });
+
     daysInMonth = eachDayOfInterval({ start, end });
+    weeksInMonth = groupDaysIntoWeeks(daysInMonth);
 
     workData = {};
     loading = true;
@@ -116,8 +147,7 @@
   const formatDay = (day) => format(day, "d");
 
   const getWorkTimeForDay = (day) => {
-    const formattedDate = format(day, "yyyy-MM-dd"); // Use pre-formatted date as key
-
+    const formattedDate = format(day, "yyyy-MM-dd");
     return workData[formattedDate] || 0;
   };
 </script>
@@ -129,39 +159,62 @@
   {#if message}
     <Message {message} type={messageType}></Message>
   {/if}
-  <Button label="Toggle Tracker Mode" onClick={() => toggleTrackerMode()} />
+  <Button
+    label={isTrackerMode ? "CHANGE FOR HOURS WORKED" : "CHANGE FOR TRACKER"}
+    onClick={toggleTrackerMode}
+  />
 
   <div class="flex justify-between items-center mb-6">
-    <Button label="Previous" onClick={() => changeMonth("prev")} />
+    <Button label="PREVIOUS" onClick={() => changeMonth("prev")} />
     <h2 class="text-2xl font-bold">{getMonthName(selectedMonth)}</h2>
-    <Button label="Next" onClick={() => changeMonth("next")} />
+    <Button label="NEXT" onClick={() => changeMonth("next")} />
   </div>
 
   {#if loading}
     <div>Loading data, please wait...</div>
   {:else}
+    <!-- Days of the week headers -->
     <div class="grid grid-cols-7 gap-4">
-      {#each daysInMonth as day}
-        <button
-          on:click={goToDay(day)}
-          class="text-center p-4 rounded-lg {getWorkTimeForDay(day) > 0
-            ? 'bg-hover'
-            : 'bg-secondaryAccent'}"
-        >
-          <p class="text-lg font-bold text-textSecondary">{formatDay(day)}</p>
-          <p
-            class={getWorkTimeForDay(day) > 0
-              ? "text-textPrimary"
-              : "text-textDark"}
-          >
-            {#if isTrackerMode}
-              <p>{getWorkTimeForDay(day)}</p>
-            {:else}
-              <p>{getWorkTimeForDay(day)}h</p>
-            {/if}
-          </p>
-        </button>
+      {#each daysOfWeek as dayOfWeek}
+        <div class="text-center font-bold">{dayOfWeek}</div>
       {/each}
     </div>
+
+    <!-- Calendar grid -->
+    {#each weeksInMonth as week}
+      <div class="grid grid-cols-7 gap-0">
+        {#each week as day}
+          {#if isSameMonth(day, selectedMonth)}
+            <!-- Day belongs to the current month -->
+            <button
+              on:click={() => goToDay(day)}
+              class="text-center p-4 border-2 border-secondary {getWorkTimeForDay(
+                day,
+              ) > 0
+                ? 'bg-hover'
+                : 'bg-secondaryAccent'}"
+            >
+              <p class="text-lg font-bold text-textSecondary">
+                {formatDay(day)}
+              </p>
+              <p
+                class={getWorkTimeForDay(day) > 0
+                  ? "text-textPrimary"
+                  : "text-textDark"}
+              >
+                {#if isTrackerMode}
+                  {getWorkTimeForDay(day)}
+                {:else}
+                  {getWorkTimeForDay(day)}h
+                {/if}
+              </p>
+            </button>
+          {:else}
+            <!-- Empty cell or day from another month -->
+            <div class="bg-textSecondary border-2 border-secondary"></div>
+          {/if}
+        {/each}
+      </div>
+    {/each}
   {/if}
 </div>
