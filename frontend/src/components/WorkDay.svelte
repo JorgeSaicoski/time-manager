@@ -78,6 +78,7 @@
       totalTime = null;
       workTime = null;
       timerStart = null;
+      currentProject = null;
       elapsedTime = "00:00:00";
       interval = null;
       console.log(response);
@@ -117,6 +118,7 @@
       timerStart = new Date();
       intervalName = "Break time";
       messageType = "alert";
+      currentProject = null;
     } catch (err) {
       console.error("Error while creating break:", err);
       message = "An error occurred while trying to start the break.";
@@ -132,6 +134,7 @@
       message = response.message;
       timerStart = new Date(workTime.StartTime);
       intervalName = "Work time";
+      currentProject = null;
     } catch (error) {
       message = err.message;
       messageType = "error";
@@ -187,6 +190,7 @@
       timerStart = new Date();
       intervalName = "Brb time";
       messageType = "alert";
+      currentProject = null;
     } catch (err) {
       console.error("Error while creating brb:", err);
       message = "An error occurred while trying to start the brb.";
