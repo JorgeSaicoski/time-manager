@@ -18,6 +18,14 @@ type CurrentTimers struct {
 	TotalTime *TotalTime
 }
 
+type SearchResult struct {
+	Type       string    `json:"type"` // "project", "resolution_unit", "task"
+	ID         int64     `json:"id"`
+	Name       string    `json:"name,omitempty"`
+	Identifier string    `json:"identifier,omitempty"`
+	Day        time.Time `json:"day,omitempty"`
+}
+
 var DB *gorm.DB
 
 func Connect() {
@@ -800,4 +808,41 @@ func DeleteResolutionUnit(unitID int64) error {
 	}
 
 	return nil
+}
+
+func SearchItems(term string) ([]SearchResult, error) {
+	var results []SearchResult
+
+	// Search Projects
+	var projects []Project
+	if err := DB.Where("name LIKE ?", "%"+term+"%").Find(&projects).Error; err != nil {
+		return nil, fmt.Errorf("error searching projects: %w", err)
+	}
+	for _, project := range projects {
+		results = append(results, SearchResult{
+			Type: "project",
+			ID:   project.ID,
+			Name: project.Name,
+		})
+	}
+
+	// Search Resolution Units
+	var units []ResolutionUnit
+	if err := DB.Preload("Tracker").Where("identifier LIKE ?", "%"+term+"%").Find(&units).Error; err != nil {
+		return nil, fmt.Errorf("error searching resolution units: %w", err)
+	}
+
+	for _, unit := range units {
+		results = append(results, SearchResult{
+			Type:       "resolution_unit",
+			ID:         unit.ID,
+			Identifier: unit.Identifier,
+			Day:        unit.Tracker.Day,
+		})
+
+		fmt.Println("Tracker Day:", unit.Tracker.Day)
+
+	}
+
+	return results, nil
 }

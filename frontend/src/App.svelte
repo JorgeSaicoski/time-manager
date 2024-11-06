@@ -11,6 +11,7 @@
   import Currently from "./components/Currently.svelte";
   import Tracker from "./components/Tracker.svelte";
   import TrackSummary from "./components/summary/TrackSummary.svelte";
+  import Search from "./components/search/Search.svelte";
 
   let currentTab = "Currently";
 
@@ -23,6 +24,7 @@
     "Projects",
     "Summary",
     "Tracker",
+    "Search",
   ];
 
   function updateTab(event) {
@@ -106,6 +108,9 @@
     {#if currentTab === "TrackSummary"}
       <TrackSummary data={day}></TrackSummary>
     {/if}
+    {#if currentTab === "Search"}
+      <Search></Search>
+    {/if}
   </section>
 
   <footer
@@ -119,8 +124,8 @@
         Contact: <a href="mailto:jorge@sarkis.dev">jorge@sarkis.dev</a>
       </p>
       <p>
-        Code: <a href="https://github.com/JorgeSaicoski1/time-manager"
-          >github.com/JorgeSaicoski1/time-manager</a
+        Code: <a href="https://github.com/JorgeSaicoski/time-manager"
+          >github.com/JorgeSaicoski/time-manager</a
         >
       </p>
     </div>

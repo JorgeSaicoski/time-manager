@@ -99,6 +99,7 @@ type ResolutionUnit struct {
 	gorm.Model
 	ID         int64 `gorm:"primaryKey"`
 	TrackerID  int64
-	Identifier string `gorm:"size:255"`
+	Tracker    ResolutionTracker `gorm:"foreignKey:TrackerID"`
+	Identifier string            `gorm:"size:255"`
 	Resolved   bool
 }

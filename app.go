@@ -86,6 +86,12 @@ type ResolutionMessageResponse struct {
 	Success bool                        `json:"success"`
 }
 
+type SearchResultResponse struct {
+	Success bool                    `json:"success"`
+	Message string                  `json:"message"`
+	Results []database.SearchResult `json:"results"`
+}
+
 func NewApp() *App {
 	return &App{}
 }
@@ -912,5 +918,22 @@ func (a *App) DeleteResolutionUnit(unitID int64) ResolutionMessageResponse {
 	return ResolutionMessageResponse{
 		Message: "ResolutionUnit deleted successfully.",
 		Success: true,
+	}
+}
+
+func (a *App) Search(term string) SearchResultResponse {
+	results, err := database.SearchItems(term)
+	if err != nil {
+		return SearchResultResponse{
+			Success: false,
+			Message: err.Error(),
+			Results: nil,
+		}
+	}
+
+	return SearchResultResponse{
+		Success: true,
+		Message: "Search completed successfully.",
+		Results: results,
 	}
 }

@@ -102,6 +102,10 @@ export function RemoveTimer(arg1) {
   return window['go']['main']['App']['RemoveTimer'](arg1);
 }
 
+export function Search(arg1) {
+  return window['go']['main']['App']['Search'](arg1);
+}
+
 export function StartDay() {
   return window['go']['main']['App']['StartDay']();
 }

@@ -54,6 +54,8 @@ export function GetUnitsTrackerByDay(arg1:string):Promise<main.ResolutionMessage
 
 export function RemoveTimer(arg1:string):Promise<string>;
 
+export function Search(arg1:string):Promise<main.SearchResultResponse>;
+
 export function StartDay():Promise<main.StartDayResponse>;
 
 export function StartTimer(arg1:number,arg2:string):Promise<string>;

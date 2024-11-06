@@ -298,6 +298,7 @@ export namespace database {
 	    DeletedAt: any;
 	    ID: number;
 	    TrackerID: number;
+	    Tracker: ResolutionTracker;
 	    Identifier: string;
 	    Resolved: boolean;
 	
@@ -313,6 +314,7 @@ export namespace database {
 	        this.DeletedAt = this.convertValues(source["DeletedAt"], null);
 	        this.ID = source["ID"];
 	        this.TrackerID = source["TrackerID"];
+	        this.Tracker = this.convertValues(source["Tracker"], ResolutionTracker);
 	        this.Identifier = source["Identifier"];
 	        this.Resolved = source["Resolved"];
 	    }
@@ -383,6 +385,44 @@ export namespace database {
 		}
 	}
 	
+	export class SearchResult {
+	    type: string;
+	    id: number;
+	    name?: string;
+	    identifier?: string;
+	    day?: time.Time;
+	
+	    static createFrom(source: any = {}) {
+	        return new SearchResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.type = source["type"];
+	        this.id = source["id"];
+	        this.name = source["name"];
+	        this.identifier = source["identifier"];
+	        this.day = this.convertValues(source["day"], time.Time);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	
 	export class TotalTime {
 	    ID: number;
@@ -747,6 +787,40 @@ export namespace main {
 	        this.units = this.convertValues(source["units"], database.ResolutionUnit);
 	        this.unit = this.convertValues(source["unit"], database.ResolutionUnit);
 	        this.success = source["success"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class SearchResultResponse {
+	    success: boolean;
+	    message: string;
+	    results: database.SearchResult[];
+	
+	    static createFrom(source: any = {}) {
+	        return new SearchResultResponse(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.success = source["success"];
+	        this.message = source["message"];
+	        this.results = this.convertValues(source["results"], database.SearchResult);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
