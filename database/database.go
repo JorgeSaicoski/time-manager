@@ -839,9 +839,6 @@ func SearchItems(term string) ([]SearchResult, error) {
 			Identifier: unit.Identifier,
 			Day:        unit.Tracker.Day,
 		})
-
-		fmt.Println("Tracker Day:", unit.Tracker.Day)
-
 	}
 
 	return results, nil
