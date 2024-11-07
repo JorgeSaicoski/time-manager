@@ -1,4 +1,5 @@
 <script>
+  import { createEventDispatcher } from "svelte";
   import { Search } from "../../../wailsjs/go/main/App";
   import { format } from "date-fns";
   import Button from "../base/Button.svelte";
@@ -9,6 +10,12 @@
   let message = null;
   let messageType = "info";
   let loading = false;
+
+  const dispatch = createEventDispatcher();
+
+  function goToDay(day) {
+    dispatch("tabEvent", { tab: "TrackSummary", day: { day } });
+  }
 
   const performSearch = async () => {
     const response = await Search(searchTerm);
@@ -85,10 +92,14 @@
               <strong>Resolution Unit:</strong>
               {result.identifier}
             </p>
-            <p>
+            <button
+              on:click={() => {
+                goToDay(result.day);
+              }}
+            >
               <strong>Day:</strong>
               {formatDate(result.day)}
-            </p>
+            </button>
           {:else if result.type === "task"}
             <p>
               <strong>Task:</strong>

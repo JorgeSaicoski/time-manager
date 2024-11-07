@@ -19,7 +19,7 @@
 
   const fetchDay = async () => {
     try {
-      day = data.day;
+      day = new Date(data.day); // Convert data.day to a Date object
       const isoDay = day.toISOString().split("T")[0];
       const response = await GetUnitsTrackerByDay(isoDay);
       units = response.units;

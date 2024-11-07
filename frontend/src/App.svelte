@@ -109,7 +109,7 @@
       <TrackSummary data={day}></TrackSummary>
     {/if}
     {#if currentTab === "Search"}
-      <Search></Search>
+      <Search on:tabEvent={handleTabEvent}></Search>
     {/if}
   </section>
 
