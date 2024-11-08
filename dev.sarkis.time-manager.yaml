@@ -13,7 +13,8 @@ modules:
   - name: time-manager
     buildsystem: simple
     build-commands:
-      - wails build -clean -o time-manager
+      - install -D HelloWails /app/bin/time-manager
+
     sources:
       - type: git
         url: https://github.com/JorgeSaicoski/time-manager.git
