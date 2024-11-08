@@ -1,4 +1,3 @@
-# .github/workflows/flatpak-build.yml
 
 name: Build and Package Flatpak
 
@@ -10,48 +9,43 @@ on:
 
 jobs:
   build-flatpak:
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: "1.20"
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.20'
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18.x"
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
 
-      - name: Install Wails CLI
-        run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+    - name: Install Wails CLI
+      run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
-      - name: Install Flatpak and dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y flatpak flatpak-builder python3-docutils
+    - name: Install Flatpak and dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y flatpak flatpak-builder python3-docutils
 
-      - name: Add Flathub remote
-        run: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    - name: Add Flathub remote
+      run: flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-      - name: Install Flatpak SDK and Platform
-        run: |
-          flatpak install -y flathub org.freedesktop.Platform//22.08
-          flatpak install -y flathub org.freedesktop.Sdk//22.08
+    - name: Install Flatpak SDK and Platform
+      run: |
+        flatpak install --user -y flathub org.freedesktop.Platform//22.08
+        flatpak install --user -y flathub org.freedesktop.Sdk//22.08
 
-      - name: Build Flatpak package
-        run: |
-          flatpak-builder --force-clean build-dir com.example.time-manager.yaml
+    - name: Build Flatpak package
+      run: |
+        flatpak-builder --user --install-deps-from=flathub --force-clean build-dir com.example.YourApp.yaml
 
-      - name: Bundle Flatpak
-        run: |
-          flatpak build-bundle build-dir time-manager.flatpak com.example.time-manager
-
-      - name: Upload Flatpak artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: time-manager-flatpak
-          path: time-manager.flatpak
+    - name: Bundle Flatpak
+      run: |
+        flatpak build-bundle build-dir YourApp.flatpak com.example.YourApp
