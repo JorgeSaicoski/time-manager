@@ -29,6 +29,15 @@ jobs:
     - name: Install Wails CLI
       run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
+    - name: Install frontend dependencies
+      working-directory: frontend
+      run: |
+        npm ci
+        npm run build
+
+    - name: Build the Wails app
+      run: wails build -clean -o time-manager
+
     - name: Install Flatpak and dependencies
       run: |
         sudo apt-get update
@@ -39,8 +48,8 @@ jobs:
 
     - name: Install Flatpak SDK and Platform
       run: |
-        flatpak install --user -y flathub org.freedesktop.Platform//22.08
-        flatpak install --user -y flathub org.freedesktop.Sdk//22.08
+        flatpak install --user -y flathub org.freedesktop.Platform//23.08
+        flatpak install --user -y flathub org.freedesktop.Sdk//23.08
 
     - name: Build Flatpak package
       run: |
@@ -49,3 +58,9 @@ jobs:
     - name: Bundle Flatpak
       run: |
         flatpak build-bundle build-dir time-manager.flatpak dev.sarkis.time-manager
+
+    - name: Upload Flatpak artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: time-manager-flatpak
+        path: time-manager.flatpak
