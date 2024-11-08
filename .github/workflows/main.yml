@@ -1,0 +1,35 @@
+name: Publish to Flathub
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v2
+
+      - name: Set up Flatpak
+        run: |
+          sudo apt update
+          sudo apt install -y flatpak-builder
+
+      - name: Add Flathub repository
+        run: |
+          flatpak remote-add --user flathub https://flathub.org/repo/flathub.flatpakrepo || true
+
+      - name: Build Flatpak
+        run: |
+          flatpak-builder --force-clean --repo=repo build-dir yourapp.flatpak.yml
+
+      - name: Push to Flathub
+        env:
+          FLATPAK_REPO: ${{ secrets.FLATPAK_REPO }}
+        run: |
+          flatpak build-bundle repo yourapp.flatpak com.yourdomain.YourApp
+
+      - name: Upload to Flathub
