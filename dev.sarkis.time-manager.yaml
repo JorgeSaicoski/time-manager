@@ -1,0 +1,20 @@
+app-id: dev.sarkis.time-manager
+runtime: org.freedesktop.Platform
+runtime-version: "22.08"
+sdk: org.freedesktop.Sdk
+command: time-manager
+finish-args:
+  - --share=network
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --filesystem=home
+
+modules:
+  - name: time-manager
+    buildsystem: simple
+    build-commands:
+      - wails build -clean -o time-manager
+    sources:
+      - type: git
+        url: https://github.com/JorgeSaicoski/time-manager.git
+        branch: main
