@@ -44,8 +44,8 @@ jobs:
 
     - name: Build Flatpak package
       run: |
-        flatpak-builder --user --install-deps-from=flathub --force-clean build-dir com.example.time-manager.yaml
+        flatpak-builder --user --install-deps-from=flathub --force-clean build-dir dev.sarkis.time-manager.yaml
 
     - name: Bundle Flatpak
       run: |
-        flatpak build-bundle build-dir time-manager.flatpak com.example.time-manager
+        flatpak build-bundle build-dir time-manager.flatpak dev.sarkis.time-manager
