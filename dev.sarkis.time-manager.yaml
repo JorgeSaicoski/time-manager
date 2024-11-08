@@ -1,6 +1,6 @@
 app-id: dev.sarkis.time-manager
 runtime: org.freedesktop.Platform
-runtime-version: "22.08"
+runtime-version: "23.08"
 sdk: org.freedesktop.Sdk
 command: time-manager
 finish-args:
@@ -13,9 +13,7 @@ modules:
   - name: time-manager
     buildsystem: simple
     build-commands:
-      - install -D HelloWails /app/bin/time-manager
-
+      - install -D time-manager /app/bin/time-manager
     sources:
-      - type: git
-        url: https://github.com/JorgeSaicoski/time-manager.git
-        branch: main
+      - type: file
+        path: build/bin/time-manager
