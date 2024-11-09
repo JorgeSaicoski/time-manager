@@ -1,0 +1,26 @@
+id: dev.sarkis.time-manager
+runtime: org.freedesktop.Platform
+runtime-version: "23.08"
+sdk: org.freedesktop.Sdk
+command: time-manager
+modules:
+  - name: time-manager
+    buildsystem: simple
+    build-commands:
+      - install -D time-manager /app/bin/time-manager
+      - install -D dev.sarkis.time-manager.desktop /app/share/applications/dev.sarkis.time-manager.desktop
+      - install -D dev.sarkis.time-manager.metainfo.xml /app/share/metainfo/dev.sarkis.time-manager.metainfo.xml
+      - install -D dev.sarkis.time-manager.png /app/share/icons/hicolor/128x128/apps/dev.sarkis.time-manager.png
+    sources:
+      - type: dir
+        path: files
+
+finish-args:
+  - --share=network
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --filesystem=home
+  - --device=dri
+  - --filesystem=xdg-download
+  - --socket=session-bus
+  - --share=ipc

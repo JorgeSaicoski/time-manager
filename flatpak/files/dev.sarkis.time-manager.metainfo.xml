@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>dev.sarkis.time-manager</id>
+  <name>Skopii</name>
+  <summary>Manage your time and track project profitability</summary>
+  <description>
+    <p>
+      This Time Manager application is designed to help employees and freelancers track their working hours, breaks, and projects, providing a detailed breakdown of how much time is invested in each project. Additionally, it offers cost tracking to calculate profits based on a custom hourly rate.
+    </p>
+    <p>
+      Features:
+    </p>
+    <ul>
+      <li>Track working hours and breaks</li>
+      <li>Project-based time tracking</li>
+      <li>Cost calculation with custom hourly rates</li>
+      <li>Work pattern analysis</li>
+      <li>Project profitability tracking</li>
+    </ul>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://github.com/JorgeSaicoski/time-manager/blob/main/frontend/public/favicon.png?raw=true</image>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">https://github.com/JorgeSaicoski/time-manager</url>
+  <releases>
+    <release version="1.0.0" date="2024-01-01">
+      <description>
+        <p>Initial release</p>
+      </description>
+    </release>
+  </releases>
+  <content_rating type="oars-1.1" />
+  <developer_name>Jorge Sarkis</developer_name>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <categories>
+    <category>Utility</category>
+    <category>Office</category>
+    <category>ProjectManagement</category>
+  </categories>
+</component>

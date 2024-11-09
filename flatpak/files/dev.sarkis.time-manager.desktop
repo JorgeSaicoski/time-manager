@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Skopii
+Exec=time-manager
+Icon=dev.sarkis.time-manager
+Type=Application
+Categories=Utility;ProjectManagement;
+Comment=Track working hours, breaks, and project profitability
+Keywords=time;tracking;project;management;work;hours;
+Version=1.0
+
