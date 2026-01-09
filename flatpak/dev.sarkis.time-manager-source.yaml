@@ -67,9 +67,12 @@ modules:
       # Main source code
       - type: git
         url: https://github.com/JorgeSaicoski/time-manager.git
-        tag: v1.0.0  # Update this to the actual release tag
-        # OR use commit for testing:
+        # TODO: Update this to use an actual release tag when available
+        # For testing, use a specific commit instead:
         # commit: <commit-hash>
+        # For production Flathub submission, use a release tag:
+        # tag: v1.0.0
+        branch: main
       
       # Node.js dependencies (generated with flatpak-node-generator)
       # TODO: Generate this file using:

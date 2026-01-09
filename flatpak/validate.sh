@@ -95,13 +95,18 @@ ICON_FILE="flatpak/files/dev.sarkis.time-manager.png"
 if [ -f "$ICON_FILE" ]; then
     if file "$ICON_FILE" | grep -q "PNG"; then
         echo "  ✓ Icon is PNG format"
-        SIZE=$(file "$ICON_FILE" | grep -oP '\d+ x \d+' || echo "unknown")
-        echo "  ℹ Icon size: $SIZE"
-        if [[ "$SIZE" == "128 x 128" ]]; then
-            echo "  ✓ Icon is 128x128"
-        elif [[ "$SIZE" != "unknown" ]]; then
-            echo "  ⚠ Icon should be 128x128"
-            ((WARNINGS++))
+        # Try to extract size, fallback gracefully if not available
+        if command -v file > /dev/null && file "$ICON_FILE" | grep -qE '[0-9]+ x [0-9]+'; then
+            SIZE=$(file "$ICON_FILE" | grep -oE '[0-9]+ x [0-9]+' | head -1)
+            echo "  ℹ Icon size: $SIZE"
+            if [[ "$SIZE" == "128 x 128" ]]; then
+                echo "  ✓ Icon is 128x128"
+            else
+                echo "  ⚠ Icon should be 128x128"
+                ((WARNINGS++))
+            fi
+        else
+            echo "  ℹ Icon size: Could not determine (file command may not support image info)"
         fi
     else
         echo "  ✗ Icon is not PNG format"
