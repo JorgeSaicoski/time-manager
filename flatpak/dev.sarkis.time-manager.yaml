@@ -3,6 +3,22 @@ runtime: org.freedesktop.Platform
 runtime-version: "23.08"
 sdk: org.freedesktop.Sdk
 command: time-manager
+
+finish-args:
+  # Network access for potential future features
+  - --share=network
+  # Display server access
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --share=ipc
+  # GPU acceleration
+  - --device=dri
+  # File system access for data storage
+  - --filesystem=home
+  - --filesystem=xdg-download
+  # DBus access
+  - --socket=session-bus
+
 modules:
   - name: time-manager
     buildsystem: simple
@@ -11,16 +27,9 @@ modules:
       - install -D dev.sarkis.time-manager.desktop /app/share/applications/dev.sarkis.time-manager.desktop
       - install -D dev.sarkis.time-manager.metainfo.xml /app/share/metainfo/dev.sarkis.time-manager.metainfo.xml
       - install -D dev.sarkis.time-manager.png /app/share/icons/hicolor/128x128/apps/dev.sarkis.time-manager.png
+      # TODO: For Flathub submission, this should build from source using Wails
+      # The manifest should include Go SDK and Node.js modules to build the application
+      # See: https://docs.flathub.org/docs/for-app-authors/requirements
     sources:
       - type: dir
         path: files
-
-finish-args:
-  - --share=network
-  - --socket=fallback-x11
-  - --socket=wayland
-  - --filesystem=home
-  - --device=dri
-  - --filesystem=xdg-download
-  - --socket=session-bus
-  - --share=ipc
