@@ -1,10 +1,12 @@
 [Desktop Entry]
 Name=Skopii
+GenericName=Time Manager
 Exec=time-manager
 Icon=dev.sarkis.time-manager
 Type=Application
-Categories=Utility;ProjectManagement;
+Categories=Utility;Office;ProjectManagement;
 Comment=Track working hours, breaks, and project profitability
-Keywords=time;tracking;project;management;work;hours;
-Version=1.0
+Keywords=time;tracking;project;management;work;hours;productivity;
+Terminal=false
+StartupNotify=true
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
   <id>dev.sarkis.time-manager</id>
+  <launchable type="desktop-id">dev.sarkis.time-manager.desktop</launchable>
   <name>Skopii</name>
   <summary>Manage your time and track project profitability</summary>
   <description>
@@ -20,12 +21,13 @@
   </description>
   <screenshots>
     <screenshot type="default">
-      <image>https://github.com/JorgeSaicoski/time-manager/blob/main/frontend/public/favicon.png?raw=true</image>
+      <caption>Main application window for tracking time and managing projects</caption>
+      <image>https://raw.githubusercontent.com/JorgeSaicoski/time-manager/main/screenshots/main-window.png</image>
     </screenshot>
   </screenshots>
   <url type="homepage">https://github.com/JorgeSaicoski/time-manager</url>
   <releases>
-    <release version="1.0.0" date="2024-01-01">
+    <release version="1.0.0" date="2026-01-09">
       <description>
         <p>Initial release</p>
       </description>
@@ -34,7 +36,7 @@
   <content_rating type="oars-1.1" />
   <developer_name>Jorge Sarkis</developer_name>
   <metadata_license>CC0-1.0</metadata_license>
-  <project_license>GPL-3.0-or-later</project_license>
+  <project_license>MIT</project_license>
   <categories>
     <category>Utility</category>
     <category>Office</category>
