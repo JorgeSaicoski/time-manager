@@ -4,3 +4,7 @@ frontend/.vscode
 *.db
 .flat*
 build-*
+# Flatpak build artifacts
+flatpak/build
+flatpak/.flatpak-builder
+flatpak/*-sources.json

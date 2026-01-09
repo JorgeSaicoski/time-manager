@@ -4,7 +4,9 @@ This directory contains the Flatpak manifest and related files for building and 
 
 ## Files
 
-- `dev.sarkis.time-manager.yaml` - Flatpak manifest
+- `dev.sarkis.time-manager.yaml` - Flatpak manifest (current, uses pre-built binary)
+- `dev.sarkis.time-manager-source.yaml` - Improved manifest for building from source (Flathub-ready)
+- `generate-sources.sh` - Helper script to generate dependency sources for offline builds
 - `files/dev.sarkis.time-manager.desktop` - Desktop entry file
 - `files/dev.sarkis.time-manager.metainfo.xml` - AppStream metadata
 - `files/dev.sarkis.time-manager.png` - Application icon (128x128)
@@ -23,11 +25,12 @@ This directory contains the Flatpak manifest and related files for building and 
 
 ### ⚠️ Remaining Work for Flathub Submission
 
-1. **Build from Source** - Currently uses pre-built binary. For Flathub, the manifest should:
-   - Include Go SDK extension (org.freedesktop.Sdk.Extension.golang)
-   - Include Node.js extension for building the Svelte frontend
-   - Build the application using Wails build process
-   - Generate the binary during the flatpak-builder process
+1. **Build from Source** - A source-based manifest has been created (`dev.sarkis.time-manager-source.yaml`):
+   - Uses Go SDK extension (org.freedesktop.Sdk.Extension.golang)
+   - Uses Node.js extension for building the Svelte frontend
+   - Requires generating dependency sources using `generate-sources.sh`
+   - May need adjustments based on actual Wails build process
+   - **Action Required**: Test and refine the source-based build process
 
 2. **Real Screenshots** - Replace the placeholder screenshot with actual application screenshots showing:
    - Main time tracking interface
@@ -47,13 +50,30 @@ This directory contains the Flatpak manifest and related files for building and 
 
 ## Building Locally
 
+### Quick Build (Pre-built Binary)
+
 ```bash
-# Install flatpak-builder if not already installed
-# Then build the flatpak:
+# Build using the current manifest with pre-built binary
 flatpak-builder --force-clean build dev.sarkis.time-manager.yaml
 
 # Install locally
 flatpak-builder --user --install --force-clean build dev.sarkis.time-manager.yaml
+
+# Run the application
+flatpak run dev.sarkis.time-manager
+```
+
+### Source-based Build (Flathub-ready)
+
+```bash
+# First, generate dependency sources
+./generate-sources.sh
+
+# Build from source
+flatpak-builder --force-clean build dev.sarkis.time-manager-source.yaml
+
+# Install locally
+flatpak-builder --user --install --force-clean build dev.sarkis.time-manager-source.yaml
 
 # Run the application
 flatpak run dev.sarkis.time-manager
